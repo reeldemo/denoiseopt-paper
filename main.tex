@@ -19,20 +19,21 @@
 \usepackage[section]{placeins}
 \usepackage{amsmath,amssymb,amsthm}
 % Keep floats from stacking/bleeding across the column gutter.
-\setcounter{topnumber}{2}
+\setcounter{topnumber}{3}
 \setcounter{dbltopnumber}{2}
-\setcounter{totalnumber}{3}
-\renewcommand{\topfraction}{0.85}
-\renewcommand{\dbltopfraction}{0.85}
-\renewcommand{\textfraction}{0.12}
-\renewcommand{\floatpagefraction}{0.75}
-\renewcommand{\dblfloatpagefraction}{0.75}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\dbltopfraction}{0.9}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.8}
+\renewcommand{\dblfloatpagefraction}{0.8}
 \setlength{\floatsep}{6pt plus 1pt minus 2pt}
 \setlength{\textfloatsep}{8pt plus 1pt minus 2pt}
 \setlength{\intextsep}{6pt plus 1pt minus 2pt}
 \setlength{\dblfloatsep}{8pt plus 1pt minus 2pt}
 \setlength{\dbltextfloatsep}{10pt plus 1pt minus 2pt}
-\flushbottom
+% Avoid stretched empty column bottoms when floats leave short columns.
+\raggedbottom
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{float}

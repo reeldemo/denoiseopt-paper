@@ -18,7 +18,7 @@ These rows do \emph{not} transfer an audio-trained bake as fault/ECG diagnosis S
 Artifacts:
 \href{https://github.com/reeldemo/reelsynth/tree/main/brand/artifacts/signal_heal_transfer}{signal\_heal\_transfer}.
 
-\begin{table}[htbp]
+\begin{table}[t]
   \centering
   \caption{Wrap-heal transfer under locked $R_{\mathrm{blend}}$ (higher better; wrap-protocol stress test).
   Bearing boards ($n{=}256$ each). DenoiseOpt: \texttt{hybrid\_lstm}, seed \texttt{1902771841}.}
@@ -39,7 +39,7 @@ Artifacts:
   \end{tabular}
 \end{table}
 
-\begin{table}[htbp]
+\begin{table}[t]
   \centering
   \caption{Wrap-heal transfer under locked $R_{\mathrm{blend}}$ (continued): ECG and synthetic boards.
   BeatDiff / Cycle-GAN are author OOD wrap probes on ECG only.}
@@ -61,7 +61,6 @@ Artifacts:
     \bottomrule
   \end{tabular}
 \end{table}
-\FloatBarrier
 
 \paragraph{Takeaways.}
 Under $R_{\mathrm{blend}}$, Ours leads every classical-board column in Tables~\ref{tab:transfer-main}--\ref{tab:transfer-main-b},
@@ -80,9 +79,9 @@ Figure~\ref{fig:signal-heal-transfer-main} summarizes the same boards as grouped
 Latency timings in Appendix~\ref{app:supplement} remain wavetable-checkpoint zero-shot.
 Primary claim remains cycle-local wavetable seam restoration.
 
-\begin{figure}[htbp]
+\begin{figure}[t]
   \centering
-  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/fig_signal_heal_transfer.png}
+  \includegraphics[width=\columnwidth]{figures/fig_signal_heal_transfer.png}
   \caption{Grouped bars for Tables~\ref{tab:transfer-main}--\ref{tab:transfer-main-b}: $R_{\mathrm{blend}}$ by board and method
     (higher better). Core rows (Ours, SeamN2N, no-bake, endpoint-pin, \texttt{seam\_fir3}, DualCosine)
     appear on all seven boards. Hatched bars are author OOD wrap probes on ECG (BeatDiff, Cycle-GAN)
@@ -91,8 +90,6 @@ Primary claim remains cycle-local wavetable seam restoration.
     Missing cells are omitted rather than zero-filled.}
   \label{fig:signal-heal-transfer-main}
 \end{figure}
-\FloatBarrier
-\clearpage
 
 \subsection{Listening protocol (no formal listening study)}
 \label{sec:listening-protocol}

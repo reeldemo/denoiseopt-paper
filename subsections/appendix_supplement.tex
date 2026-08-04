@@ -2,9 +2,52 @@
 \label{app:supplement}
 
 Material moved here for the conference-length reading path:
-multi-family / cliff boards, matched outer-loop bake-off, branch/compute freezes,
-hyperparameter probe, transfer latency / status notes, and search-monitor plots.
+vibrato / hear / diversity panels, multi-family / cliff boards, matched outer-loop bake-off,
+branch/compute freezes, hyperparameter probe, transfer latency / status notes, and search-monitor plots.
 Primary claims remain in Sections~\ref{sec:results}--\ref{sec:transfer-main}.
+
+\subsection{Vibrato, hear-sample, and diversity panels}
+\label{sec:app-listening-figs}
+
+Figures~\ref{fig:vibrato-spectrogram}--\ref{fig:wt-diversity-gallery} support
+Sections~\ref{sec:vibrato-eval}--\ref{sec:wt-gallery}.
+They are large multi-panel artifacts, so they sit here rather than opening empty main-text columns.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/fig_vibrato_spectrogram.png}
+  \caption{Slow-vibrato spectrogram eval on a high-wrap holdout tile (seed~\texttt{20260719}).
+    (a--c)~Magnitude spectrograms for no-bake, DualCosine, and Ours.
+    (d--e)~Spectrogram differences vs no-bake.
+    (f)~Short waveform excerpt.
+    (g)~Absolute $R$: cycle-local prolonged residual, modulated-playback residual on the same tile, and mean modulated $R$ over top-wrap tiles.
+    Accessibility: Okabe--Ito hues. Difference maps use diverging coolwarm.
+    Formal human A/B scores are out of scope.}
+  \label{fig:vibrato-spectrogram}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/fig_hear_samples_panel.png}
+  \caption{Hear-sample panel from the online WAV pack
+    (\href{https://github.com/reeldemo/reelsynth/tree/main/brand/artifacts/meta_approach_compare/hear_samples}{hear-sample WAVs},
+    five holdout tiles, no-bake / DualCosine / Ours).
+    Waveforms show the first $\approx 25$\,ms of each clip. $R$ annotations are cycle-local prolonged residuals vs the ideal sibling.
+    Not a formal listening study.}
+  \label{fig:hear-samples-panel}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/fig_wt_diversity_gallery.png}
+  \caption{Compact wavetable diversity gallery from existing exports
+    (one mid-morph dry frame per unique ReelSynth factory bank, top, and matched AKWF CC0 cycles, bottom).
+    No new NAS for this panel. Quantitative wrap scores: Table~\ref{tab:real-wt}.}
+  \label{fig:wt-diversity-gallery}
+\end{figure}
+\FloatBarrier
 
 \subsection{Multi-family ranking plots}
 \label{sec:app-sota-plots}
