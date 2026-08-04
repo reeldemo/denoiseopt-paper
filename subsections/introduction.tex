@@ -51,9 +51,9 @@ Keep these distinct (Figure~\ref{fig:intro-sine} and Section~\ref{sec:four-roles
 Corrupt-to-corrupt \textbf{Noise2Noise} is a fifth comparator: the primary neural gate under the locked $R_{\mathrm{blend}}$ protocol (Section~\ref{sec:n2n-vs-ours-boards}).
 It is not shown in Figure~\ref{fig:intro-sine}, which illustrates roles on one hard sine-wrap tile.
 
-\begin{figure*}[t]
+\begin{figure}[t]
   \centering
-  \includegraphics[width=0.95\textwidth]{figures/fig_intro_sine_problem.png}
+  \includegraphics[width=\columnwidth]{figures/fig_intro_sine_problem.png}
   \caption{Hard sine-wrap holdout tile (seed~\texttt{20260719}).
   (a)~Ideal sibling $r^{\star}$.
   (b)~No-bake cracked engine.
@@ -62,7 +62,7 @@ It is not shown in Figure~\ref{fig:intro-sine}, which illustrates roles on one h
   (e)--(f)~Residual and seam zoom.
   Accompanying JSON scores use locked $R_{\mathrm{blend}}$ ($\alpha{=}0.7$; tile~46: no-bake $0.897$, Dual Cosine $0.300$, Ours $0.989$; Table~\ref{tab:n2n-vs-ours}).}
   \label{fig:intro-sine}
-\end{figure*}
+\end{figure}
 
 Classical virtual-analog tools already address wrap energy locally
 (BLIT/BLEP~\cite{stilson1996}, PolyBLEP~\cite{nam2009polyblep}, BLAMP~\cite{esqueda2016blamp}).

@@ -102,7 +102,7 @@ def plot_learning_curves(out_dir: Path) -> dict:
     dc_v14 = float(v14[0].get("baseline_dual_cosine", 0.504))
     n2n_v14 = float(v14[0].get("n2n_gate_r", n2n))
 
-    fig, axes = plt.subplots(2, 1, figsize=(7.0, 5.0), constrained_layout=True)
+    fig, axes = plt.subplots(2, 1, figsize=(3.35, 4.6), constrained_layout=True)
 
     ax = axes[0]
     ax.plot(vx, vr, color=C_RAW, lw=1.8, label=r"Champ $R_{\mathrm{blend}}$")

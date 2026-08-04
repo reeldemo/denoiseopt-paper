@@ -18,47 +18,63 @@ These rows do \emph{not} transfer an audio-trained bake as fault/ECG diagnosis S
 Artifacts:
 \href{https://github.com/reeldemo/reelsynth/tree/main/brand/artifacts/signal_heal_transfer}{signal\_heal\_transfer}.
 
-\begin{table*}[htbp]
+\begin{table}[t]
   \centering
-  \caption{Wrap-heal transfer under locked $R_{\mathrm{blend}}$ (higher better; wrap-protocol stress test, not domain SOTA).
-    DenoiseOpt: \texttt{hybrid\_lstm} per domain (seed \texttt{1902771841}).
-    Boards: CWRU/MFPT/Paderborn K001 bearing revolutions, MIT-BIH/PTB-XL ECG beats, synthetic CNC/PMU pilots
-    ($n{=}256$ periods each). SeamN2N: corrupt$\to$corrupt holdout ($4000$ steps, seed \texttt{424242}).
-    Cycle-GAN / BeatDiff: author weights, OOD wrap probe on ECG only (--- elsewhere).}
+  \caption{Wrap-heal transfer under locked $R_{\mathrm{blend}}$ (higher better; wrap-protocol stress test).
+  Bearing boards ($n{=}256$ each). DenoiseOpt: \texttt{hybrid\_lstm}, seed \texttt{1902771841}.}
   \label{tab:transfer-main}
-  \setlength{\tabcolsep}{2.2pt}
-  \begin{adjustbox}{max width=\textwidth}
-\begin{tabular}{@{}lrrrrrrr@{}}
+  \setlength{\tabcolsep}{3pt}
+  \footnotesize
+  \begin{tabular}{@{}lccc@{}}
     \toprule
-    Method & CWRU & MFPT & Paderborn & MIT-BIH & PTB-XL & synth CNC & synth PMU \\
+    Method & CWRU & MFPT & Paderborn \\
     \midrule
-    Ours (\texttt{hybrid\_lstm}) & 0.9596 & 0.9427 & 0.9369 & 0.9747 & 0.9451 & 0.9914 & 0.9919 \\
-    SeamN2N (ours, N2N-style) & 0.8660 & 0.8662 & 0.8421 & 0.7495 & 0.7537 & 0.5534 & 0.9589 \\
-    no-bake & 0.8451 & 0.8657 & 0.8376 & 0.7495 & 0.7617 & 0.4499 & 0.9356 \\
-    endpoint-pin & 0.5054 & 0.5446 & 0.5670 & 0.8650 & 0.8696 & 0.4096 & 0.9442 \\
-    \texttt{seam\_fir3} & 0.4483 & 0.5726 & 0.5601 & 0.7662 & 0.7604 & 0.5344 & 0.9119 \\
-    DualCosine & 0.4608 & 0.4830 & 0.4710 & 0.4137 & 0.5118 & 0.4943 & 0.8272 \\
-    BeatDiff (author, OOD)$^\ddagger$ & --- & --- & --- & 0.4907 & 0.4933 & --- & --- \\
-    Cycle-GAN (author, OOD) & --- & --- & --- & 0.1063 & 0.2105 & --- & --- \\
-    Al~Firdausi backbone (wrap bake)$^\dagger$ & --- & --- & 0.8415 & --- & --- & --- & --- \\
+    Ours & 0.960 & 0.943 & 0.937 \\
+    SeamN2N & 0.866 & 0.866 & 0.842 \\
+    no-bake & 0.845 & 0.866 & 0.838 \\
+    endpoint-pin & 0.505 & 0.545 & 0.567 \\
+    \texttt{seam\_fir3} & 0.448 & 0.573 & 0.560 \\
+    DualCosine & 0.461 & 0.483 & 0.471 \\
     \bottomrule
   \end{tabular}
-\end{adjustbox}\\[0.35em]
-  {\footnotesize $^\dagger$Architecture-reuse residual bake on author CNN\_1D\_2L conv blocks (not the published fault classifier, Paderborn only).
-    $^\ddagger$Drive Orbax prior (step $9360$), one-step denoise at $\sigma{=}0.5$ after mono$\to$9-lead tile. Not Bedin native metrics.}
-\end{table*}
+\end{table}
 
-\begin{figure*}[t]
+\begin{table}[t]
   \centering
-  \includegraphics[width=0.95\textwidth]{figures/fig_signal_heal_transfer.png}
-  \caption{Grouped bars for Table~\ref{tab:transfer-main}: $R_{\mathrm{blend}}$ by board and method
+  \caption{Wrap-heal transfer under locked $R_{\mathrm{blend}}$ (continued): ECG and synthetic boards.
+  BeatDiff / Cycle-GAN are author OOD wrap probes on ECG only.}
+  \label{tab:transfer-main-b}
+  \setlength{\tabcolsep}{2.5pt}
+  \footnotesize
+  \begin{tabular}{@{}lcccc@{}}
+    \toprule
+    Method & MIT-BIH & PTB-XL & CNC & PMU \\
+    \midrule
+    Ours & 0.975 & 0.945 & 0.991 & 0.992 \\
+    SeamN2N & 0.750 & 0.754 & 0.553 & 0.959 \\
+    no-bake & 0.750 & 0.762 & 0.450 & 0.936 \\
+    endpoint-pin & 0.865 & 0.870 & 0.410 & 0.944 \\
+    \texttt{seam\_fir3} & 0.766 & 0.760 & 0.534 & 0.912 \\
+    DualCosine & 0.414 & 0.512 & 0.494 & 0.827 \\
+    BeatDiff (OOD) & 0.491 & 0.493 & --- & --- \\
+    Cycle-GAN (OOD) & 0.106 & 0.211 & --- & --- \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/fig_signal_heal_transfer.png}
+  \caption{Grouped bars for Tables~\ref{tab:transfer-main}--\ref{tab:transfer-main-b}: $R_{\mathrm{blend}}$ by board and method
     (higher better). Core rows (Ours, SeamN2N, no-bake, endpoint-pin, \texttt{seam\_fir3}, DualCosine)
     appear on all seven boards. Hatched bars are author OOD wrap probes on ECG (BeatDiff, Cycle-GAN)
     and the Paderborn Al~Firdausi architecture-reuse wrap bake
     (not the published fault classifier, see Table~\ref{tab:transfer-sota-status}).
     Missing cells are omitted rather than zero-filled.}
   \label{fig:signal-heal-transfer-main}
-\end{figure*}
+\end{figure}
 
 \begin{table}[htbp]
   \centering
@@ -95,7 +111,7 @@ Artifacts:
 \end{table}
 
 \paragraph{Takeaways.}
-Under $R_{\mathrm{blend}}$, Ours leads every classical-board column in Table~\ref{tab:transfer-main},
+Under $R_{\mathrm{blend}}$, Ours leads every classical-board column in Tables~\ref{tab:transfer-main}--\ref{tab:transfer-main-b},
 including Dual Cosine and SeamN2N on every domain.
 SeamN2N beats Dual Cosine everywhere and sits near no-bake on several bearing / ECG columns, but trails Ours
 on ECG and synth CNC.

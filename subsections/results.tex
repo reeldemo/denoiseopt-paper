@@ -175,30 +175,26 @@ Larger batches help both methods, but Noise2Noise stays faster.
 This matches the parameter gap (${\approx}121$k vs ${\approx}53.5$k) and the $J$ latency term in~\eqref{eq:outer-obj}.
 Artifacts: \texttt{v13\_ours\_vs\_n2n\_latency/latency\_compare.json}.
 
-\begin{table}[htbp]
+\begin{table}[t]
   \centering
-  \caption{Inference latency: Ours (hybrid favorite) vs Noise2Noise on CUDA
-    (warmup 8, timed 30 synchronized forwards).
-    Ratio $=$ Ours/N2N ms per batch.}
+  \caption{Inference latency: Ours vs Noise2Noise on CUDA (warmup 8, timed 30).
+    Ratio $=$ Ours/N2N ms/batch.}
   \label{tab:ours-n2n-latency}
-  \footnotesize
   \setlength{\tabcolsep}{3pt}
-  \begin{adjustbox}{max width=\columnwidth}
-\begin{tabular}{@{}lrrrr@{}}
+  \scriptsize
+  \begin{tabular}{@{}lrrr@{}}
     \toprule
-    Board / batch & Ours ms & N2N ms & Ratio & Ours ms/samp \\
+    Board / batch & Ours & N2N & Ratio \\
     \midrule
-    Holdout ($B64$) & 8.20 & 1.12 & $7.36\times$ & 0.128 \\
-    Multi-family mean ($B64$) & $7.50{\pm}0.56$ & $1.06{\pm}0.07$ & $7.12\times$ & 0.117 \\
-    Factory+FX ($B64$) & 7.31 & 1.06 & $6.91\times$ & 0.114 \\
-    AKWF ($B64$) & 7.50 & 1.11 & $6.74\times$ & 0.117 \\
-    \midrule
-    Holdout ($B1$) & 8.52 & 1.30 & $6.56\times$ & 8.52 \\
-    Holdout ($B8$) & 7.71 & 1.07 & $7.21\times$ & 0.964 \\
-    Holdout ($B256$) & 7.62 & 1.52 & $5.03\times$ & 0.030 \\
+    Holdout ($B64$) & 8.20 & 1.12 & $7.4\times$ \\
+    Multi-family ($B64$) & $7.50{\pm}0.56$ & $1.06{\pm}0.07$ & $7.1\times$ \\
+    Factory+FX ($B64$) & 7.31 & 1.06 & $6.9\times$ \\
+    AKWF ($B64$) & 7.50 & 1.11 & $6.7\times$ \\
+    Holdout ($B1$) & 8.52 & 1.30 & $6.6\times$ \\
+    Holdout ($B8$) & 7.71 & 1.07 & $7.2\times$ \\
+    Holdout ($B256$) & 7.62 & 1.52 & $5.0\times$ \\
     \bottomrule
   \end{tabular}
-\end{adjustbox}
 \end{table}
 
 \subsection{Search efficiency (learning curves)}
@@ -214,35 +210,33 @@ the same outer loop continues until residual plateau and clears the Noise2Noise 
 The matched multi-seed $R_{\mathrm{blend}}$ bake-off is in Table~\ref{tab:meta-approaches}.
 Live hybrid champions stay compact (${\approx}24$k$\pm$2k params across short-FitCell seeds), while mid-search graphs can swing from ${\approx}15$k to ${\approx}370$k.
 
-\begin{figure*}[t]
+\begin{figure}[t]
   \centering
-  \includegraphics[width=\textwidth]{figures/fig_search_learning_curve.png}
+  \includegraphics[width=\columnwidth]{figures/fig_search_learning_curve.png}
   \caption{Hybrid search learning curves under $R_{\mathrm{blend}}$ (seed \texttt{1902771841}).
     Top: short FitCell ($1{,}200$ evaluations; champ.\ ${\approx}0.9695$).
     Bottom: FitCell-to-plateau ($750$ evaluations; champ.\ ${\approx}0.9912$).}
   \label{fig:search-learning-curve}
-\end{figure*}
+\end{figure}
 
-\begin{table}[htbp]
+\begin{table}[t]
   \centering
   \caption{Ours vs Noise2Noise and Dual Cosine under $R_{\mathrm{blend}}$ ($\alpha{=}0.7$).
-    Holdout and multi-family rows: mean$\pm$std over five evaluation seeds (\texttt{20260719}--\texttt{20260723}).
-    Factory+FX / AKWF remain single-corpus freezes. $\Delta$ columns are Ours minus that baseline.}
+    Holdout / multi-family: mean$\pm$std over five seeds (\texttt{20260719}--\texttt{20260723}).
+    $\Delta$ $=$ Ours $-$ baseline.}
   \label{tab:n2n-vs-ours}
-  \footnotesize
-  \setlength{\tabcolsep}{2pt}
-  \begin{adjustbox}{max width=\columnwidth}
-\begin{tabular}{@{}lrrrrrc@{}}
+  \setlength{\tabcolsep}{2.5pt}
+  \scriptsize
+  \begin{tabular}{@{}lrrrrr@{}}
     \toprule
-    Board & Ours & N2N & DualCosine & $\Delta_{\mathrm{N2N}}$ & $\Delta_{\mathrm{DC}}$ & Gate \\
+    Board & Ours & N2N & DualCos. & $\Delta_{\mathrm{N2N}}$ & $\Delta_{\mathrm{DC}}$ \\
     \midrule
-    Holdout & $0.971{\pm}0.001$ & $0.977{\pm}0.001$ & $0.542{\pm}0.038$ & $-0.006$ & $+0.429$ & $0/5$ \\
-    Multi-family (mean) & $0.934{\pm}0.003$ & $0.931{\pm}0.005$ & --- & $+0.003$ & --- & $0.47$ \\
-    Factory+FX & 0.6990 & 0.7714 & 0.5887 & $-0.0724$ & $+0.1104$ & no \\
-    AKWF OA & 0.6794 & 0.7305 & 0.4244 & $-0.0511$ & $+0.2551$ & no \\
+    Holdout & $0.971{\pm}0.001$ & $0.977{\pm}0.001$ & $0.542{\pm}0.038$ & $-0.006$ & $+0.429$ \\
+    Multi-family & $0.934{\pm}0.003$ & $0.931{\pm}0.005$ & --- & $+0.003$ & --- \\
+    Factory+FX & 0.699 & 0.771 & 0.589 & $-0.072$ & $+0.110$ \\
+    AKWF OA & 0.679 & 0.731 & 0.424 & $-0.051$ & $+0.255$ \\
     \bottomrule
   \end{tabular}
-\end{adjustbox}
 \end{table}
 
 \paragraph{Superseded whole-curve freezes.}
@@ -488,33 +482,31 @@ We score these classical tools, not only cite them: they beat DualCosine on mean
   \label{fig:va-seam-techniques}
 \end{figure}
 
-\begin{table*}[htbp]
+\begin{table}[t]
   \centering
   \caption{Classical VA seam repairs under $R_{\mathrm{blend}}$ ($\alpha{=}0.7$; seed \texttt{20260719}).
-  Canonical holdout: $R_{\mathrm{blend}}$, SNR/SDR, wrap-jump, edge RMSE.
-  Cliff top-10\%: $R_{\mathrm{blend}}$ ($n{=}410$).
-  Multi: mean $R_{\mathrm{blend}}$ over 20 generative waveforms.}
+  Holdout $R_{\mathrm{blend}}$, seam-local edge RMSE, cliff top-10\% $R_{\mathrm{blend}}$, multi-family mean.}
   \label{tab:va-seam-blep}
-  \setlength{\tabcolsep}{2.5pt}
-  \begin{adjustbox}{max width=\textwidth}
-\begin{tabular}{@{}lrrrrrrr@{}}
+  \setlength{\tabcolsep}{3pt}
+  \footnotesize
+  \begin{tabular}{@{}lcccc@{}}
     \toprule
-    Method & $R_{\mathrm{blend}}$ & SNR & SDR & jump & edge & top10 $R_{\mathrm{blend}}$ & multi $R_{\mathrm{blend}}$ \\
+    Method & $R$ & edge & top10 & multi \\
     \midrule
-    BLAMP & 0.9142 & 32.6 & 32.7 & 0.873 & 0.080 & 0.9219 & 0.893 \\
-    no-bake & 0.9142 & 32.6 & 32.7 & 0.873 & 0.080 & 0.9220 & 0.893 \\
-    \texttt{seam\_fir3} & 0.8842 & 29.6 & 29.6 & 0.438 & 0.112 & 0.8693 & 0.868 \\
-    PolyBLEP & 0.7949 & 25.9 & 25.8 & 0.102 & 0.205 & 0.6895 & 0.784 \\
-    BLIT/BLEP & 0.6324 & 20.4 & 20.3 & 0.004 & 0.365 & 0.3510 & 0.612 \\
-    DualCosine & 0.5409 & 18.0 & 17.8 & 0.292 & 0.506 & 0.3049 & 0.514 \\
+    BLAMP & 0.914 & 0.080 & 0.922 & 0.893 \\
+    no-bake & 0.914 & 0.080 & 0.922 & 0.893 \\
+    \texttt{seam\_fir3} & 0.884 & 0.112 & 0.869 & 0.868 \\
+    PolyBLEP & 0.795 & 0.205 & 0.690 & 0.784 \\
+    BLIT/BLEP & 0.632 & 0.365 & 0.351 & 0.612 \\
+    DualCosine & 0.541 & 0.506 & 0.305 & 0.514 \\
     \bottomrule
-  \end{tabular}
-\end{adjustbox}
+  \end{tabular}\\[0.35em]
+  {\footnotesize Latency (CUDA): PolyBLEP ${\approx}0.87$\,ms/batch, DualCosine ${\approx}1.46$, BLIT/BLEP ${\approx}71$, BLAMP ${\approx}20$.}
+\end{table}
 
-  \vspace{0.5em}
-  {\footnotesize Latency (canonical, CUDA): PolyBLEP $\approx 0.87$\,ms/batch, DualCosine $\approx 1.46$, BLIT/BLEP $\approx 71$, BLAMP $\approx 20$. Frozen in the \href{https://github.com/reeldemo/denoise-opt-meta/blob/master/paper/Unsupervised_Wrap-Discontinuity_Repair_in_Wavetable_Synthesis_via_Hybrid_GA-PPO_Meta-Search_v12/figures/va_seam_blep.json}{VA results}.}
-  \vspace{1.0em}
-\end{table*}
+
+
+
 
 \subsection{When search helps vs classical methods}
 \label{sec:transfer}
@@ -555,34 +547,5 @@ The primary SOTA claim remains the Python multi-family matrix.
 \end{adjustbox}
 \end{table}
 
-
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.85\columnwidth]{figures/fig_inference_vs_residual.png}
-  \caption{High-$R$ fitted operators: residual vs CUDA latency. Star: favorite.}
-  \label{fig:inference-pareto}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.85\columnwidth]{figures/fig_inference_latency_bars.png}
-  \caption{Inference latency for high-$R$ fitted models (CUDA, batch 64).}
-  \label{fig:inference-bars}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.85\columnwidth]{figures/fig_classical_vs_ai_scatter.png}
-  \caption{Canonical holdout: classical methods and favorite in the $R$ vs ms/batch plane.}
-  \label{fig:classical-vs-ai-scatter}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.85\columnwidth]{figures/fig_classical_vs_ai_bars.png}
-  \caption{Canonical holdout ranking on $R_{\mathrm{blend}}$ (left) and latency (right).}
-  \label{fig:classical-vs-ai-bars}
-\end{figure}
-
+% Inference / classical diagnostic plots moved to Appendix~\ref{app:supplement}.
 

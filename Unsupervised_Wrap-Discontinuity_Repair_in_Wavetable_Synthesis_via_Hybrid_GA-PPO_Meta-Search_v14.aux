@@ -1,0 +1,398 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\providecommand \oddpage@label [2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:introduction}{{1}{1}{Introduction}{section.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Wavetable synthesis in brief.}{1}{section*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Terminology.}{1}{section*.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Wavetable synthesis primer. (a)~One stored period $x[0..L{-}1]$ ($L{=}256$). (b)~The same period tiled for continuous playback. Dashed lines mark read-pointer wraps. (c)~Zoom at a mismatched wrap join (seam), where the endpoint cliff produces an audible click.}}{1}{figure.1}\protected@file@percent }
+\newlabel{fig:wavetable-primer}{{1}{1}{Wavetable synthesis primer. (a)~One stored period $x[0..L{-}1]$ ($L{=}256$). (b)~The same period tiled for continuous playback. Dashed lines mark read-pointer wraps. (c)~Zoom at a mismatched wrap join (seam), where the endpoint cliff produces an audible click}{figure.1}{}}
+\citation{stilson1996}
+\citation{nam2009polyblep}
+\citation{esqueda2016blamp}
+\citation{lehtinen2018,kashyap2021n2n}
+\citation{elsken2019,real2019,jaderberg2017,schulman2017,khadka2018}
+\citation{elsken2019,real2019,jaderberg2017,schulman2017}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Hard sine-wrap holdout tile (seed~\texttt  {20260719}). (a)~Ideal sibling $r^{\star }$. (b)~No-bake cracked engine. (c)~Dual Cosine fade. (d)~Ours (searched bake). (e)--(f)~Residual and seam zoom. Accompanying JSON scores use locked $R_{\mathrm  {blend}}$ ($\alpha {=}0.7$; tile~46: no-bake $0.897$, Dual Cosine $0.300$, Ours $0.989$; Table~\ref {tab:n2n-vs-ours}).}}{2}{figure.2}\protected@file@percent }
+\newlabel{fig:intro-sine}{{2}{2}{Hard sine-wrap holdout tile (seed~\texttt {20260719}). (a)~Ideal sibling $r^{\star }$. (b)~No-bake cracked engine. (c)~Dual Cosine fade. (d)~Ours (searched bake). (e)--(f)~Residual and seam zoom. Accompanying JSON scores use locked $R_{\mathrm {blend}}$ ($\alpha {=}0.7$; tile~46: no-bake $0.897$, Dual Cosine $0.300$, Ours $0.989$; Table~\ref {tab:n2n-vs-ours})}{figure.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Unsupervised, as used here.}{2}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Four roles.}{2}{section*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Key findings.}{2}{section*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Transfer datasets.}{2}{section*.6}\protected@file@percent }
+\citation{stilson1996}
+\citation{nam2009polyblep}
+\citation{esqueda2016blamp}
+\citation{engel2020}
+\citation{lehtinen2018,kashyap2021n2n}
+\citation{wisdom2020}
+\citation{dfossez2019,kong2021}
+\citation{stoller2018,luo2019,luo2020dprnn,subakan2021,ronneberger2015,he2016resnet,vaswani2017}
+\citation{elsken2019,zoph2017nas,pham2018,liu2018pnas,tan2019mnasnet,real2019,jaderberg2017,hansen2016cmaes,khadka2018,schulman2017}
+\citation{shazeer2017}
+\citation{stilson1996,esqueda2016blamp,nam2009polyblep}
+\citation{lehtinen2018,kashyap2021n2n,wisdom2020}
+\citation{engel2020}
+\citation{finn2017}
+\citation{liu2019}
+\citation{dfossez2019,dfossez2021}
+\citation{kong2021}
+\citation{pascual2017}
+\@writefile{toc}{\contentsline {paragraph}{Scope.}{3}{section*.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Contributions}{3}{subsection.1.1}\protected@file@percent }
+\newlabel{sec:contributions}{{1.1}{3}{Contributions}{subsection.1.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{3}{section.2}\protected@file@percent }
+\newlabel{sec:related_work}{{2}{3}{Related Work}{section.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Wavetable / virtual-analog foundations and discontinuity control.}{3}{section*.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Label-free restoration.}{3}{section*.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Compact waveform operators.}{3}{section*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Search and hybrids.}{3}{section*.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Used vs screened (short).}{3}{section*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Methods}{3}{section.3}\protected@file@percent }
+\newlabel{sec:methods}{{3}{3}{Methods}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Notation}{3}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:notation}{{3.1}{3}{Notation}{subsection.3.1}{}}
+\newlabel{eq:Theta}{{1}{3}{Notation}{equation.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Problem setup: cracked period and ideal sibling}{3}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:ideal-tile}{{3.2}{3}{Problem setup: cracked period and ideal sibling}{subsection.3.2}{}}
+\citation{lehtinen2018,kashyap2021n2n}
+\citation{lehtinen2018,kashyap2021n2n}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Core symbols used in Methods.}}{4}{table.1}\protected@file@percent }
+\newlabel{tab:symbols}{{1}{4}{Core symbols used in Methods}{table.1}{}}
+\newlabel{eq:G-siblings}{{2}{4}{Problem setup: cracked period and ideal sibling}{equation.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Blended residual score and latency-aware objective}{4}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:residual-score}{{3.3}{4}{Blended residual score and latency-aware objective}{subsection.3.3}{}}
+\newlabel{eq:R-component}{{3}{4}{Blended residual score and latency-aware objective}{equation.3}{}}
+\newlabel{eq:R-blend}{{4}{4}{Blended residual score and latency-aware objective}{equation.4}{}}
+\newlabel{eq:outer-obj}{{5}{4}{Blended residual score and latency-aware objective}{equation.5}{}}
+\newlabel{rem:n2n}{{1}{4}{Noise2Noise primary baseline}{remark.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Seam bake operator and classical baselines}{4}{subsection.3.4}\protected@file@percent }
+\newlabel{sec:bake}{{3.4}{4}{Seam bake operator and classical baselines}{subsection.3.4}{}}
+\newlabel{sec:four-roles}{{3.4}{4}{Four roles (keep separate)}{section*.13}{}}
+\@writefile{toc}{\contentsline {paragraph}{Four roles (keep separate).}{4}{section*.13}\protected@file@percent }
+\newlabel{sec:classical-board}{{3.4}{5}{Classical (non-AI) comparison board}{section*.14}{}}
+\@writefile{toc}{\contentsline {paragraph}{Classical (non-AI) comparison board.}{5}{section*.14}\protected@file@percent }
+\newlabel{rem:dualcosine-centering}{{2}{5}{DualCosine centering is PPO advantage only}{remark.2}{}}
+\newlabel{eq:dualcosine-centering}{{6}{5}{DualCosine centering is PPO advantage only}{equation.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Search pipeline}{5}{subsection.3.5}\protected@file@percent }
+\newlabel{sec:pipeline-overview}{{3.5}{5}{Search pipeline}{subsection.3.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Main-text algorithm summary (before appendix listings).}{5}{section*.15}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces DenoiseOpt overview (before component deep-dives). Same-seed generator $G$ yields ideal sibling $r^{\star }$ (cliff off) and cracked engine $x$ (cliff on). Repair operator $\Theta (x;h)$ may include DualCosine/FIR and optional residual/MoE experts. No-bake is the identity control $x\DOTSB \mapstochar \rightarrow x$. Outer objective is maximize absolute prolonged $R(y,r^{\star })$. DualCosine centering (not shown) is PPO advantage shaping only. Dashed feedback: architecture proposals update the operator. Pseudocode in Appendix~\ref {app:algorithms}.}}{5}{figure.3}\protected@file@percent }
+\newlabel{fig:denoiseopt-arch}{{3}{5}{DenoiseOpt overview (before component deep-dives). Same-seed generator $G$ yields ideal sibling $r^{\star }$ (cliff off) and cracked engine $x$ (cliff on). Repair operator $\Theta (x;h)$ may include DualCosine/FIR and optional residual/MoE experts. No-bake is the identity control $x\mapsto x$. Outer objective is maximize absolute prolonged $R(y,r^{\star })$. DualCosine centering (not shown) is PPO advantage shaping only. Dashed feedback: architecture proposals update the operator. Pseudocode in Appendix~\protect \ref {app:algorithms}}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Search space and inner fit}{5}{subsection.3.6}\protected@file@percent }
+\newlabel{sec:search-space}{{3.6}{5}{Search space and inner fit}{subsection.3.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Hybrid outer loop}{5}{subsection.3.7}\protected@file@percent }
+\newlabel{sec:hybrid}{{3.7}{5}{Hybrid outer loop}{subsection.3.7}{}}
+\newlabel{sec:reward-shaping}{{3.7}{5}{Near-ceiling scores need reward shaping}{section*.16}{}}
+\@writefile{toc}{\contentsline {paragraph}{Near-ceiling scores need reward shaping.}{5}{section*.16}\protected@file@percent }
+\citation{hansen2016cmaes}
+\citation{schulman2017,zoph2017nas}
+\citation{real2017large,real2019}
+\citation{snoek2012}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.8}Meta-learning approach comparison}{6}{subsection.3.8}\protected@file@percent }
+\newlabel{sec:meta-compare}{{3.8}{6}{Meta-learning approach comparison}{subsection.3.8}{}}
+\newlabel{rem:complexity}{{3}{6}{Trial complexity}{remark.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.9}Hyperparameters}{6}{subsection.3.9}\protected@file@percent }
+\newlabel{sec:hyperparams}{{3.9}{6}{Hyperparameters}{subsection.3.9}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Hybrid search hyperparameters (RTX~3090 DenoiseOpt CUDA search-runner defaults). Co-tuned with reward shaping under near-ceiling $R$ (Section~\ref {sec:reward-shaping}).}}{6}{table.2}\protected@file@percent }
+\newlabel{tab:hyperparams}{{2}{6}{Hybrid search hyperparameters (RTX~3090 DenoiseOpt CUDA search-runner defaults). Co-tuned with reward shaping under near-ceiling $R$ (Section~\ref {sec:reward-shaping})}{table.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{6}{section.4}\protected@file@percent }
+\newlabel{sec:experiments}{{4}{6}{Experiments}{section.4}{}}
+\newlabel{sec:eval-protocol}{{4}{6}{Evaluation protocol (locked)}{section*.17}{}}
+\@writefile{toc}{\contentsline {paragraph}{Evaluation protocol (locked).}{6}{section*.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Which numbers are multi-seed.}{6}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Statistical reporting (what we compute).}{7}{section*.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Experimental setup (datasets, compute).}{7}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Dataset}{7}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:dataset}{{4.1}{7}{Dataset}{subsection.4.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Creation.}{7}{section*.21}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Multi-family diversity ($\ge 20$ waveforms).}{7}{section*.22}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Dataset statistics.}{7}{section*.23}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Dataset statistics (evaluation boards). $L{=}256$ unless noted. Hours are raw source duration on disk where measurable, not tiled period count. Plot~4 compares ${\approx }1{,}280$-height boards only (multi-family / Factory+FX / AKWF / transfer).}}{8}{table.3}\protected@file@percent }
+\newlabel{tab:dataset-stats}{{3}{8}{Dataset statistics (evaluation boards). $L{=}256$ unless noted. Hours are raw source duration on disk where measurable, not tiled period count. Plot~4 compares ${\approx }1{,}280$-height boards only (multi-family / Factory+FX / AKWF / transfer)}{table.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Corpus sizes across evaluation boards (cycles or periods). Holdout metrics draw, matched score batch, multi-family SOTA, factory/AKWF wavetable-native sets, and summed transfer periods.}}{8}{figure.4}\protected@file@percent }
+\newlabel{fig:dataset-size}{{4}{8}{Corpus sizes across evaluation boards (cycles or periods). Holdout metrics draw, matched score batch, multi-family SOTA, factory/AKWF wavetable-native sets, and summed transfer periods}{figure.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Dataset metrics.}{8}{section*.24}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Sci/eng transfer domain sizes: tiled eval periods at $L{=}256$ (with source $f_s$ where applicable).}}{8}{figure.5}\protected@file@percent }
+\newlabel{fig:dataset-transfer-sizes}{{5}{8}{Sci/eng transfer domain sizes: tiled eval periods at $L{=}256$ (with source $f_s$ where applicable)}{figure.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Holdout distribution statistics (seed \texttt  {20260719}, $n{=}4{,}096$ cycles). Distinguish: ideal sibling $r^{\star }$ (cliff withheld), no-bake $=$ unrepaired cracked engine (not $r^{\star }$), and DualCosine $=$ one classical bake. Top left: ideal RMS per cycle. Top right: engine residual RMS before any bake. Bottom left: wrap jump magnitude $|x_0-x_{L-1}|$ (cliff hardness proxy). Bottom right: no-bake prolonged $R$ (passthrough, $x\DOTSB \mapstochar \rightarrow x$). Dashed and dotted vertical lines mark mean and median. Hard-cliff reporting (Section~\ref {sec:results}) uses the top 10\% wrap-jump stratum where no-bake $R$ drops.}}{8}{figure.6}\protected@file@percent }
+\newlabel{fig:dataset-distributions}{{6}{8}{Holdout distribution statistics (seed \texttt {20260719}, $n{=}4{,}096$ cycles). Distinguish: ideal sibling $r^{\star }$ (cliff withheld), no-bake $=$ unrepaired cracked engine (not $r^{\star }$), and DualCosine $=$ one classical bake. Top left: ideal RMS per cycle. Top right: engine residual RMS before any bake. Bottom left: wrap jump magnitude $|x_0-x_{L-1}|$ (cliff hardness proxy). Bottom right: no-bake prolonged $R$ (passthrough, $x\mapsto x$). Dashed and dotted vertical lines mark mean and median. Hard-cliff reporting (Section~\ref {sec:results}) uses the top 10\% wrap-jump stratum where no-bake $R$ drops}{figure.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Hybrid search campaign (5,000-iteration freeze).}{8}{section*.25}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Inference, classical, and learned baselines.}{9}{section*.26}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Cliff strata and wavetable-native realism.}{9}{section*.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Audible demos and vibrato spectrograms.}{9}{section*.28}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Cross-domain wrap transfer protocol}{9}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:transfer-protocol}{{4.2}{9}{Cross-domain wrap transfer protocol}{subsection.4.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Shared transfer recipe.}{9}{section*.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Seam analogy by domain family.}{9}{section*.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{What each dataset is (pointers).}{9}{section*.31}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Scope note.}{9}{section*.32}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Holdout wrap-seam heal for the FitCell-to-plateau hybrid champion ($R_{\mathrm  {blend}}{\approx }0.9912$, seed \texttt  {1902771841}) vs no-bake, Dual Cosine, and ideal sibling $r^{\star }$.}}{10}{figure.7}\protected@file@percent }
+\newlabel{fig:meta-heal-samples}{{7}{10}{Holdout wrap-seam heal for the FitCell-to-plateau hybrid champion ($R_{\mathrm {blend}}{\approx }0.9912$, seed \texttt {1902771841}) vs no-bake, Dual Cosine, and ideal sibling $r^{\star }$}{figure.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{10}{section.5}\protected@file@percent }
+\newlabel{sec:results}{{5}{10}{Results}{section.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{How to read the main numbers.}{10}{section*.33}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}A short hybrid search under $R_{\mathrm  {blend}}$}{10}{subsection.5.1}\protected@file@percent }
+\newlabel{sec:v10-freeze}{{5.1}{10}{A short hybrid search under $R_{\mathrm {blend}}$}{subsection.5.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Noise2Noise vs Ours on four boards}{10}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:n2n-vs-ours-boards}{{5.2}{10}{Noise2Noise vs Ours on four boards}{subsection.5.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Holdout.}{10}{section*.34}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Multi-family board.}{10}{section*.35}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Factory and AKWF.}{10}{section*.36}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Parameter count and inference latency under the locked holdout story. Favorite $\Theta $ is the v10.1 hybrid champion (search seed \texttt  {1902771841}). SeamN2N is the frozen corrupt$\to $corrupt gate (train seed \texttt  {424242}). Holdout $R_{\mathrm  {blend}}$ is mean$\pm $std over five evaluation seeds. Latency is CUDA ms/batch at $B{=}64$ (Table~\ref {tab:ours-n2n-latency}).}}{10}{table.4}\protected@file@percent }
+\newlabel{tab:param-fairness}{{4}{10}{Parameter count and inference latency under the locked holdout story. Favorite $\Theta $ is the v10.1 hybrid champion (search seed \texttt {1902771841}). SeamN2N is the frozen corrupt$\to $corrupt gate (train seed \texttt {424242}). Holdout $R_{\mathrm {blend}}$ is mean$\pm $std over five evaluation seeds. Latency is CUDA ms/batch at $B{=}64$ (Table~\ref {tab:ours-n2n-latency})}{table.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Seed protocol.}{10}{section*.37}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Hybrid-only FitCell-to-convergence}{10}{subsection.5.3}\protected@file@percent }
+\newlabel{sec:v14-converge}{{5.3}{10}{Hybrid-only FitCell-to-convergence}{subsection.5.3}{}}
+\newlabel{sec:v14-hybrid-converge}{{5.3}{10}{Hybrid-only FitCell-to-convergence}{subsection.5.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Hybrid FitCell-to-plateau learning curve (seed \texttt  {1902771841}, $750$ evaluations). Champion $R_{\mathrm  {blend}}$ vs.\ outer-loop evaluation; Dual Cosine and the frozen Noise2Noise gate are marked. Final champion $R_{\mathrm  {blend}}{\approx }0.9912$.}}{11}{figure.8}\protected@file@percent }
+\newlabel{fig:v14-converge-curve}{{8}{11}{Hybrid FitCell-to-plateau learning curve (seed \texttt {1902771841}, $750$ evaluations). Champion $R_{\mathrm {blend}}$ vs.\ outer-loop evaluation; Dual Cosine and the frozen Noise2Noise gate are marked. Final champion $R_{\mathrm {blend}}{\approx }0.9912$}{figure.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Hybrid FitCell-to-plateau under locked $R_{\mathrm  {blend}}{+}J$ (seed \texttt  {1902771841}, $750/750$ evaluations). Gate: frozen Noise2Noise $R_{\mathrm  {blend}}{\approx }0.9750$.}}{11}{table.5}\protected@file@percent }
+\newlabel{tab:v14-hybrid-converge}{{5}{11}{Hybrid FitCell-to-plateau under locked $R_{\mathrm {blend}}{+}J$ (seed \texttt {1902771841}, $750/750$ evaluations). Gate: frozen Noise2Noise $R_{\mathrm {blend}}{\approx }0.9750$}{table.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Ablations and hyperparameter checks}{11}{subsection.5.4}\protected@file@percent }
+\newlabel{sec:ablation-def}{{5.4}{11}{Ablations and hyperparameter checks}{subsection.5.4}{}}
+\newlabel{sec:ablation-hp-main}{{5.4}{11}{Ablations and hyperparameter checks}{subsection.5.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Ours vs Noise2Noise inference latency}{11}{subsection.5.5}\protected@file@percent }
+\newlabel{sec:ours-n2n-latency}{{5.5}{11}{Ours vs Noise2Noise inference latency}{subsection.5.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Inference latency: Ours vs Noise2Noise on CUDA (warmup 8, timed 30). Ratio $=$ Ours/N2N ms/batch.}}{11}{table.6}\protected@file@percent }
+\newlabel{tab:ours-n2n-latency}{{6}{11}{Inference latency: Ours vs Noise2Noise on CUDA (warmup 8, timed 30). Ratio $=$ Ours/N2N ms/batch}{table.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Ours vs Noise2Noise and Dual Cosine under $R_{\mathrm  {blend}}$ ($\alpha {=}0.7$). Holdout / multi-family: mean$\pm $std over five seeds (\texttt  {20260719}--\texttt  {20260723}). $\Delta $ $=$ Ours $-$ baseline.}}{11}{table.7}\protected@file@percent }
+\newlabel{tab:n2n-vs-ours}{{7}{11}{Ours vs Noise2Noise and Dual Cosine under $R_{\mathrm {blend}}$ ($\alpha {=}0.7$). Holdout / multi-family: mean$\pm $std over five seeds (\texttt {20260719}--\texttt {20260723}). $\Delta $ $=$ Ours $-$ baseline}{table.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Search efficiency (learning curves)}{11}{subsection.5.6}\protected@file@percent }
+\newlabel{sec:search-learning-curve}{{5.6}{11}{Search efficiency (learning curves)}{subsection.5.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Superseded whole-curve freezes.}{11}{section*.38}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Which families stay hard}{11}{subsection.5.7}\protected@file@percent }
+\newlabel{sec:family-hardness}{{5.7}{11}{Which families stay hard}{subsection.5.7}{}}
+\@writefile{toc}{\contentsline {paragraph}{Superseded $5$k-gate freeze.}{11}{section*.39}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Hybrid search learning curves under $R_{\mathrm  {blend}}$ (seed \texttt  {1902771841}). Top: short FitCell ($1{,}200$ evaluations; champ.\ ${\approx }0.9695$). Bottom: FitCell-to-plateau ($750$ evaluations; champ.\ ${\approx }0.9912$).}}{12}{figure.9}\protected@file@percent }
+\newlabel{fig:search-learning-curve}{{9}{12}{Hybrid search learning curves under $R_{\mathrm {blend}}$ (seed \texttt {1902771841}). Top: short FitCell ($1{,}200$ evaluations; champ.\ ${\approx }0.9695$). Bottom: FitCell-to-plateau ($750$ evaluations; champ.\ ${\approx }0.9912$)}{figure.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Inference latency at matched score}{12}{subsection.5.8}\protected@file@percent }
+\newlabel{sec:inference-latency}{{5.8}{12}{Inference latency at matched score}{subsection.5.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Top-5 architectures}{12}{subsection.5.9}\protected@file@percent }
+\newlabel{sec:top5-arch}{{5.9}{12}{Top-5 architectures}{subsection.5.9}{}}
+\newlabel{sec:classical-vs-favorite}{{5.9}{12}{Top-5 architectures}{table.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Top-5 distinct fitted architectures on the CUDA inference bench (batch 64) under $R_{\mathrm  {blend}}$ ($\alpha {=}0.7$). $R_{\mathrm  {saved}}$ is the checkpoint hint (often prolonged $R$); $R_{\mathrm  {live}}$ is measured $R_{\mathrm  {blend}}$. *Max-$R_{\mathrm  {blend}}$ (also sole member of the $R\ge R_{\max }-5\cdot 10^{-4}$ band here).}}{12}{table.8}\protected@file@percent }
+\newlabel{tab:top5}{{8}{12}{Top-5 distinct fitted architectures on the CUDA inference bench (batch 64) under $R_{\mathrm {blend}}$ ($\alpha {=}0.7$). $R_{\mathrm {saved}}$ is the checkpoint hint (often prolonged $R$); $R_{\mathrm {live}}$ is measured $R_{\mathrm {blend}}$. *Max-$R_{\mathrm {blend}}$ (also sole member of the $R\ge R_{\max }-5\cdot 10^{-4}$ band here)}{table.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Canonical holdout under $R_{\mathrm  {blend}}$ ($\alpha {=}0.7$; seed \texttt  {20260719}). Mean$\pm $std over five seeds. No-bake $=$ unrepaired engine. Favorite $=$ locked v10.1 hybrid champ.}}{12}{table.9}\protected@file@percent }
+\newlabel{tab:canonical-methods}{{9}{12}{Canonical holdout under $R_{\mathrm {blend}}$ ($\alpha {=}0.7$; seed \texttt {20260719}). Mean$\pm $std over five seeds. No-bake $=$ unrepaired engine. Favorite $=$ locked v10.1 hybrid champ}{table.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.10}Multi-family comparison}{12}{subsection.5.10}\protected@file@percent }
+\newlabel{sec:sota-main}{{5.10}{12}{Multi-family comparison}{subsection.5.10}{}}
+\citation{stilson1996,nam2009polyblep,esqueda2016blamp}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Required seam-local secondary on top-10\% wrap-jump tiles ($n{=}410$): edge RMSE (lower better). Frozen in the \href  {https://github.com/reeldemo/denoise-opt-meta/blob/master/paper/Unsupervised_Wrap-Discontinuity_Repair_in_Wavetable_Synthesis_via_Hybrid_GA-PPO_Meta-Search_v12/figures/cliff_strata.json}{cliff-strata data}.}}{13}{table.10}\protected@file@percent }
+\newlabel{tab:cliff-edge-rmse}{{10}{13}{Required seam-local secondary on top-10\% wrap-jump tiles ($n{=}410$): edge RMSE (lower better). Frozen in the \href {https://github.com/reeldemo/denoise-opt-meta/blob/master/paper/Unsupervised_Wrap-Discontinuity_Repair_in_Wavetable_Synthesis_via_Hybrid_GA-PPO_Meta-Search_v12/figures/cliff_strata.json}{cliff-strata data}}{table.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.11}Hard cliffs expose classical fade failure}{13}{subsection.5.11}\protected@file@percent }
+\newlabel{sec:cliff-strata}{{5.11}{13}{Hard cliffs expose classical fade failure}{subsection.5.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.12}Noise2Noise and sequence baselines}{13}{subsection.5.12}\protected@file@percent }
+\newlabel{sec:n2n-baselines}{{5.12}{13}{Noise2Noise and sequence baselines}{subsection.5.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.13}Factory exports and AKWF cycles}{13}{subsection.5.13}\protected@file@percent }
+\newlabel{sec:real-wt}{{5.13}{13}{Factory exports and AKWF cycles}{subsection.5.13}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Canonical holdout $R_{\mathrm  {blend}}$: N2N and seq baselines vs Ours (locked hybrid). Train seeds \texttt  {424242}/\texttt  {424243} are disjoint from holdout \texttt  {20260719}.}}{13}{figure.10}\protected@file@percent }
+\newlabel{fig:n2n-vs-ours}{{10}{13}{Canonical holdout $R_{\mathrm {blend}}$: N2N and seq baselines vs Ours (locked hybrid). Train seeds \texttt {424242}/\texttt {424243} are disjoint from holdout \texttt {20260719}}{figure.10}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Wavetable-native wrap protocol under $R_{\mathrm  {blend}}$ ($\alpha {=}0.7$). Close-seam ideal $\to $ open-wrap cliff (seed \texttt  {20260719}). Primary = ReelSynth export. Secondary = AKWF CC0 files.}}{13}{table.11}\protected@file@percent }
+\newlabel{tab:real-wt}{{11}{13}{Wavetable-native wrap protocol under $R_{\mathrm {blend}}$ ($\alpha {=}0.7$). Close-seam ideal $\to $ open-wrap cliff (seed \texttt {20260719}). Primary = ReelSynth export. Secondary = AKWF CC0 files}{table.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.14}Polynomial baseline and endpoint pinning}{13}{subsection.5.14}\protected@file@percent }
+\newlabel{sec:poly-jump}{{5.14}{13}{Polynomial baseline and endpoint pinning}{subsection.5.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.15}Classical virtual-analog seam repairs}{13}{subsection.5.15}\protected@file@percent }
+\newlabel{sec:va-seam-baselines}{{5.15}{13}{Classical virtual-analog seam repairs}{subsection.5.15}{}}
+\@writefile{toc}{\contentsline {paragraph}{What each operator changes.}{13}{section*.40}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Classical VA seam techniques on one cracked sine{+}cliff tile (seed~\texttt  {20260719}, tile~46). (a)~ideal; (b)~cracked engine; (c)~BLIT/BLEP; (d)~PolyBLEP; (e)~BLAMP; (f)~DualCosine. Batch means: Table~\ref {tab:va-seam-blep}.}}{14}{figure.11}\protected@file@percent }
+\newlabel{fig:va-seam-techniques}{{11}{14}{Classical VA seam techniques on one cracked sine{+}cliff tile (seed~\texttt {20260719}, tile~46). (a)~ideal; (b)~cracked engine; (c)~BLIT/BLEP; (d)~PolyBLEP; (e)~BLAMP; (f)~DualCosine. Batch means: Table~\ref {tab:va-seam-blep}}{figure.11}{}}
+\@writefile{toc}{\contentsline {paragraph}{Scores.}{14}{section*.41}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.16}When search helps vs classical methods}{14}{subsection.5.16}\protected@file@percent }
+\newlabel{sec:transfer}{{5.16}{14}{When search helps vs classical methods}{subsection.5.16}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Classical VA seam repairs under $R_{\mathrm  {blend}}$ ($\alpha {=}0.7$; seed \texttt  {20260719}). Holdout $R_{\mathrm  {blend}}$, seam-local edge RMSE, cliff top-10\% $R_{\mathrm  {blend}}$, multi-family mean.}}{14}{table.12}\protected@file@percent }
+\newlabel{tab:va-seam-blep}{{12}{14}{Classical VA seam repairs under $R_{\mathrm {blend}}$ ($\alpha {=}0.7$; seed \texttt {20260719}). Holdout $R_{\mathrm {blend}}$, seam-local edge RMSE, cliff top-10\% $R_{\mathrm {blend}}$, multi-family mean}{table.12}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Rust \texttt  {sound\_bench} transfer ($n{=}20$) under $R_{\mathrm  {blend}}$ ($\alpha {=}0.7$). $\Delta $ is vs Dual Cosine.}}{14}{table.13}\protected@file@percent }
+\newlabel{tab:rust-bench}{{13}{14}{Rust \texttt {sound\_bench} transfer ($n{=}20$) under $R_{\mathrm {blend}}$ ($\alpha {=}0.7$). $\Delta $ is vs Dual Cosine}{table.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.17}Transfer to Rust engine tiles}{14}{subsection.5.17}\protected@file@percent }
+\newlabel{sec:rust-bench}{{5.17}{14}{Transfer to Rust engine tiles}{subsection.5.17}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.18}Vibrato spectrograms}{14}{subsection.5.18}\protected@file@percent }
+\newlabel{sec:vibrato-eval}{{5.18}{14}{Vibrato spectrograms}{subsection.5.18}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.19}Downloadable audio samples}{14}{subsection.5.19}\protected@file@percent }
+\newlabel{sec:hear-samples}{{5.19}{14}{Downloadable audio samples}{subsection.5.19}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Slow-vibrato spectrogram eval on a high-wrap holdout tile (seed~\texttt  {20260719}). (a--c)~Magnitude spectrograms for no-bake, DualCosine, and Ours. (d--e)~Spectrogram differences vs no-bake. (f)~Short waveform excerpt. (g)~Absolute $R$: cycle-local prolonged residual, modulated-playback residual on the same tile, and mean modulated $R$ over top-wrap tiles. Accessibility: Okabe--Ito hues. Difference maps use diverging coolwarm. Formal human A/B scores are out of scope.}}{15}{figure.12}\protected@file@percent }
+\newlabel{fig:vibrato-spectrogram}{{12}{15}{Slow-vibrato spectrogram eval on a high-wrap holdout tile (seed~\texttt {20260719}). (a--c)~Magnitude spectrograms for no-bake, DualCosine, and Ours. (d--e)~Spectrogram differences vs no-bake. (f)~Short waveform excerpt. (g)~Absolute $R$: cycle-local prolonged residual, modulated-playback residual on the same tile, and mean modulated $R$ over top-wrap tiles. Accessibility: Okabe--Ito hues. Difference maps use diverging coolwarm. Formal human A/B scores are out of scope}{figure.12}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Listening / subjective evaluation statistics for this manuscript (honest null study).}}{15}{table.14}\protected@file@percent }
+\newlabel{tab:listening-stats}{{14}{15}{Listening / subjective evaluation statistics for this manuscript (honest null study)}{table.14}{}}
+\@writefile{toc}{\contentsline {paragraph}{Listening statistics (null study).}{15}{section*.42}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.20}Factory and Adventure Kid waveform examples}{15}{subsection.5.20}\protected@file@percent }
+\newlabel{sec:wt-gallery}{{5.20}{15}{Factory and Adventure Kid waveform examples}{subsection.5.20}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Hear-sample panel from the online WAV pack (\href  {https://github.com/reeldemo/reelsynth/tree/main/brand/artifacts/meta_approach_compare/hear_samples}{hear-sample WAVs}, five holdout tiles, no-bake / DualCosine / Ours). Waveforms show the first $\approx 25$\,ms of each clip. $R$ annotations are cycle-local prolonged residuals vs the ideal sibling. Not a formal listening study.}}{15}{figure.13}\protected@file@percent }
+\newlabel{fig:hear-samples-panel}{{13}{15}{Hear-sample panel from the online WAV pack (\href {https://github.com/reeldemo/reelsynth/tree/main/brand/artifacts/meta_approach_compare/hear_samples}{hear-sample WAVs}, five holdout tiles, no-bake / DualCosine / Ours). Waveforms show the first $\approx 25$\,ms of each clip. $R$ annotations are cycle-local prolonged residuals vs the ideal sibling. Not a formal listening study}{figure.13}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces Compact wavetable diversity gallery from existing exports (one mid-morph dry frame per unique ReelSynth factory bank, top, and matched AKWF CC0 cycles, bottom). No new NAS for this panel. Quantitative wrap scores: Table~\ref {tab:real-wt}.}}{15}{figure.14}\protected@file@percent }
+\newlabel{fig:wt-diversity-gallery}{{14}{15}{Compact wavetable diversity gallery from existing exports (one mid-morph dry frame per unique ReelSynth factory bank, top, and matched AKWF CC0 cycles, bottom). No new NAS for this panel. Quantitative wrap scores: Table~\ref {tab:real-wt}}{figure.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.21}Transfer to bearings, ECG, and synthetic cycles}{15}{subsection.5.21}\protected@file@percent }
+\newlabel{sec:transfer-main}{{5.21}{15}{Transfer to bearings, ECG, and synthetic cycles}{subsection.5.21}{}}
+\@writefile{toc}{\contentsline {paragraph}{Setup reminder.}{15}{section*.43}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Wrap-heal transfer under locked $R_{\mathrm  {blend}}$ (higher better; wrap-protocol stress test). Bearing boards ($n{=}256$ each). DenoiseOpt: \texttt  {hybrid\_lstm}, seed \texttt  {1902771841}.}}{16}{table.15}\protected@file@percent }
+\newlabel{tab:transfer-main}{{15}{16}{Wrap-heal transfer under locked $R_{\mathrm {blend}}$ (higher better; wrap-protocol stress test). Bearing boards ($n{=}256$ each). DenoiseOpt: \texttt {hybrid\_lstm}, seed \texttt {1902771841}}{table.15}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces Wrap-heal transfer under locked $R_{\mathrm  {blend}}$ (continued): ECG and synthetic boards. BeatDiff / Cycle-GAN are author OOD wrap probes on ECG only.}}{16}{table.16}\protected@file@percent }
+\newlabel{tab:transfer-main-b}{{16}{16}{Wrap-heal transfer under locked $R_{\mathrm {blend}}$ (continued): ECG and synthetic boards. BeatDiff / Cycle-GAN are author OOD wrap probes on ECG only}{table.16}{}}
+\@writefile{toc}{\contentsline {paragraph}{Takeaways.}{16}{section*.44}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.22}Listening protocol (no formal listening study)}{16}{subsection.5.22}\protected@file@percent }
+\newlabel{sec:listening-protocol}{{5.22}{16}{Listening protocol (no formal listening study)}{subsection.5.22}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces Grouped bars for Tables~\ref {tab:transfer-main}--\ref {tab:transfer-main-b}: $R_{\mathrm  {blend}}$ by board and method (higher better). Core rows (Ours, SeamN2N, no-bake, endpoint-pin, \texttt  {seam\_fir3}, DualCosine) appear on all seven boards. Hatched bars are author OOD wrap probes on ECG (BeatDiff, Cycle-GAN) and the Paderborn Al~Firdausi architecture-reuse wrap bake (not the published fault classifier, see Table~\ref {tab:transfer-sota-status}). Missing cells are omitted rather than zero-filled.}}{16}{figure.15}\protected@file@percent }
+\newlabel{fig:signal-heal-transfer-main}{{15}{16}{Grouped bars for Tables~\ref {tab:transfer-main}--\ref {tab:transfer-main-b}: $R_{\mathrm {blend}}$ by board and method (higher better). Core rows (Ours, SeamN2N, no-bake, endpoint-pin, \texttt {seam\_fir3}, DualCosine) appear on all seven boards. Hatched bars are author OOD wrap probes on ECG (BeatDiff, Cycle-GAN) and the Paderborn Al~Firdausi architecture-reuse wrap bake (not the published fault classifier, see Table~\ref {tab:transfer-sota-status}). Missing cells are omitted rather than zero-filled}{figure.15}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {17}{\ignorespaces Author-method and data-cut status under this wrap-protocol stress test (no invented scores).}}{17}{table.17}\protected@file@percent }
+\newlabel{tab:transfer-sota-status}{{17}{17}{Author-method and data-cut status under this wrap-protocol stress test (no invented scores)}{table.17}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{17}{section.6}\protected@file@percent }
+\newlabel{sec:discussion}{{6}{17}{Discussion}{section.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Main story under $R_{\mathrm  {blend}}$.}{17}{section*.45}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Which families stay hard.}{17}{section*.46}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Search near the ceiling.}{17}{section*.47}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Evidence beyond static tiles.}{17}{section*.48}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Tooling and AI use}{17}{section.7}\protected@file@percent }
+\newlabel{sec:tooling}{{7}{17}{Tooling and AI use}{section.7}{}}
+\@writefile{toc}{\contentsline {paragraph}{AI-assisted workflow.}{17}{section*.49}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Literature and reproducibility artifacts.}{17}{section*.50}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Broader impact and reproducibility}{17}{section.8}\protected@file@percent }
+\newlabel{sec:ethics}{{8}{17}{Broader impact and reproducibility}{section.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{Broader impact.}{17}{section*.51}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Reproducibility.}{18}{section*.52}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Funding}{18}{subsection.8.1}\protected@file@percent }
+\newlabel{sec:funding}{{8.1}{18}{Funding}{subsection.8.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Author contributions (CRediT)}{18}{subsection.8.2}\protected@file@percent }
+\newlabel{sec:credit}{{8.2}{18}{Author contributions (CRediT)}{subsection.8.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Data availability}{18}{subsection.8.3}\protected@file@percent }
+\newlabel{sec:data-availability}{{8.3}{18}{Data availability}{subsection.8.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Competing interests}{18}{subsection.8.4}\protected@file@percent }
+\newlabel{sec:competing}{{8.4}{18}{Competing interests}{subsection.8.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Limitations}{18}{section.9}\protected@file@percent }
+\newlabel{sec:limitations}{{9}{18}{Limitations}{section.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Future work}{19}{subsection.9.1}\protected@file@percent }
+\newlabel{sec:outlook}{{9.1}{19}{Future work}{subsection.9.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {10}Conclusion}{19}{section.10}\protected@file@percent }
+\newlabel{sec:conclusion}{{10}{19}{Conclusion}{section.10}{}}
+\newlabel{sec:acknowledgments}{{10}{19}{Acknowledgments}{section*.53}{}}
+\@writefile{toc}{\contentsline {paragraph}{Authors.}{19}{section*.54}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Author contributions (CRediT).}{19}{section*.55}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Named stress boards.}{19}{section*.56}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Software and literature.}{19}{section*.57}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Algorithms}{19}{appendix.A}\protected@file@percent }
+\newlabel{app:algorithms}{{A}{19}{Algorithms}{appendix.A}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces ResidualScore}}{19}{algorithm.1}\protected@file@percent }
+\newlabel{alg:residual}{{1}{19}{How the pieces connect}{algorithm.1}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces DualCosine baseline}}{19}{algorithm.2}\protected@file@percent }
+\newlabel{alg:dualcosine}{{2}{19}{How the pieces connect}{algorithm.2}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {3}{\ignorespaces No-bake (passthrough) control}}{19}{algorithm.3}\protected@file@percent }
+\newlabel{alg:no-bake}{{3}{19}{How the pieces connect}{algorithm.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{How the pieces connect.}{19}{section*.58}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Multi-family ranking plots}{19}{subsection.A.1}\protected@file@percent }
+\newlabel{sec:app-sota-plots}{{A.1}{19}{Multi-family ranking plots}{subsection.A.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Multi-family and cliff boards}{19}{subsection.A.2}\protected@file@percent }
+\newlabel{sec:app-sota-cliff-tables}{{A.2}{19}{Multi-family and cliff boards}{subsection.A.2}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {4}{\ignorespaces MoE soft gating over bake experts}}{20}{algorithm.4}\protected@file@percent }
+\newlabel{alg:moe}{{4}{20}{How the pieces connect}{algorithm.4}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {5}{\ignorespaces FitCell (inner loop; converge protocol)}}{20}{algorithm.5}\protected@file@percent }
+\newlabel{alg:fit}{{5}{20}{How the pieces connect}{algorithm.5}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {6}{\ignorespaces GA tournament step}}{20}{algorithm.6}\protected@file@percent }
+\newlabel{alg:ga}{{6}{20}{How the pieces connect}{algorithm.6}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {7}{\ignorespaces PPO architecture update}}{20}{algorithm.7}\protected@file@percent }
+\newlabel{alg:ppo}{{7}{20}{How the pieces connect}{algorithm.7}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {8}{\ignorespaces PBT exploit--mutate}}{20}{algorithm.8}\protected@file@percent }
+\newlabel{alg:pbt}{{8}{20}{How the pieces connect}{algorithm.8}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {9}{\ignorespaces HybridMetaSearch}}{20}{algorithm.9}\protected@file@percent }
+\newlabel{alg:hybrid}{{9}{20}{How the pieces connect}{algorithm.9}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {18}{\ignorespaces Multi-family board (20 waveforms) under $R_{\mathrm  {blend}}$ ($\alpha {=}0.7$). Core rank columns; SNR/SDR/jump in Table~\ref {tab:sota-main-metrics}. $\Delta R$ and ms vs Dual Cosine. N2N/seq seeds \texttt  {424242}/\texttt  {424243}.}}{20}{table.18}\protected@file@percent }
+\newlabel{tab:sota-main}{{18}{20}{Multi-family board (20 waveforms) under $R_{\mathrm {blend}}$ ($\alpha {=}0.7$). Core rank columns; SNR/SDR/jump in Table~\ref {tab:sota-main-metrics}. $\Delta R$ and ms vs Dual Cosine. N2N/seq seeds \texttt {424242}/\texttt {424243}}{table.18}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces Multi-family mean $R_{\mathrm  {blend}}$ by method (same $20$-waveform board as Table~\ref {tab:sota-main}).}}{21}{figure.16}\protected@file@percent }
+\newlabel{fig:sota-method-bars}{{16}{21}{Multi-family mean $R_{\mathrm {blend}}$ by method (same $20$-waveform board as Table~\ref {tab:sota-main})}{figure.16}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {17}{\ignorespaces Colorblind-safe (\texttt  {cividis}) heatmap of mean $R_{\mathrm  {blend}}$ for selected methods $\times $ generative families (2 seeds each). Higher is better.}}{21}{figure.17}\protected@file@percent }
+\newlabel{fig:sota-heatmap}{{17}{21}{Colorblind-safe (\texttt {cividis}) heatmap of mean $R_{\mathrm {blend}}$ for selected methods $\times $ generative families (2 seeds each). Higher is better}{figure.17}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {19}{\ignorespaces Multi-family secondary metrics (same board as Table~\ref {tab:sota-main}).}}{21}{table.19}\protected@file@percent }
+\newlabel{tab:sota-main-metrics}{{19}{21}{Multi-family secondary metrics (same board as Table~\ref {tab:sota-main})}{table.19}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {20}{\ignorespaces Cliff strata on $4{,}096$ holdout tiles under $R_{\mathrm  {blend}}$ ($\alpha {=}0.7$). Strata by engine wrap-jump ($n$: all $4096$, top25 $1024$, top10 $410$). $\pm $ is tile std on the all stratum.}}{21}{table.20}\protected@file@percent }
+\newlabel{tab:cliff-strata}{{20}{21}{Cliff strata on $4{,}096$ holdout tiles under $R_{\mathrm {blend}}$ ($\alpha {=}0.7$). Strata by engine wrap-jump ($n$: all $4096$, top25 $1024$, top10 $410$). $\pm $ is tile std on the all stratum}{table.20}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Supplementary tables and figures}{22}{appendix.B}\protected@file@percent }
+\newlabel{app:supplement}{{B}{22}{Supplementary tables and figures}{appendix.B}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Matched-budget outer-loop comparison}{22}{subsection.B.1}\protected@file@percent }
+\newlabel{sec:meta-approaches-results}{{B.1}{22}{Matched-budget outer-loop comparison}{subsection.B.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {21}{\ignorespaces Matched $5{,}000$-evaluation outer-loop comparison under locked $R_{\mathrm  {blend}}{+}J$ (Deferred D1 complete). Mean$\pm $std over three search seeds (\texttt  {1902771841}, \texttt  {2026072701}, \texttt  {2026072702}). $\Delta R$ uses seed-\texttt  {1902771841} Dual Cosine (${\approx }0.504$). Wall-h is mean CUDA wall per approach. LSTM?/xLSTM?: whether any seed's champion included that block.}}{22}{table.21}\protected@file@percent }
+\newlabel{tab:meta-approaches}{{21}{22}{Matched $5{,}000$-evaluation outer-loop comparison under locked $R_{\mathrm {blend}}{+}J$ (Deferred D1 complete). Mean$\pm $std over three search seeds (\texttt {1902771841}, \texttt {2026072701}, \texttt {2026072702}). $\Delta R$ uses seed-\texttt {1902771841} Dual Cosine (${\approx }0.504$). Wall-h is mean CUDA wall per approach. LSTM?/xLSTM?: whether any seed's champion included that block}{table.21}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Ablations and compute}{22}{subsection.B.2}\protected@file@percent }
+\newlabel{sec:ablation-compute}{{B.2}{22}{Ablations and compute}{subsection.B.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {18}{\ignorespaces Matched 5,000-evaluation search methods under locked $R_{\mathrm  {blend}}{+}J$ (seed \texttt  {1902771841}). Table~\ref {tab:meta-approaches} reports mean$\pm $std across three search seeds. Dashed line: Dual Cosine on the same runner.}}{22}{figure.18}\protected@file@percent }
+\newlabel{fig:meta-approach-bars}{{18}{22}{Matched 5,000-evaluation search methods under locked $R_{\mathrm {blend}}{+}J$ (seed \texttt {1902771841}). Table~\ref {tab:meta-approaches} reports mean$\pm $std across three search seeds. Dashed line: Dual Cosine on the same runner}{figure.18}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {19}{\ignorespaces Champion $R_{\mathrm  {blend}}$ over a matched 5,000-evaluation budget (Deferred D1 complete; seed \texttt  {1902771841}). Dashed line: Dual Cosine.}}{22}{figure.19}\protected@file@percent }
+\newlabel{fig:meta-approach-compare}{{19}{22}{Champion $R_{\mathrm {blend}}$ over a matched 5,000-evaluation budget (Deferred D1 complete; seed \texttt {1902771841}). Dashed line: Dual Cosine}{figure.19}{}}
+\@writefile{toc}{\contentsline {paragraph}{How to read Table~\ref {tab:ablation}.}{22}{section*.59}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.3}Hyperparameter sensitivity}{22}{subsection.B.3}\protected@file@percent }
+\newlabel{para:hp-sensitivity}{{B.3}{22}{Hyperparameter sensitivity}{subsection.B.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {22}{\ignorespaces Ablations (interpret narrowly). Left: best prolonged $R$ by branch label in one hybrid history (final iteration ${\approx }6{,}922$; superseded search metric; not separate fits). Right: isolated 150-iteration \texttt  {ablate-*} final champions re-scored under $R_{\mathrm  {blend}}$ ($\alpha {=}0.7$; seed \texttt  {1902771841}). Full $R_{\mathrm  {blend}}$ branch re-search remains deferred; use Table~\ref {tab:meta-approaches} for matched outer-loop comparison.}}{23}{table.22}\protected@file@percent }
+\newlabel{tab:ablation}{{22}{23}{Ablations (interpret narrowly). Left: best prolonged $R$ by branch label in one hybrid history (final iteration ${\approx }6{,}922$; superseded search metric; not separate fits). Right: isolated 150-iteration \texttt {ablate-*} final champions re-scored under $R_{\mathrm {blend}}$ ($\alpha {=}0.7$; seed \texttt {1902771841}). Full $R_{\mathrm {blend}}$ branch re-search remains deferred; use Table~\ref {tab:meta-approaches} for matched outer-loop comparison}{table.22}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {23}{\ignorespaces Compute budget for the reported 5,000-evaluation search run (RTX~3090, search seed \texttt  {1902771841}; prolonged-$R$ objective). Final champion $R$ below is the historical prolonged freeze, not $R_{\mathrm  {blend}}$.}}{23}{table.23}\protected@file@percent }
+\newlabel{tab:compute}{{23}{23}{Compute budget for the reported 5,000-evaluation search run (RTX~3090, search seed \texttt {1902771841}; prolonged-$R$ objective). Final champion $R$ below is the historical prolonged freeze, not $R_{\mathrm {blend}}$}{table.23}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {24}{\ignorespaces One-at-a-time $\pm 50\%$ hyperparameter sensitivity probe (500 outer iterations, seed \texttt  {1902771841}, sine{+}cliff FitCell). Champion absolute $R$ is compared with the Table~\ref {tab:hyperparams} default. This is sensitivity evidence only, not a full 5,000-iteration re-search for each parameter.}}{23}{table.24}\protected@file@percent }
+\newlabel{tab:hp-sensitivity}{{24}{23}{One-at-a-time $\pm 50\%$ hyperparameter sensitivity probe (500 outer iterations, seed \texttt {1902771841}, sine{+}cliff FitCell). Champion absolute $R$ is compared with the Table~\ref {tab:hyperparams} default. This is sensitivity evidence only, not a full 5,000-iteration re-search for each parameter}{table.24}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.4}Transfer inference latency}{23}{subsection.B.4}\protected@file@percent }
+\newlabel{sec:transfer-latency-app}{{B.4}{23}{Transfer inference latency}{subsection.B.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {20}{\ignorespaces One-at-a-time $\pm 50\%$ HP sensitivity of hybrid champion $R$ at 500 iterations. Blue bar: Table~\ref {tab:hyperparams} default.}}{23}{figure.20}\protected@file@percent }
+\newlabel{fig:hp-sensitivity}{{20}{23}{One-at-a-time $\pm 50\%$ HP sensitivity of hybrid champion $R$ at 500 iterations. Blue bar: Table~\ref {tab:hyperparams} default}{figure.20}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {25}{\ignorespaces Transfer-domain inference latency (ms/batch). Batch=64, CUDA.}}{23}{table.25}\protected@file@percent }
+\newlabel{tab:transfer-latency}{{25}{23}{Transfer-domain inference latency (ms/batch). Batch=64, CUDA}{table.25}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {21}{\ignorespaces Transfer-domain inference latency (ms/batch). N2N is wavetable-trained zero-shot when available.}}{23}{figure.21}\protected@file@percent }
+\newlabel{fig:signal-heal-transfer-latency}{{21}{23}{Transfer-domain inference latency (ms/batch). N2N is wavetable-trained zero-shot when available}{figure.21}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.5}Search-monitor figures}{23}{subsection.B.5}\protected@file@percent }
+\newlabel{sec:search-monitor-figs}{{B.5}{23}{Search-monitor figures}{subsection.B.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.6}Inference and classical diagnostic plots}{23}{subsection.B.6}\protected@file@percent }
+\newlabel{sec:app-inference-diags}{{B.6}{23}{Inference and classical diagnostic plots}{subsection.B.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {22}{\ignorespaces FitCell-to-plateau champion $R_{\mathrm  {blend}}$ vs.\ outer-loop evaluation (seed \texttt  {1902771841}; Dual Cosine and Noise2Noise gate marked).}}{24}{figure.22}\protected@file@percent }
+\newlabel{fig:champ-residual}{{22}{24}{FitCell-to-plateau champion $R_{\mathrm {blend}}$ vs.\ outer-loop evaluation (seed \texttt {1902771841}; Dual Cosine and Noise2Noise gate marked)}{figure.22}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {23}{\ignorespaces Best residual by search branch (older overnight monitor freeze; search-trace artifact).}}{24}{figure.23}\protected@file@percent }
+\newlabel{fig:branch-bests}{{23}{24}{Best residual by search branch (older overnight monitor freeze; search-trace artifact)}{figure.23}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {24}{\ignorespaces Search progress: champion $R$ (top) and branch bests (bottom).}}{24}{figure.24}\protected@file@percent }
+\newlabel{fig:search-panel}{{24}{24}{Search progress: champion $R$ (top) and branch bests (bottom)}{figure.24}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {25}{\ignorespaces Per-trial residual by branch with champion trajectory overlaid.}}{24}{figure.25}\protected@file@percent }
+\newlabel{fig:residual-branch}{{25}{24}{Per-trial residual by branch with champion trajectory overlaid}{figure.25}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {26}{\ignorespaces Champion updates (older overnight monitor freeze; search-trace artifact).}}{24}{figure.26}\protected@file@percent }
+\newlabel{fig:champ-timeline}{{26}{24}{Champion updates (older overnight monitor freeze; search-trace artifact)}{figure.26}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {27}{\ignorespaces High-$R$ fitted operators: residual vs CUDA latency. Star: favorite.}}{24}{figure.27}\protected@file@percent }
+\newlabel{fig:inference-pareto}{{27}{24}{High-$R$ fitted operators: residual vs CUDA latency. Star: favorite}{figure.27}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {28}{\ignorespaces Inference latency for high-$R$ fitted models (CUDA, batch 64).}}{25}{figure.28}\protected@file@percent }
+\newlabel{fig:inference-bars}{{28}{25}{Inference latency for high-$R$ fitted models (CUDA, batch 64)}{figure.28}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {29}{\ignorespaces Canonical holdout: classical methods and favorite in the $R$ vs ms/batch plane.}}{25}{figure.29}\protected@file@percent }
+\newlabel{fig:classical-vs-ai-scatter}{{29}{25}{Canonical holdout: classical methods and favorite in the $R$ vs ms/batch plane}{figure.29}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {30}{\ignorespaces Canonical holdout ranking on $R_{\mathrm  {blend}}$ (left) and latency (right).}}{25}{figure.30}\protected@file@percent }
+\newlabel{fig:classical-vs-ai-bars}{{30}{25}{Canonical holdout ranking on $R_{\mathrm {blend}}$ (left) and latency (right)}{figure.30}{}}
+\bibcite{stilson1996}{1}
+\bibcite{esqueda2016blamp}{2}
+\bibcite{nam2009polyblep}{3}
+\bibcite{lehtinen2018}{4}
+\bibcite{kashyap2021n2n}{5}
+\bibcite{engel2020}{6}
+\bibcite{purwins2019}{7}
+\bibcite{stoller2018}{8}
+\bibcite{macartney2018}{9}
+\bibcite{jansson2017}{10}
+\bibcite{luo2019}{11}
+\bibcite{luo2020dprnn}{12}
+\bibcite{ronneberger2015}{13}
+\bibcite{he2016resnet}{14}
+\bibcite{vaswani2017}{15}
+\bibcite{elsken2019}{16}
+\bibcite{zoph2017nas}{17}
+\bibcite{pham2018}{18}
+\bibcite{schulman2017}{19}
+\bibcite{real2017large}{20}
+\bibcite{real2019}{21}
+\bibcite{jaderberg2017}{22}
+\bibcite{khadka2018}{23}
+\bibcite{hansen2016cmaes}{24}
+\bibcite{shazeer2017}{25}
+\bibcite{snoek2012}{26}
+\bibcite{tan2019mnasnet}{27}
+\bibcite{liu2018pnas}{28}
+\bibcite{wisdom2020}{29}
+\bibcite{subakan2021}{30}
+\bibcite{gong2021ast}{31}
+\bibcite{finn2017}{32}
+\bibcite{liu2019}{33}
+\bibcite{dfossez2019}{34}
+\bibcite{dfossez2020}{35}
+\bibcite{dfossez2021}{36}
+\bibcite{kong2021}{37}
+\bibcite{pascual2017}{38}
+\@writefile{toc}{\contentsline {section}{\numberline {C}Transfer artifact locations}{26}{appendix.C}\protected@file@percent }
+\newlabel{app:transfer-pilot}{{C}{26}{Transfer artifact locations}{appendix.C}{}}
+\gdef \@abspage@last{26}
