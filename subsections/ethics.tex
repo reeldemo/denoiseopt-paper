@@ -1,0 +1,46 @@
+\section{Broader impact and reproducibility}
+\label{sec:ethics}
+
+\paragraph{Broader impact.}
+This work targets cycle-local wavetable seam repair for virtual-analog / software-instrument workflows.
+Misuse potential is low: the method does not enhance speech for surveillance, does not remove watermarks from protected media, and operates only on short periodic tiles.
+Training, search, and reported tables use procedural sine{+}cliff generators and public corpora (Factory/AKWF exports; CWRU/MFPT/Paderborn/MIT-BIH/PTB-XL for wrap stress tests).
+No private studio stems enter the scored matrices.
+Released hear-pack WAVs are public regenerations of those holdout tiles for informal inspection, not private stems and not a listening study.
+The main resource cost is GPU time on a consumer RTX~3090 (order of hours for the $5$k-gate freeze, Table~\ref{tab:compute}; tens of hours for FitCell-to-convergence).
+Do not over-claim speech enhancement, mastering quality, or perceptual superiority from residual metrics alone.
+
+\paragraph{Reproducibility.}
+Holdout seeds: \texttt{20260719}--\texttt{20260723}.
+Search seeds: \texttt{1902771841}, \texttt{2026072701}, \texttt{2026072702}.
+Noise2Noise train seed: \texttt{424242}.
+Paper sources, frozen figure JSONs, and build scripts live at
+\url{https://github.com/reeldemo/denoiseopt-paper}.
+Experimental search runners remain at \url{https://github.com/reeldemo/reelsynth}.
+CUDA benches need Python~3.12, PyTorch~$2.6$+CUDA~12.4, and NumPy/matplotlib.
+Frozen score matrices and search histories ship with the paper repository
+\url{https://github.com/reeldemo/denoiseopt-paper}
+(and mirrored experimental runners under \url{https://github.com/reeldemo/reelsynth}).
+PESQ/STOI are omitted for non-speech cycles (domain mismatch), and MUSHRA was not run.
+
+\subsection{Funding}
+\label{sec:funding}
+This research received no external funding.
+
+\subsection{Author contributions (CRediT)}
+\label{sec:credit}
+Julian~M.~Kleber: Conceptualization, Methodology, Software, Investigation, Formal analysis, Data curation, Writing (original draft), Writing (review and editing), Visualization.
+
+\subsection{Data availability}
+\label{sec:data-availability}
+Frozen evaluation artifacts (JSON matrices, search histories, fitted champions)
+are published at \url{https://github.com/reeldemo/denoiseopt-paper}
+under \texttt{figures/}.
+The PDF rebuilds with \texttt{build.ps1} in that repository.
+No private studio recordings were used.
+
+\subsection{Competing interests}
+\label{sec:competing}
+The author declares no competing financial or non-financial interests.
+ReelSynth and denoise-opt-meta are MIT-licensed open-source projects maintained by the author; no commercial sponsor funded the reported experiments or manuscript.
+There is no conflict of interest with the Noise2Noise, VA, or NAS literature cited as baselines.

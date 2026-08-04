@@ -1,0 +1,159 @@
+\section{Algorithms}
+\label{app:algorithms}
+
+Companion pseudocode for the residual score, classical controls, FitCell, and hybrid outer-loop branches.
+Canonical narrative lives in Section~\ref{sec:methods}.
+These listings mirror the
+\href{https://github.com/reeldemo/denoise-opt-meta/blob/master/docs/PSEUDOCODE.md}{pseudocode notes}
+and the CUDA search runner (\texttt{overnight\_gpu\_rl\_arch.py}).
+
+\paragraph{How the pieces connect.}
+Algorithm~\ref{alg:residual} is the debug whole-curve score; primary selection uses the blended form in Section~\ref{sec:residual-score} (seam vs $r^{\star}$, body vs engine).
+Algorithms~\ref{alg:dualcosine}--\ref{alg:no-bake} are classical / passthrough controls scored under the same residual.
+Algorithm~\ref{alg:moe} is an optional soft gate inside a candidate repair graph.
+Algorithm~\ref{alg:fit} (\textbf{FitCell}) is the inner trainer: Adam on $1-R_{\mathrm{blend}}$ until plateau or hard cap $T_{\max}$ (converge campaign) or a short step budget (D1).
+Algorithms~\ref{alg:ga}--\ref{alg:pbt} are the outer-loop branches that propose new graphs / hyperparameters; the hybrid runner interleaves them each iteration and keeps elites by $J$.
+Ablations that drop GA or PPO (Table~\ref{tab:ablation}, right column) still call Algorithm~\ref{alg:fit} but disable the corresponding outer branch.
+
+\begin{algorithm}[t]
+\caption{ResidualScore}
+\label{alg:residual}
+\begin{algorithmic}[1]
+\Require Ideal cycle $r^{\star}$, baked cycle $y$, periods $N$
+\State $I \gets \mathrm{Tile}(r^{\star}, N)$
+\State $Y \gets \mathrm{Tile}(y, N)$
+\State $r_{\mathrm{rms}} \gets \mathrm{RMS}(Y-I)$
+\State $i_{\mathrm{rms}} \gets \max(\mathrm{RMS}(I), \varepsilon)$
+\State \Return $\mathrm{clamp}(1 - r_{\mathrm{rms}}/i_{\mathrm{rms}},\,0,\,1)$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+\caption{DualCosine baseline}
+\label{alg:dualcosine}
+\begin{algorithmic}[1]
+\Require Engine cycle $x$
+\State Fade both ends of $x$ with raised-cosine windows of width $W$
+\State \Return $\mathrm{ResidualScore}(r^{\star},\,x_{\mathrm{faded}},\,N)$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+\caption{No-bake (passthrough) control}
+\label{alg:no-bake}
+\begin{algorithmic}[1]
+\Require Engine cycle $x$ (open-wrap cliff present)
+\State \Return $\mathrm{ResidualScore}(r^{\star},\,x,\,N)$ \Comment{no operator: $x\mapsto x$}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+\caption{MoE soft gating over bake experts}
+\label{alg:moe}
+\begin{algorithmic}[1]
+\Require Cycle $x$, expert operators $\{E_k\}_{k=1}^{K}$, gate logits $g\in\mathbb{R}^{K}$
+\State $w \gets \mathrm{softmax}(g)$
+\State $y \gets \sum_{k=1}^{K} w_k\, E_k(x)$
+\State \Return $y$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+\caption{FitCell (inner loop; converge protocol)}
+\label{alg:fit}
+\begin{algorithmic}[1]
+\Require Architecture cfg; hard cap $T_{\max}$; patience $P$; relative $\varepsilon$; batch $B$
+\State cell $\gets \mathrm{SeamCell}(\mathrm{cfg})$
+\State opt $\gets \mathrm{Adam}(\mathrm{cell.params})$
+\State prev $\gets \mathrm{null}$; stagnant $\gets 0$
+\For{$t = 1,\ldots,T_{\max}$}
+  \State ideal, eng $\gets \mathrm{MakeBatch}(B)$
+  \State out $\gets \mathrm{ApplyOps}(\mathrm{eng},\,\mathrm{cell},\,\mathrm{cfg.ops})$
+  \State $R \gets \mathrm{mean}\,\mathrm{ResidualScoreBlend}(\mathrm{ideal},\,\mathrm{eng},\,\mathrm{out})$
+  \State loss $\gets 1-R$
+  \If{finite(loss)}
+    \State AdamStep(opt, loss)
+  \EndIf
+  \If{prev $\neq$ null and $|\mathrm{prev}-R|/\max(|\mathrm{prev}|,\varepsilon_{\mathrm{num}}) < \varepsilon$}
+    \State stagnant $\gets$ stagnant $+1$
+    \If{stagnant $\ge P$}
+      \State \textbf{break} \Comment{converged}
+    \EndIf
+  \Else
+    \State stagnant $\gets 0$
+  \EndIf
+  \State prev $\gets R$
+\EndFor
+\State \Return cell, $R$, converged, $t$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+\caption{GA tournament step}
+\label{alg:ga}
+\begin{algorithmic}[1]
+\Require Population $P$, tournament size $k$, crossover rate $p_c$, mutation rate $p_m$
+\State Sample $k$ genomes; parents $\gets$ top-2 by $R$
+\State child $\gets$ Crossover(parents) with prob.\ $p_c$, else clone elite
+\State Mutate(child) with rate $p_m$ (ops, depth, operator type, $\theta$)
+\State Fit and evaluate child; insert into $P$ (replace worst if full)
+\State \Return updated $P$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+\caption{PPO architecture update}
+\label{alg:ppo}
+\begin{algorithmic}[1]
+\Require Actor--critic $\pi_\phi$, clip $\epsilon$, experience buffer of mutate actions
+\State Sample action $a$ editing ops / hyperparameters from $\pi_\phi$
+\State Fit proposed cfg; observe centered advantage $\rho = R - R_{\mathrm{DualCosine}}$ \Comment{objective remains maximize $R$}
+\State Advantage $\hat{A}$ from critic; ratio $r_\phi = \pi_\phi(a)/\pi_{\phi_{\mathrm{old}}}(a)$
+\State Update $\phi$ with clipped surrogate $\min(r_\phi\hat{A},\,\mathrm{clip}(r_\phi,1-\epsilon,1+\epsilon)\hat{A})$
+\State \Return updated $\pi_\phi$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+\caption{PBT exploit--mutate}
+\label{alg:pbt}
+\begin{algorithmic}[1]
+\Require Population $P$, exploit quantile $q$, mutate scale $\sigma$
+\State Rank $P$ by $R$; for each bottom member, copy hyperparameters from a top-$q$ elite
+\State Perturb copied hyperparameters by multiplicative noise of scale $\sigma$
+\State Refit briefly; write back into $P$
+\State \Return updated $P$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+\caption{HybridMetaSearch}
+\label{alg:hybrid}
+\begin{algorithmic}[1]
+\Require Iteration budget $T_{\mathrm{out}}$, population size $n$
+\State $P \gets \mathrm{InitPopulation}(n)$
+\State $\pi \gets \mathrm{ActorCritic}()$
+\State champ $\gets$ null
+\State boredom $\gets 0$
+\For{$it = 1,\ldots,T_{\mathrm{out}}$}
+    \State branch $\gets \mathrm{Rotate}(\mathrm{ppo},\mathrm{ga},\mathrm{pbt},\mathrm{nas},\mathrm{combo})$
+    \State cfg, hp $\gets \mathrm{Propose}(\mathrm{branch},\,P,\,\pi)$
+    \State cell, $R_{\mathrm{fit}} \gets \mathrm{FitCell}(\mathrm{cfg},\,\mathrm{hp.fit\_steps})$
+    \State $R_{\mathrm{eval}} \gets \mathrm{EvalCell}(\mathrm{cell})$
+    \State $R \gets \tfrac12 R_{\mathrm{fit}} + \tfrac12 R_{\mathrm{eval}}$ (+ optional depth/MoE bonus)
+    \State UpdatePopulation($P$, cfg, $R$)
+    \State PPOUpdate($\pi$, centered $\rho = R - R_{\mathrm{DualCosine}}$)
+    \If{$R > \mathrm{champ}.R$}
+      \State champ $\gets$ (cfg, cell, $R$)
+      \State boredom $\gets 0$
+    \Else
+      \State boredom $\gets$ boredom $+1$
+    \EndIf
+    \If{boredom $\ge 1000$}
+      \State PlateauAdapt
+      \State boredom $\gets 0$
+    \EndIf
+\EndFor
+\State \Return champ
+\end{algorithmic}
+\end{algorithm}

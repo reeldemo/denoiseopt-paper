@@ -1,0 +1,198 @@
+
+\subsection{Multi-family ranking plots}
+\label{sec:app-sota-plots}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/fig_sota_method_bars.png}
+  \caption{Multi-family mean $R_{\mathrm{blend}}$ by method
+  (same $20$-waveform board as Table~\ref{tab:sota-main}).}
+  \label{fig:sota-method-bars}
+\end{figure}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.92\textwidth]{figures/fig_sota_heatmap.png}
+  \caption{Colorblind-safe (\texttt{cividis}) heatmap of mean $R_{\mathrm{blend}}$
+  for selected methods $\times$ generative families (2 seeds each). Higher is better.}
+  \label{fig:sota-heatmap}
+\end{figure*}
+
+\section{Supplementary tables and figures}
+\label{app:supplement}
+
+Material moved here for the conference-length reading path:
+matched outer-loop bake-off, branch/compute freezes, hyperparameter probe, transfer latency, and search-monitor plots.
+Primary claims remain in Sections~\ref{sec:results}--\ref{sec:transfer-main}.
+
+\subsection{Matched-budget outer-loop comparison}
+\label{sec:meta-approaches-results}
+
+Under a $5{,}000$ evaluation budget with LSTM and xLSTM in the searchable bake vocabulary, Table~\ref{tab:meta-approaches} compares Random NAS, Cont.\ CMA-ES, Arch REINFORCE, Aging evolution, TPE Bayes NAS, and our hybrid GA+PPO approach (Ours). The table reports results from a matched Deferred D1 re-search under locked $R_{\mathrm{blend}}{+}J$ (mean $\pm$ std over three search seeds; artifacts \texttt{meta\_approach\_compare\_v13\_rblend/}). Our hybrid GA+PPO leads with an $R_{\mathrm{blend}}$ of $0.9748{\pm}0.0018$, taking approximately 8.4 hours on average. Aging evolution ranks second at $0.9635{\pm}0.0049$, while Arch REINFORCE shows the highest variance with $0.9599{\pm}0.0116$. Only seed \texttt{1902771841} of our hybrid approach clears the frozen Noise2Noise gate under the short-FitCell D1 protocol, achieving an $R_{\mathrm{blend}}$ of approximately 0.9766 compared to the gate's approximate value of 0.9750. Despite mid-search graphs ranging from about 15k to 370k parameters, our hybrid approach maintains compact models (${\approx}24$k$\pm$2k params across seeds). Since our hybrid method dominated this matched bake-off, the subsequent campaign focuses solely on running hybrid-only FitCell-to-convergence (Section~\ref{sec:v14-converge}, Table~\ref{tab:v14-hybrid-converge}). Note that Noise2Noise is not an outer-loop method in this context (see Tables~\ref{tab:n2n-vs-ours} and~\ref{tab:sota-main}). Learning-curve and bar figures use trajectories from seed \texttt{1902771841} under the same locked objective.
+
+\input{figures/meta_approaches_table}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/meta_approach_bars.png}
+  \caption{Matched 5,000-evaluation search methods under locked $R_{\mathrm{blend}}{+}J$ (seed \texttt{1902771841}).
+  Table~\ref{tab:meta-approaches} reports mean$\pm$std across three search seeds.
+  Dashed line: Dual Cosine on the same runner.}
+  \label{fig:meta-approach-bars}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/fig_meta_approach_compare.png}
+  \caption{Champion $R_{\mathrm{blend}}$ over a matched 5,000-evaluation budget (Deferred D1 complete; seed \texttt{1902771841}).
+  Dashed line: Dual Cosine.}
+  \label{fig:meta-approach-compare}
+\end{figure}
+
+\subsection{Ablations and compute}
+\label{sec:ablation-compute}
+
+Table~\ref{tab:ablation} answers two narrow questions, not a full factorial re-search of Table~\ref{tab:meta-approaches}.
+\textbf{Left column:} within one recorded hybrid history under the superseded prolonged-$R$ search metric, what was the best freeze tagged by outer-loop branch (PPO/GA/PBT/\ldots) at the $5$k gate?
+These are branch labels in a single run, not separately fitted champions, so they mainly show that no single branch monopolizes the trajectory.
+\textbf{Right column:} isolated $150$-iteration \texttt{ablate-*} restarts (seed \texttt{1902771841}) whose final cells are re-scored under locked $R_{\mathrm{blend}}$.
+They probe whether dropping GA or PPO collapses residual under a short budget; they are \emph{not} matched-$5$k competitors and must not overwrite Table~\ref{tab:meta-approaches}.
+\paragraph{How to read Table~\ref{tab:ablation}.}
+Left-column values are close to each other (${\approx}0.987$--$0.991$ prolonged $R$): in that single history, branch tags do not identify a unique winner, so we do not treat ``GA-only freeze'' as proof that GA alone suffices under locked $R_{\mathrm{blend}}$.
+Right-column short restarts under $R_{\mathrm{blend}}$ stay far below the matched-$5$k hybrid mean ($0.9748$) and the converge seed ($0.9912$) because the budget is only $150$ iterations with short FitCell---they are sensitivity checks, not leaderboard rows.
+The matched comparison that drives method choice remains Table~\ref{tab:meta-approaches}.
+Table~\ref{tab:compute} summarizes campaign compute (historical prolonged-$R$ overnight).
+
+\begin{table}[htbp]
+  \centering
+  \caption{Ablations (interpret narrowly).
+    Left: best prolonged $R$ by branch label in one hybrid history (final iteration ${\approx}6{,}922$; superseded search metric; not separate fits).
+    Right: isolated 150-iteration \texttt{ablate-*} final champions re-scored under $R_{\mathrm{blend}}$ ($\alpha{=}0.7$; seed \texttt{1902771841}).
+    Full $R_{\mathrm{blend}}$ branch re-search remains deferred; use Table~\ref{tab:meta-approaches} for matched outer-loop comparison.}
+  \label{tab:ablation}
+  \setlength{\tabcolsep}{3pt}
+  \begin{adjustbox}{max width=\columnwidth}
+  \begin{tabular}{@{}lrr@{}}
+    \toprule
+    Config & Prolonged $R$ freeze & 150-it $R_{\mathrm{blend}}$ \\
+    \midrule
+    Full hybrid & 0.99093 & 0.92710 \\
+    GA-only & 0.99016 & 0.94168 \\
+    PBT (search branch) & 0.99012 & n/a \\
+    PPO-only & 0.98924 & 0.94405 \\
+    GA+PPO & n/a & 0.94478 \\
+    Combined branch & 0.98854 & n/a \\
+    NAS branch & 0.98677 & n/a \\
+    Dual Cosine (runner) & 0.81658 & ${\approx}0.539$ \\
+    \bottomrule
+  \end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Compute budget for the reported 5,000-evaluation search run (RTX~3090, search seed \texttt{1902771841}; prolonged-$R$ objective).
+    Final champion $R$ below is the historical prolonged freeze, not $R_{\mathrm{blend}}$.}
+  \label{tab:compute}
+  \setlength{\tabcolsep}{3pt}
+  \begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{@{}lr@{}}
+    \toprule
+    Item & Value \\
+    \midrule
+    GPU & NVIDIA GeForce RTX 3090 \\
+    Elapsed wall time & ${\approx}7.92$\,h \\
+    Clean iterations / arch evals & ${\approx}6{,}922$ \\
+    Population size & 12 \\
+    Final champion prolonged $R$ & 0.99093 \\
+    Dual Cosine baseline (runner, prolonged) & 0.81658 \\
+    Peak VRAM (replay) & ${\approx}3.29$\,GiB \\
+    \bottomrule
+  \end{tabular}
+\end{adjustbox}
+\end{table}
+
+\subsection{Hyperparameter sensitivity}
+\label{para:hp-sensitivity}
+One-at-a-time $\pm 50\%$ probe of Table~\ref{tab:hyperparams} knobs at $500$ outer iterations (seed \texttt{1902771841}).
+Not a full $5$k re-search.
+Default champion $R{\approx}0.9888$. The largest $|\Delta R|$ among OAT arms is ${\approx}0.0123$ (50\% lower learning rate).
+All $11/11$ arms finished under this budget.
+
+\input{figures/tab_meta_hp_sensitivity}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_meta_hp_sensitivity.png}
+  \caption{One-at-a-time $\pm 50\%$ HP sensitivity of hybrid champion $R$ at 500 iterations. Blue bar: Table~\ref{tab:hyperparams} default.}
+  \label{fig:hp-sensitivity}
+\end{figure}
+
+\subsection{Transfer inference latency}
+\label{sec:transfer-latency-app}
+Table~\ref{tab:transfer-latency} and Figure~\ref{fig:signal-heal-transfer-latency} pair with the prolonged-$R$ transfer board (Table~\ref{tab:transfer-main}).
+N2N latency uses the wavetable checkpoint zero-shot. Domain-trained N2N quality scores are in Table~\ref{tab:transfer-main}.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Transfer-domain inference latency (ms/batch). Batch=64, CUDA.}
+  \label{tab:transfer-latency}
+  \setlength{\tabcolsep}{4pt}
+  \begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{@{}lrrrrrr@{}}
+    \toprule
+    Method & CWRU & MFPT & MIT-BIH & PTB-XL & CNC & PMU \\
+    \midrule
+    no-bake & 0.26 & 0.26 & 0.27 & 0.27 & 0.28 & 0.26 \\
+    Dual Cosine & 1.10 & 1.11 & 1.12 & 1.14 & 1.15 & 1.14 \\
+    Ours (hybrid) & 3.92 & 6.61 & 2.87 & 1.67 & 1.69 & 1.67 \\
+    N2N (WT to domain) & 0.95 & 0.99 & 0.98 & 0.97 & 0.98 & 0.97 \\
+    \bottomrule
+  \end{tabular}
+\end{adjustbox}
+\end{table}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.92\textwidth]{figures/fig_signal_heal_transfer_latency.png}
+  \caption{Transfer-domain inference latency (ms/batch). N2N is wavetable-trained zero-shot when available.}
+  \label{fig:signal-heal-transfer-latency}
+\end{figure*}
+
+\subsection{Search-monitor figures}
+\label{sec:search-monitor-figs}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/champ_residual_vs_iter.png}
+  \caption{FitCell-to-plateau champion $R_{\mathrm{blend}}$ vs.\ outer-loop evaluation (seed \texttt{1902771841}; Dual Cosine and Noise2Noise gate marked).}
+  \label{fig:champ-residual}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/branch_bests_vs_iter.png}
+  \caption{Best residual by search branch (older overnight monitor freeze; search-trace artifact).}
+  \label{fig:branch-bests}
+\end{figure}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.92\textwidth]{figures/search_panel.png}
+  \caption{Search progress: champion $R$ (top) and branch bests (bottom).}
+  \label{fig:search-panel}
+\end{figure*}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/residual_by_branch.png}
+  \caption{Per-trial residual by branch with champion trajectory overlaid.}
+  \label{fig:residual-branch}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/champion_timeline.png}
+  \caption{Champion updates (older overnight monitor freeze; search-trace artifact).}
+  \label{fig:champ-timeline}
+\end{figure}

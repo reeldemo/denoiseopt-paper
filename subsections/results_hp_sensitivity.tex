@@ -1,0 +1,25 @@
+% W4 / Q3 HP +/-50% OAT sensitivity (500 iters). Included from main.tex (T6).
+\paragraph{Hyperparameter sensitivity.}
+\label{para:hp-sensitivity}
+How sensitive is hybrid champion $R$ to $\pm 50\%$ shifts of Table~\ref{tab:hyperparams} knobs?
+We run a \textbf{one-at-a-time sensitivity probe} (not a full 5,000-iteration re-search).
+Each config uses $500$ outer iterations, seed \texttt{1902771841}, and sine{+}cliff FitCell matched to the meta-compare protocol (batch $48$, fit steps $24$).
+Perturbed knobs: population size $n$, PPO clip $\epsilon$, fit Adam learning rate, GA second-mutate rate, and PPO entropy coefficient.
+Table~\ref{tab:hp-sensitivity} and Figure~\ref{fig:hp-sensitivity} report champion absolute $R$ versus the Table-2 default (default champion $R\approx 0.9888$). The largest $|\Delta R|$ among OAT arms is $\approx 0.0123$ for a 50\% lower learning rate.
+All $11/11$ arms finished under this budget.
+
+This is local sensitivity evidence under the stated budget and seed.
+The 5,000-evaluation matched-budget ranking (Table~\ref{tab:meta-approaches}) remains the primary approach comparison.
+We do \emph{not} claim that Table-2 defaults are globally optimal.
+We only report that $\pm 50\%$ one-at-a-time shifts leave champion $R$ within a small band relative to the DualCosine gap ($\approx 0.17$ in the 5,000-evaluation comparison).
+
+\input{figures/tab_meta_hp_sensitivity}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_meta_hp_sensitivity.png}
+  \caption{One-at-a-time $\pm 50\%$ hyperparameter sensitivity of the hybrid champion residual $R$
+  at a 500-iteration budget (seed \texttt{1902771841}). The blue bar and dashed line mark the Table~\ref{tab:hyperparams} default.
+  This is a sensitivity probe, not a full 5,000-iteration search for each parameter.}
+  \label{fig:hp-sensitivity}
+\end{figure}

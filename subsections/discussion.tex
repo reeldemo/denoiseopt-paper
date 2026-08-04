@@ -1,0 +1,35 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\paragraph{Main story under $R_{\mathrm{blend}}$.}
+Under the locked holdout protocol, Noise2Noise still leads the short-FitCell hybrid freeze
+($0.9767{\pm}0.0015$ vs $0.9708{\pm}0.0014$ over five seeds; Dual Cosine $0.542{\pm}0.038$).
+The operative claim is narrower: compact searchable repair operators beat classical fades, stay competitive with Noise2Noise on multi-family means without a significant win (sign-test $p{=}1.0$), and hold on hard cliffs where Dual Cosine collapses
+(Table~\ref{tab:n2n-vs-ours}, Section~\ref{sec:cliff-strata}).
+Favorite $\Theta$ on the v10.1 freeze is larger than SeamN2N (${\approx}121$k vs ${\approx}53.5$k) and still trails N2N on holdout $R_{\mathrm{blend}}$
+(Table~\ref{tab:param-fairness}).
+Whole-curve numbers near $R{\approx}0.991$ are superseded debug freezes, not current holdout results.
+
+\paragraph{Which families stay hard.}
+Across large procedural benches, wrap error is uneven.
+Families such as \texttt{nonlinear}, \texttt{combo}, \texttt{triple\_mix}, and \texttt{extreme\_overlay} dominate the residual budget;
+\texttt{harmonic\_fft} and \texttt{am\_fm} are easier.
+Mean scores hide that structure.
+
+\paragraph{Search near the ceiling.}
+Under near-ceiling residuals, further gains are small in absolute units and sensitive to reward shaping and branch weights.
+Learning curves (Figure~\ref{fig:search-learning-curve}) show Dual Cosine cleared early under short FitCell,
+then FitCell-to-plateau clearing the Noise2Noise gate (Figure~\ref{fig:v14-converge-curve}).
+Matched-$5$k outer-loop bake-offs under locked $R_{\mathrm{blend}}{+}J$ rank hybrid first across three search seeds
+(Appendix~\ref{app:supplement}, Table~\ref{tab:meta-approaches}), which is why the follow-up spends GPU on hybrid alone
+(Section~\ref{sec:v14-converge}).
+Training candidates to residual plateau (rather than a $16$--$48$-step FitCell cap) is what lets seed \texttt{1902771841} clear the Noise2Noise gate ($R_{\mathrm{blend}}{\approx}0.9912$).
+Future search work can target family-specialist graphs and cliff-conditioned FitCell schedules under the same outer loop.
+
+\paragraph{Evidence beyond static tiles.}
+Vibrato spectrograms and downloadable hear WAVs are informal file checks only
+(Sections~\ref{sec:vibrato-eval}--\ref{sec:hear-samples}; Table~\ref{tab:listening-stats}: $N_{\mathrm{listeners}}{=}0$).
+They do \emph{not} support perceptual claims of any kind---not preference, not ``sounds better,'' not MOS/MUSHRA proxies.
+Sci/eng wrap transfer reports locked $R_{\mathrm{blend}}$ on seven boards as a wrap-protocol stress test
+(Section~\ref{sec:transfer-main}, Table~\ref{tab:transfer-main}), not audio$\to$fault/ECG diagnosis SOTA.
+Scope limits are collected in Section~\ref{sec:limitations}.

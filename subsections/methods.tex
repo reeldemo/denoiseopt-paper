@@ -1,0 +1,288 @@
+\section{Methods}
+\label{sec:methods}
+
+\subsection{Notation}
+\label{sec:notation}
+
+Throughout, $x\in\mathbb{R}^{L}$ is the cracked single-period wavetable (engine input with open-wrap cliff).
+Let $\mathcal{H}$ be the space of repair-operator configurations (discrete operator graph plus continuous bake parameters).
+The repair operator (bake operator $\Theta$) is
+\begin{equation}
+\label{eq:Theta}
+\Theta:\mathbb{R}^{L}\times\mathcal{H}\to\mathbb{R}^{L},\qquad
+y=\Theta(x;h),\quad h\in\mathcal{H}.
+\end{equation}
+When continuous parameters alone are emphasized we write $\theta$ for the continuous slice of $h$ and $y=\Theta(x;\theta)$.
+$r^{\star}\in\mathbb{R}^{L}$ is the procedural ideal sibling defined below.
+Tiling length $N$ (typically $N{=}16$) forms $y_{\mathrm{tiled}}=\mathrm{Tile}(y,N)$ and $r^{\star}_{\mathrm{tiled}}=\mathrm{Tile}(r^{\star},N)$.
+Seam width $W$ (code: \texttt{SEAM\_W}, typically $8$) is the neighborhood edited by classical fade and polish ops.
+$R\in[0,1]$ is the prolonged residual score ($1$~=~best).
+These symbols follow a different convention from Noise2Noise clean/noisy pairs.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Core symbols used in Methods.}
+  \label{tab:symbols}
+  \setlength{\tabcolsep}{3pt}
+  \begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{@{}cl@{}}
+    \toprule
+    Symbol & Meaning \\
+    \midrule
+    $L$ & Cycle length (samples per period) \\
+    $x$ & Cracked engine wavetable period (cliff on) \\
+    $y=\Theta(x;h)$ & Baked cycle after seam ops / residual operator \\
+    $\Theta$ & Repair operator (bake operator) $\mathbb{R}^{L}\times\mathcal{H}\to\mathbb{R}^{L}$ \\
+    $h\in\mathcal{H}$ & Repair-operator configuration (ops + continuous $\theta$) \\
+    $r^{\star}$ & Ideal sibling (same seed, cliff withheld) \\
+    $G$ & Procedural period generator (cliff on/off) \\
+    $N$ & Prolong tiling count \\
+    $W$ & Seam neighborhood width \\
+    $R$ & Prolonged residual score in $[0,1]$ (1~=~best) \\
+    \bottomrule
+  \end{tabular}
+\end{adjustbox}
+\end{table}
+
+\subsection{Problem setup: cracked period and ideal sibling}
+\label{sec:ideal-tile}
+
+\textbf{Problem.} Given a cracked period $x$, choose a bake configuration $h$ so that the repaired cycle $y=\Theta(x;h)$ matches a no-cliff ideal under prolonged tiling.
+
+\textbf{Ideal sibling and mid-cycle engine identity (explicit).}
+Let $G(\mathrm{seed},\mathrm{cliff})$ denote the procedural generator used by the CUDA FitCell batch maker
+(FitCell $=$ inner continuous-parameter fit of one candidate $\Theta$; Algorithm~\ref{alg:fit}):
+one draw of frequency, phase, and mid-cycle content, with an optional open-wrap cliff of width $W$ at both ends.
+For any seed,
+\begin{equation}
+\label{eq:G-siblings}
+r^{\star}=G(\mathrm{seed},\,\mathrm{cliff{=}off}),\qquad
+x=G(\mathrm{seed},\,\mathrm{cliff{=}on}).
+\end{equation}
+Thus $r^{\star}$ (ideal sibling) and $x$ (cracked engine) are \emph{paired twins of one procedural draw}:
+same mid-cycle waveform content; they differ only by whether the wrap cliff (and engine-only seam-boosted noise) is applied.
+\begin{itemize}
+  \item $r^{\star}$ is a \textbf{scoring target only}. It is never emitted as a method output and is not a human-labeled clean stem.
+  \item $x$ is the \textbf{operator input}. Repair $\Theta$ edits $x$ toward agreement with $r^{\star}$ at the seam and identity to $x$ in the mid-cycle body.
+  \item Locked $R_{\mathrm{blend}}$ (Section~\ref{sec:residual-score}) combines $R_{\mathrm{seam}}=R(r^{\star},y;\mathcal{S})$ with $R_{\mathrm{body}}=R(x,y;\mathcal{B})$ at $\alpha{=}0.7$:
+    seam fidelity to the cliff-withheld twin, plus mid-cycle identity to the cracked engine (so the bake cannot freely rewrite the period interior).
+\end{itemize}
+For an arbitrary cracked period from this family, the sibling is obtained by replaying the same seed with the cliff withheld
+(that is the pair returned by \texttt{make\_batch}).
+Here \emph{unsupervised} means: no human-labeled clean audio and no studio-clean targets in the search loop;
+$r^{\star}$ is a procedural self-supervised scoring twin, not a perceptual ground truth~\cite{lehtinen2018,kashyap2021n2n}.
+
+\subsection{Blended residual score and latency-aware objective}
+\label{sec:residual-score}
+
+\textbf{Primary metric.}
+After tiling each cycle $N$ times, let $y$ be the repaired output, $r^{\star}$ the ideal sibling, and $x$ the cracked engine.
+Define the wrap-neighborhood mask $\mathcal{S}$ of width $W{=}8$ at each period head/tail and the complementary mid-cycle body mask $\mathcal{B}$.
+Component scores use the unit clamp of relative RMS:
+\begin{equation}
+\label{eq:R-component}
+R(a,b;\mathcal{M})
+=\mathrm{clamp}\!\left(
+  1-\frac{\mathrm{RMS}\bigl((a-b)\odot\mathbf{1}_{\mathcal{M}}\bigr)}
+         {\mathrm{RMS}\bigl(a\odot\mathbf{1}_{\mathcal{M}}\bigr)+\varepsilon},
+  0,1\right).
+\end{equation}
+Then $R_{\mathrm{seam}}=R(r^{\star},y;\mathcal{S})$ (seam fidelity vs the ideal) and
+$R_{\mathrm{body}}=R(x,y;\mathcal{B})$ (mid-cycle identity vs the engine).
+The primary reported score is
+\begin{equation}
+\label{eq:R-blend}
+\begin{aligned}
+R_{\mathrm{blend}}
+&=\alpha R_{\mathrm{seam}}+(1-\alpha)R_{\mathrm{body}},\\
+\alpha&=0.7.
+\end{aligned}
+\end{equation}
+Whole-curve prolonged $R$ remains a debug / superseded key only.
+
+\textbf{Roles of the three quantities.}
+\begin{center}
+\small
+\begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Quantity & Role & Used for \\
+\midrule
+$R_{\mathrm{blend}}$ & Primary quality metric & Tables, figures, reporting \\
+$J$ & Latency-aware search objective & Champion selection \\
+N2N gate & Frozen neural benchmark & Holdout pass/fail \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{center}
+
+\textbf{Search objective.}
+Candidates maximize latency-aware
+\begin{equation}
+\label{eq:outer-obj}
+\begin{aligned}
+J&=R_{\mathrm{blend}}-\lambda\cdot\mathrm{latency\_norm},\\
+\mathrm{latency\_norm}
+&=\frac{\log(1+t_{\mathrm{ms}})}{\log(1+50)},
+\quad \lambda=0.02.
+\end{aligned}
+\end{equation}
+FitCell minimizes $1-R_{\mathrm{blend}}$. Selection and champion updates use $J$.
+A champion must also strictly beat the frozen corrupt$\to$corrupt Noise2Noise holdout $R_{\mathrm{blend}}$ (primary baseline).
+
+\textbf{Every} scored row applies some $\Theta$ to $x$ and is evaluated under~\eqref{eq:R-blend}.
+The ideal sibling is the seam scoring target. Body identity uses the engine.
+
+\begin{remark}[Noise2Noise primary baseline]
+\label{rem:n2n}
+\texttt{SeamN2N} (${\approx}53.5$k) is the primary neural comparator and champ gate.
+Search may discover \texttt{n2n\_unet} operators at the same scale. TinyUNet1D \texttt{unet} is a different, smaller block~\cite{lehtinen2018,kashyap2021n2n}.
+\end{remark}
+
+\subsection{Seam bake operator and classical baselines}
+\label{sec:bake}
+
+A \textbf{repair operator} $\Theta(\cdot;h)$ composes classical seam ops (DualCosine, polish, soft seam, FIR blends) with optional tiny residual operators (MLP/FIR/U-Net-lite/attention-lite/LSTM-lite) and optional mixture-of-experts (MoE) soft gates over experts (Appendix~\ref{app:algorithms}, Algorithms~\ref{alg:dualcosine}--\ref{alg:moe}).
+Bake parameters sit in a bounded box; architecture strings are discrete graphs over those ops.
+Separate classical controls apply cycle-local BLIT/BLEP, PolyBLEP, and BLAMP residual corrections at the wrap on the cracked engine tile: they share the DualCosine / FIR interface and are not a full oscillator rewrite.
+Roles in plain language: BLIT/BLEP and PolyBLEP correct a \emph{value} step at wrap, BLAMP corrects a \emph{slope}/corner jump, and DualCosine fades endpoints without a BLEP residual.
+Section~\ref{sec:va-seam-baselines} scores them.
+
+\paragraph{Four roles (keep separate).}
+\label{sec:four-roles}
+Four objects must stay distinct (Figure~\ref{fig:intro-sine}).
+The \textbf{ideal sibling} $r^{\star}$ withholds the cliff and is a scoring target only (panel~(a)).
+\textbf{No-bake} is the unrepaired passthrough $\Theta_{\mathrm{no\text{-}bake}}(x)=x$: the cracked engine scored against $r^{\star}$ (panel~(b)).
+It leaves the engine unchanged and must not be confused with $r^{\star}$, residual-net skips, or learned identity maps.
+\textbf{DualCosine} is the classical raised-cosine end fade on $x$ (panel~(c)).
+It appears both as a classical board row and, separately, as a PPO advantage baseline (Remark~\ref{rem:dualcosine-centering}).
+\textbf{Ours} is the searched bake $y=\Theta(x;h^{\star})$ from the hybrid outer loop (panel~(d)).
+
+On mild cliffs, residual mass sits far below ideal RMS under the unit clamp of~\eqref{eq:R-blend}, so no-bake $R_{\mathrm{blend}}$ can look high even when the wrap click remains audible.
+Treat that number as a do-nothing passthrough reference rather than a perceptual wrap-quality score.
+Released JSON may still use the legacy key \texttt{identity} for no-bake.
+Manuscript prose uses \emph{no-bake}.
+
+\paragraph{Classical (non-AI) comparison board.}
+\label{sec:classical-board}
+Learned / searched methods are always ranked against the full classical board on absolute $R$ (same $r^{\star}$):
+no-bake, DualCosine / cosine fade, \texttt{seam\_fir3}, classic quadratic, hann/crossfade/soft fades, detrend/ensemble, poly seam, and cycle-local BLIT/BLEP / PolyBLEP / BLAMP where scored.
+When tables show $\Delta R$ vs DualCosine, that is a reporting gap vs one classical bake, not the definition of reward.
+
+\begin{remark}[DualCosine centering is PPO advantage only]
+\label{rem:dualcosine-centering}
+The outer objective remains~\eqref{eq:outer-obj}: maximize absolute $R(y,r^{\star})$.
+In the PPO branch only, we optionally form a centered advantage
+\begin{equation}
+\label{eq:dualcosine-centering}
+\rho = R - R_{\mathrm{DualCosine}},
+\end{equation}
+so early-search advantages are roughly zero-mean.
+This does \emph{not} change selection, FitCell loss, champion ranking, or the matched $5$k meta-approach objective.
+All of those still maximize absolute $R$.
+DualCosine centering is soft relative shaping for the actor--critic, not a hard absolute ranking target.
+\end{remark}
+
+\subsection{Search pipeline}
+\label{sec:pipeline-overview}
+
+Figure~\ref{fig:denoiseopt-arch} summarizes the residual-scored hybrid loop.
+Each outer iteration proposes a bake configuration $h$, runs FitCell (Appendix~\ref{app:algorithms}, Algorithm~\ref{alg:fit}) to fit continuous parameters under loss $1-R_{\mathrm{blend}}$, evaluates $R_{\mathrm{blend}}$ (and $J$) vs $r^{\star}$, and updates the population / PPO policy.
+
+\paragraph{Main-text algorithm summary (before appendix listings).}
+\begin{enumerate}
+  \item \textbf{FitCell (inner):} Adam on $1-R_{\mathrm{blend}}$ over i.i.d.\ $G$ batches until relative residual change $<\varepsilon$ for patience $P$ steps, or hard cap $T_{\max}$ (Algorithm~\ref{alg:fit}).
+  \item \textbf{GA branch:} tournament parents $\to$ crossover/mutate op graph $\to$ FitCell $\to$ insert by $J$ (Algorithm~\ref{alg:ga}).
+  \item \textbf{PPO branch:} actor proposes discrete architecture edits; advantage uses optional DualCosine centering; clipped surrogate update (Algorithm~\ref{alg:ppo}); selection still maximizes absolute $R_{\mathrm{blend}}$/$J$.
+  \item \textbf{PBT branch:} copy hyperparameters from elites into bottom quantile; multiplicative mutate; brief refit (Algorithm~\ref{alg:pbt}).
+  \item \textbf{Hybrid rotation:} each outer step runs one or more of the above; champion is the best $J$ cell that also clears Dual Cosine and, when required, the N2N gate (Algorithm~\ref{alg:hybrid}).
+\end{enumerate}
+Full line-by-line pseudocode is in Algorithms~\ref{alg:ga}--\ref{alg:hybrid} (Appendix~\ref{app:algorithms}).
+
+\input{subsections/arch_diagram}
+
+\subsection{Search space and inner fit}
+\label{sec:search-space}
+
+Each genome encodes: ordered op list (fade, polish, FIR, pin, residual write), depth, residual operator type (none, MLP, FIR, U-Net-lite, attn-lite, LSTM-lite), optional MoE expert count $K\in\{2,3,4\}$, and continuous $\theta$ in the CUDA runner box bounds.
+The searchable bake vocabulary includes a width-capped 1--2 layer LSTM block over the seam window or full cycle (distinct from the fixed supervised seq-LSTM SOTA baseline).
+The live hybrid tag is \texttt{PPO+GA+PBT+NAS+depth+MoE} with LSTM enabled in the block graph.
+
+FitCell draws sibling batches via $G$, applies $\Theta(\cdot;h)$, and steps Adam on $1-R_{\mathrm{blend}}$ until residual plateau or a searchable hard cap $T_{\max}$ (Algorithm~\ref{alg:fit}; default patience / $\varepsilon$ co-tuned online).
+The short-cap D1 FitCell (${\approx}16$--$48$ steps) is retained only for the six-way matched bake-off; the hybrid-only follow-up uses the converge protocol (Section~\ref{sec:v14-converge}).
+
+\subsection{Hybrid outer loop}
+\label{sec:hybrid}
+
+Each iteration rotates among branches: PPO, GA, PBT, NAS, and combo.
+Selection and FitCell are always by absolute residual $R$ (maximize toward the ideal sibling, loss $1-R$).
+
+\paragraph{Near-ceiling scores need reward shaping.}
+\label{sec:reward-shaping}
+On the sine{+}cliff generator, no-bake already sits near $R\approx 0.97$, and strong classical / searched bakes live in a narrow band toward $1$ (often $0.99$--$0.991$).
+Absolute gaps of order $10^{-3}$--$10^{-2}$ are real but tiny as raw PPO/GA signals.
+Without shaping, advantages collapse.
+Hyperparameters (clip, entropy, mutation rate, population size, fit steps, learning rate) then decide whether the outer loop can climb the last percent.
+We therefore treat reward shaping and search hyperparameters as first-class tunables alongside bake architecture.
+In the present hybrid, PPO uses a searchable shaping mode among $\{\texttt{abs\_r},\,\texttt{vs\_dualcosine},\,\texttt{vs\_nobake},\,\texttt{neglog\_gap}\}$ (PBT-mutated, default $\rho = R - R_{\mathrm{DualCosine}}$ per Remark~\ref{rem:dualcosine-centering}).
+PBT mutates fit / PPO hyperparameters and reward mode in-population. Plateau adaptation retunes branch mix and depth/MoE bias when champions stall.
+The matched $5$k meta-approach comparison (Section~\ref{sec:meta-compare}) selects the outer-loop family under a shared short FitCell budget; the hybrid-only converge campaign then spends GPU on that winner.
+
+\subsection{Meta-learning approach comparison}
+\label{sec:meta-compare}
+
+Beyond the hybrid outer loop, we compare five additional outer-loop families under a matched $5{,}000$-evaluation budget,
+three search seeds (\texttt{1902771841}, \texttt{2026072701}, \texttt{2026072702}), and the same FitCell / $R_{\mathrm{blend}}{+}J$ protocol (LSTM and xLSTM included in the searchable bake vocabulary).
+Table and figure legends use the short display names below. Artifact folders keep stable code keys (see the \href{https://github.com/reeldemo/denoise-opt-meta/blob/master/paper/Unsupervised_Wrap-Discontinuity_Repair_in_Wavetable_Synthesis_via_Hybrid_GA-PPO_Meta-Search_v12/NOMENCLATURE.md}{nomenclature}):
+\begin{itemize}
+  \item \textbf{Random NAS} (\texttt{random}): independent uniform draws over bake graphs and fit hyperparameters (control).
+  \item \textbf{Cont.\ CMA-ES} (\texttt{cmaes}): diagonal covariance-matrix adaptation over a continuous encoding of depth, width, operator kind, block logits, and fit hyperparameters~\cite{hansen2016cmaes}.
+  \item \textbf{Arch REINFORCE} (\texttt{reinforce}): vanilla policy gradient over discrete architecture-edit actions (no clipped surrogate). Contrast to PPO~\cite{schulman2017,zoph2017nas}.
+  \item \textbf{Aging evolution} (\texttt{aging\_evo}): regularized evolution with oldest-member replacement after tournament parent selection~\cite{real2017large,real2019}, distinct from the hybrid's non-aging tournament GA branch.
+  \item \textbf{TPE Bayes NAS} (\texttt{tpe}): lightweight tree-structured Parzen estimator over discrete bake categoricals in the spirit of practical Bayesian optimization~\cite{snoek2012}.
+\end{itemize}
+We also run \textbf{Ours (hybrid GA--PPO)} (\texttt{hybrid\_lstm}): the multi-branch hybrid loop for $5{,}000$ evaluations with LSTM/xLSTM in the block vocabulary and online reward-mode / fit--PPO hyperparameter co-tuning, as the proposed matched-budget arm.
+Results appear in Appendix~\ref{app:supplement} (Table~\ref{tab:meta-approaches}, Figures~\ref{fig:meta-approach-bars}--\ref{fig:meta-approach-compare}). Healed-sample overlays appear in Figure~\ref{fig:meta-heal-samples}.
+
+\begin{remark}[Trial complexity]
+\label{rem:complexity}
+Per outer iteration the dominant cost is $O(T_{\mathrm{fit}}\cdot C_{\mathrm{fwd}})$ for fit steps times one forward bake.
+Bake-width caps (tiny residual operators) keep $C_{\mathrm{fwd}}$ far below full-band Demucs/DiffWave forwards screened in Related Work.
+\end{remark}
+
+\subsection{Hyperparameters}
+\label{sec:hyperparams}
+
+Table~\ref{tab:hyperparams} lists the CUDA search defaults used for the $5$k-gate freeze reported in Results.
+Under the near-ceiling residual regime (Section~\ref{sec:reward-shaping}), these outer-loop and fit hyperparameters are co-tuned with architecture. PBT and plateau adaptation continue to mutate several of them online.
+Companion listings: Algorithms~\ref{alg:residual}--\ref{alg:hybrid} (Appendix~\ref{app:algorithms}) and the \href{https://github.com/reeldemo/denoise-opt-meta/blob/master/docs/PSEUDOCODE.md}{pseudocode notes}.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Hybrid search hyperparameters (RTX~3090 DenoiseOpt CUDA search-runner defaults). Co-tuned with reward shaping under near-ceiling $R$ (Section~\ref{sec:reward-shaping}).}
+  \label{tab:hyperparams}
+  \setlength{\tabcolsep}{3pt}
+  \begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{@{}lp{0.48\columnwidth}@{}}
+    \toprule
+    Parameter & Value \\
+    \midrule
+    Population size $n$ & 12 \\
+    GA tournament $k$ & 3 \\
+    GA crossover fraction $p_c$ & $0.5$ (else clone elite parent) \\
+    GA mutation & $\ge 1$ mutate after inherit ($+50\%$ second mutate) \\
+    PPO clip $\epsilon$ & $0.2$ (default, searchable $\{0.1,0.2,0.25,0.3\}$) \\
+    Adam learning rate (fit) & $3{\times}10^{-3}$ (default, PBT-searchable) \\
+    Adam learning rate (policy) & $3{\times}10^{-4}$ \\
+    Entropy coefficient (PPO) & $0.02$ (default, searchable $\approx 0.005$--$0.06$) \\
+    PBT exploit / mutate & elite fraction $0.25$, multi-step arch+hp mutate \\
+    MoE routing & \texttt{sequential} or \texttt{moe\_parallel} when enabled \\
+    Plateau boredom threshold & $1000$ iters without champ improve \\
+    Cycle length $L$ / tiles $N$ / seam $W$ & $256$ / $16$ / $8$ \\
+    Fit steps / batch (default) & $24$ / $48$ \\
+    Algo tag & \texttt{PPO+GA+PBT+NAS+depth+MoE} \\
+    \bottomrule
+  \end{tabular}
+\end{adjustbox}
+\end{table}

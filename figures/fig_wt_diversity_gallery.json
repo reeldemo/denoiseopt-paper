@@ -1,0 +1,38 @@
+{
+  "schema": "denoiseopt.wt_diversity_gallery.v1",
+  "export_json": "C:\\Users\\Julian\\Documents\\Programming\\github\\reeldemo\\reelsynth\\brand\\artifacts\\real_wt_cycles\\reelsynth_export_cycles.json",
+  "export_indices": [
+    126,
+    382,
+    638,
+    894,
+    1150
+  ],
+  "export_ids": [
+    "saw_morph_frame126_dry",
+    "square_morph_frame126_dry",
+    "sine_frame126_dry",
+    "formant_frame126_dry",
+    "metallic_frame126_dry"
+  ],
+  "export_banks": [
+    "saw_morph",
+    "square_morph",
+    "sine",
+    "formant",
+    "metallic"
+  ],
+  "n_cols": 5,
+  "akwf_files": [
+    "AKWF_0001.wav",
+    "AKWF_0257.wav",
+    "AKWF_0513.wav",
+    "AKWF_0769.wav",
+    "AKWF_1025.wav"
+  ],
+  "akwf_dir": "C:\\Users\\Julian\\Documents\\Programming\\github\\reeldemo\\reelsynth\\brand\\artifacts\\real_wt_cycles\\oa_akwf",
+  "matrix_fold": "paper/Unsupervised_Wrap-Discontinuity_Repair_in_Wavetable_Synthesis_via_Hybrid_GA-PPO_Meta-Search_v12/figures/real_wt_matrix.json",
+  "png": "C:\\Users\\Julian\\Documents\\Programming\\github\\reeldemo\\reelsynth\\brand\\artifacts\\paper_v8_listening\\fig_wt_diversity_gallery.png",
+  "pdf": "C:\\Users\\Julian\\Documents\\Programming\\github\\reeldemo\\reelsynth\\brand\\artifacts\\paper_v8_listening\\fig_wt_diversity_gallery.pdf",
+  "note": "One mid-morph dry frame per unique factory bank; AKWF row matched to same column count. No new meta search."
+}

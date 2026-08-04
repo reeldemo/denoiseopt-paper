@@ -1,0 +1,54 @@
+\section{Limitations}
+\label{sec:limitations}
+
+These constraints bound claim strength; they are not optional honesty footnotes.
+
+\begin{itemize}
+  \item \textbf{No formal listening study.}
+    $R_{\mathrm{blend}}$ and $J$ use a procedural no-cliff sibling for seams and an engine-identity prior for the mid-cycle body.
+    They do not measure listening quality.
+    No MOS, MUSHRA, or forced-choice A/B was run ($N_{\mathrm{listeners}}{=}0$).
+    Released WAVs and vibrato spectrograms are for informal file inspection only
+    (Section~\ref{sec:listening-protocol}); they are \emph{not} a substitute for perceptual scores.
+    Why listening was deferred: primary claims are objective cycle-local residual under a locked protocol for a DSP venue;
+    a powered listener study needs IRB/recruitment budget outside this campaign.
+    Generalization to ``sounds better'' is therefore \emph{not} claimed.
+    PESQ/STOI are excluded (non-speech tiles). We do not invent THD+N or MOS tables.
+  \item \textbf{Metric lock and seed labeling.}
+    Primary holdout claims use locked $R_{\mathrm{blend}}$ (Table~\ref{tab:n2n-vs-ours}, Section~\ref{sec:residual-score}) as mean$\pm$std over five evaluation seeds.
+    Matched-$5$k outer-loop means use three search seeds (Table~\ref{tab:meta-approaches}).
+    FitCell-to-plateau $R_{\mathrm{blend}}{\approx}0.9912$ is a single-seed freeze (Table~\ref{tab:v14-hybrid-converge}), not a multi-seed mean.
+    Whole-curve prolonged $R$ near $0.991$ is a superseded debug score and must not overwrite holdout or converge readings.
+  \item \textbf{Synthetic / proxy boards.}
+    Primary search and holdout use procedural sine{+}cliff generators, not private studio stems.
+    Synthetic CNC/PMU transfer rows are procedural pilots when KIT / IEEE DataPort downloads are login-walled;
+    they do \emph{not} validate industrial toolpath or live-grid claims.
+  \item \textbf{Domain Noise2Noise vs transfer depth.}
+    Domain-trained Noise2Noise was scored on the seven wrap-protocol stress-test boards
+    (Table~\ref{tab:transfer-main}). It trails Ours on every column under $R_{\mathrm{blend}}$.
+    Latency timings in Appendix~\ref{app:supplement} still use the wavetable checkpoint zero-shot.
+    Cycle-GAN / BeatDiff / real KIT--PMU remain incomplete where noted
+    (Table~\ref{tab:transfer-sota-status}).
+  \item \textbf{Domain shift on exports.}
+    On Factory+FX / Rust tiles the meta favorite can trail no-bake or FIR while still beating Dual Cosine.
+    We do not claim universal factory superiority.
+  \item \textbf{Search geometry.}
+    Search scores Python generator draws.
+    The Python multi-family matrix is primary. Rust export is secondary.
+    Per-trial width is capped. Demucs-/diffusion-scale stacks were screened out.
+  \item \textbf{No wrap-closure theorems / no formal TCB.}
+    Endpoint-pin can zero wrap-jump while residual falls.
+    We claim tiled residual repair toward $r^{\star}$, not endpoint closure or search-convergence proofs.
+    Tooling checks are manual evidence alignment against frozen JSON (Section~\ref{sec:tooling}), not a trusted computing base or machine-checked verification.
+  \item \textbf{Transfer scope.}
+    Sci/eng wrap transfer is a classical-board stress test of the wrap protocol, not deep CWRU/ECG SOTA
+    (Table~\ref{tab:transfer-sota-status}).
+  \item \textbf{Hyperparameter probe.}
+    The $\pm 50\%$ one-at-a-time probe (Appendix~\ref{app:supplement}) is not a full re-search of Table~\ref{tab:hyperparams}.
+\end{itemize}
+
+\subsection{Future work}
+\label{sec:outlook}
+
+A follow-up can treat which sounds fail as the primary object: stratified residual heatmaps over procedural families, cliff-size conditioning, and family-specialist operators under the same outer loop.
+A powered formal listening study (MOS or forced-choice on high-wrap tiles) remains the clearest missing perceptual check and is required before any ``sounds better'' claim.

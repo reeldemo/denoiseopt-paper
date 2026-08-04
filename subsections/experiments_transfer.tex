@@ -1,0 +1,53 @@
+% Main-text sci/eng wrap transfer (elevated from appendix-only in v9).
+% Included from experiments.tex.
+
+\subsection{Cross-domain wrap transfer protocol}
+\label{sec:transfer-protocol}
+
+The primary claim of this paper is wavetable seam repair.
+Transfer boards answer a narrower mechanistic question:
+does the \emph{same} wrap-discontinuity protocol (open a cliff at a period join, score against a no-cliff ideal sibling, fit a compact repair operator) still make sense on other short periodic signals?
+They are stress tests of that geometry.
+They are \emph{not} claims that an audio-trained bake transfers as bearing-fault or ECG diagnosis SOTA,
+and they are not claims that fatigue cracks or grid phase events ``are'' wavetable seams.
+Reported transfer evidence is only locked $R_{\mathrm{blend}}$ on the seven wrap boards in Table~\ref{tab:transfer-main}; we do not claim cross-domain generalization beyond that residual protocol.
+
+\paragraph{Shared transfer recipe.}
+For each domain we cut fixed-length periods ($L{=}256$) and build an ideal sibling (smooth / template / cubic path) plus a cracked engine (same content with an open-wrap cliff, sometimes with a deliberately worse interpolant).
+We then score classical baselines and a domain-trained DenoiseOpt / Noise2Noise stack under locked $R_{\mathrm{blend}}$ as defined in Section~\ref{sec:residual-score}
+(\texttt{hybrid\_lstm} FitCell, $150$--$250$ outer iterations where searched, short \texttt{fit\_steps}${}={}40$ on transfer boards).
+Classical baselines on every board: no-bake (passthrough), DualCosine (raised-cosine end fade), \texttt{seam\_fir3}, and endpoint-pin (shared DualCosine/FIR interface; Section~\ref{sec:classical-board}).
+SeamN2N: corrupt$\to$corrupt CNN, ${\approx}53.5$k params, $4000$ Adam steps, train seed \texttt{424242}.
+Domain-trained Noise2Noise (corrupt$\to$corrupt, $4000$ Adam steps) is scored on the same seven boards and reported beside classical rows in Table~\ref{tab:transfer-main}.
+Artifacts:
+\href{https://github.com/reeldemo/reelsynth/tree/main/brand/artifacts/signal_heal_transfer}{signal\_heal\_transfer}.
+
+\paragraph{Seam analogy by domain family.}
+\textbf{Bearing revolutions (CWRU / MFPT / Paderborn).}
+One shaft revolution is the period.
+The seam is the join between the last and first angle samples after resampling to $L{=}256$.
+A wrap cliff models a bad change-of-time / interpolant at that join, not a physics model of fatigue crack growth.
+Ideal siblings use a smoother angular path (cubic) than the cracked engine (linear + cliff).
+
+\textbf{ECG beats (MIT-BIH / PTB-XL subset).}
+One heartbeat (R--R window) is the period.
+The seam is the join between beat end and beat start when the window is tiled.
+A wrap cliff is an artificial endpoint mismatch on that window.
+The ideal is a mild endpoint-equalized beat template.
+Clinical arrhythmia restore metrics are out of scope.
+
+\textbf{Synthetic CNC / PMU.}
+Stand-ins for closed machine-tool contours and one AC / PMU voltage cycle when real KIT / IEEE DataPort downloads are walled.
+The seam is again a period-join cliff under the same residual protocol.
+These rows are procedural pilots, not industrial toolpath or live-grid claims.
+
+\paragraph{What each dataset is (pointers).}
+CWRU / MFPT / Paderborn K001: public vibration, $n{=}256$ revolutions each (Paderborn also hosts a separate Al~Firdausi 4-class fault classifier, labeled apart from wrap-$R_{\mathrm{blend}}$).
+MIT-BIH and PTB-XL 500\,Hz lead-I subset: PhysioNet beat windows, $n{=}256$.
+Synthetic CNC G01 and synthetic PMU/AC: procedural, $n{=}256$.
+
+\paragraph{Scope note.}
+Transfer tables compare classical rows, domain-trained Noise2Noise, and Ours under this residual protocol.
+Author ECG Cycle-GAN and BeatDiff carry OOD wrap probes, while Paderborn Al~Firdausi is a trained fault classifier (plus labeled arch-reuse wrap bake).
+Formal listening remains out of scope (Section~\ref{sec:limitations} and Table~\ref{tab:transfer-sota-status}).
+Results appear in Section~\ref{sec:transfer-main}.

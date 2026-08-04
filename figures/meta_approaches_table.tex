@@ -1,0 +1,24 @@
+\begin{table}[htbp]
+  \centering
+  \caption{Matched $5{,}000$-evaluation outer-loop comparison under locked $R_{\mathrm{blend}}{+}J$ (Deferred D1 complete).
+    Mean$\pm$std over three search seeds (\texttt{1902771841}, \texttt{2026072701}, \texttt{2026072702}).
+    $\Delta R$ uses seed-\texttt{1902771841} Dual Cosine (${\approx}0.504$). Wall-h is mean CUDA wall per approach.
+    LSTM?/xLSTM?: whether any seed's champion included that block.}
+  \label{tab:meta-approaches}
+  \setlength{\tabcolsep}{2pt}
+  \scriptsize
+  \begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{@{}lrrrcc@{}}
+    \toprule
+    Method & $R_{\mathrm{blend}}$ & $\Delta R$ vs DC & h & LSTM & xLSTM \\
+    \midrule
+    Random NAS & $0.9367{\pm}0.0032$ & $+0.4327$ & 4.7 & no & no \\
+    Cont.\ CMA-ES & $0.9565{\pm}0.0016$ & $+0.4525$ & 1.8 & no & no \\
+    Arch REINFORCE & $0.9599{\pm}0.0116$ & $+0.4559$ & 5.8 & yes & no \\
+    Aging evolution & $0.9635{\pm}0.0049$ & $+0.4595$ & 9.0 & yes & no \\
+    TPE Bayes NAS & $0.9451{\pm}0.0019$ & $+0.4411$ & 3.8 & no & no \\
+    Ours (hybrid GA--PPO) & $0.9748{\pm}0.0018$ & $+0.4708$ & 8.4 & no & no \\
+    \bottomrule
+  \end{tabular}
+\end{adjustbox}
+\end{table}

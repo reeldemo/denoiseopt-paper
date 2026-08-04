@@ -1,0 +1,55 @@
+% DenoiseOpt overview architecture diagram (TikZ); placed before component deep-dives
+\begin{figure}[t]
+  \centering
+  \resizebox{\columnwidth}{!}{%
+  \begin{tikzpicture}[
+    font=\footnotesize,
+    box/.style={draw, rounded corners=1.5pt, align=center, inner sep=3pt, minimum height=0.55cm},
+    io/.style={box, fill=black!6},
+    classical/.style={box, fill=black!3},
+    neural/.style={box, fill=black!8},
+    meta/.style={box, fill=black!12},
+    arr/.style={-{Stealth}, thick},
+    node distance=0.42cm and 0.28cm
+  ]
+    % Top: generator siblings
+    \node[io] (seed) {seed};
+    \node[io, right=1.1cm of seed] (Goff) {$r^{\star}{=}G(\cdot,\mathrm{cliff\,off})$};
+    \node[io, below=0.55cm of Goff] (Gon) {$x{=}G(\cdot,\mathrm{cliff\,on})$};
+
+    % Middle: bake path
+    \node[classical, right=0.85cm of Gon] (dc) {classical ops\\DualCosine / FIR};
+    \node[neural, right=of dc] (cell) {repair operator $\Theta(x;h)$\\(+ residual / MoE)};
+    \node[io, right=of cell] (y) {baked $y$};
+
+    % Bottom: score + outer loop
+    \node[meta, below=0.85cm of cell] (R) {$\max\,R(y,r^{\star})$\\(tile $N{=}16$)};
+    \node[meta, below=0.5cm of R] (outer) {Hybrid outer loop:\\PPO $\cdot$ GA $\cdot$ PBT $\cdot$ NAS $\cdot$ combo};
+    \node[io, right=0.55cm of outer] (champ) {Ours / champion $h^{\star}$};
+
+    % Side labels for controls
+    \node[classical, left=0.55cm of R, align=center] (nobake) {no-bake\\$\Theta{=}{\mathrm{id}}$};
+
+    \draw[arr] (seed) -- (Goff);
+    \draw[arr] (seed) |- (Gon);
+    \draw[arr] (Gon) -- (dc);
+    \draw[arr] (dc) -- (cell);
+    \draw[arr] (cell) -- (y);
+    \draw[arr] (y) |- (R);
+    \draw[arr] (Goff) |- (R);
+    \draw[arr, dashed] (Gon) |- (nobake);
+    \draw[arr, dashed] (nobake) -- (R);
+    \draw[arr] (R) -- (outer);
+    \draw[arr] (outer) -- (champ);
+    \draw[arr, dashed] (outer) |- ++(0,1.05) -| (cell);
+  \end{tikzpicture}%
+  }
+  \caption{DenoiseOpt overview (before component deep-dives).
+  Same-seed generator $G$ yields ideal sibling $r^{\star}$ (cliff off) and cracked engine $x$ (cliff on).
+  Repair operator $\Theta(x;h)$ may include DualCosine/FIR and optional residual/MoE experts.
+  No-bake is the identity control $x\mapsto x$.
+  Outer objective is maximize absolute prolonged $R(y,r^{\star})$.
+  DualCosine centering (not shown) is PPO advantage shaping only.
+  Dashed feedback: architecture proposals update the operator. Pseudocode in Appendix~\protect\ref{app:algorithms}.}
+  \label{fig:denoiseopt-arch}
+\end{figure}

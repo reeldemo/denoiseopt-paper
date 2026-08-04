@@ -1,0 +1,16 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+DenoiseOpt repairs wavetable wrap clicks with compact operators searched by hybrid GA+PPO(+PBT) under locked $R_{\mathrm{blend}}$ and latency-aware $J$.
+We reuse existing search tools; we do not introduce a new NAS algorithm.
+Noise2Noise is the neural gate. Dual Cosine is the classical fade.
+
+On five holdout seeds, short-FitCell hybrid scores $0.971{\pm}0.001$: below Noise2Noise ($0.977{\pm}0.001$), far above Dual Cosine ($0.542{\pm}0.038$).
+Multi-family board means are statistically indistinguishable from Noise2Noise.
+Hard cliffs collapse classical fades while searched operators hold.
+A matched $5$k bake-off ranks hybrid first ($0.9748{\pm}0.0018$), so compute then goes to hybrid-only FitCell-to-plateau.
+Seed \texttt{1902771841} clears the Noise2Noise gate ($R_{\mathrm{blend}}{\approx}0.9912$).
+Transfer boards are wrap-protocol residual stress tests only.
+No formal listening study was run; the claim is objective residual.
+
+Paper repository: \url{https://github.com/reeldemo/denoiseopt-paper}.

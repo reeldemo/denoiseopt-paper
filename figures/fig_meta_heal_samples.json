@@ -1,0 +1,15 @@
+{
+  "schema": "denoiseopt.meta_heal_samples.v14_plateau",
+  "holdout": "holdout_batch.pt",
+  "tile": 46,
+  "scores": {
+    "no_bake": 0.9503467082977295,
+    "dual_cosine": 0.6029019951820374,
+    "ours": 0.9944519996643066,
+    "champ_r_blend_ckpt": 0.9911795258522034
+  },
+  "champ_ops": [
+    "mlp_seam"
+  ],
+  "source_champ": "C:\\Users\\Julian\\Documents\\Programming\\github\\reeldemo\\reelsynth\\brand\\artifacts\\meta_approach_compare_v14_converge\\1902771841\\hybrid_lstm\\champ_cell.pt"
+}

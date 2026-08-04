@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "protocol_seed": 20260719,
+    "favorite_meta": {
+      "tag": "champion_iter_000235_fitted",
+      "path": "C:\\Users\\Julian\\Documents\\Programming\\github\\reeldemo\\reelsynth\\brand\\artifacts\\models\\gpu-rl-arch-20260719T061909Z\\fitted\\champion_iter_000235_fitted.pt",
+      "residual_saved": 0.9909982681274414,
+      "n_params": 37489
+    },
+    "edge_rmse_locked": true,
+    "win_conditions": {
+      "search_wins": "hard sine+cliff holdout; OA instrument track when DualCosine collapses; compact bake without engine\u2192ideal labels at search time",
+      "identity_or_fir_wins": "mild seams / OOD factory geometry (domain shift)",
+      "supervised_ceiling": "N2N corrupt\u2192corrupt \u2248 favorite on sine cliffs within ~1e-3; LSTM is supervised ceiling"
+    }
+  },
+  "corpora": {
+    "reelsynth_export": {
+      "n": 25,
+      "R_favorite_mean": 0.9107262492179871,
+      "R_identity_mean": 0.9674934148788452,
+      "R_dual_cosine_mean": 0.882695734500885,
+      "delta_R_fav_minus_id_mean": -0.05676717311143875,
+      "delta_R_fav_minus_dc_mean": 0.028030551970005035,
+      "win_rate_vs_identity": 0.23999999463558197,
+      "win_rate_vs_dual_cosine": 0.6399999856948853,
+      "worst10_delta_R_vs_id_mean": -0.20804214477539062,
+      "corr_delta_id_vs_wrap_jump": -0.04577709570786799,
+      "corr_delta_id_vs_edge_rmse_gap": 0.9628709045627101,
+      "engine_wrap_jump_mean": 0.2557230591773987,
+      "edge_rmse_favorite_mean": 0.2260102480649948,
+      "edge_rmse_identity_mean": 0.08176100254058838
+    },
+    "oa_akwf": {
+      "n": 24,
+      "R_favorite_mean": 0.9697612524032593,
+      "R_identity_mean": 0.9692503213882446,
+      "R_dual_cosine_mean": 0.9364848136901855,
+      "delta_R_fav_minus_id_mean": 0.0005109186167828739,
+      "delta_R_fav_minus_dc_mean": 0.033276453614234924,
+      "win_rate_vs_identity": 0.6666666865348816,
+      "win_rate_vs_dual_cosine": 0.875,
+      "worst10_delta_R_vs_id_mean": -0.17319005727767944,
+      "corr_delta_id_vs_wrap_jump": 0.4284897770685347,
+      "corr_delta_id_vs_edge_rmse_gap": 0.9295982286711756,
+      "engine_wrap_jump_mean": 0.281955361366272,
+      "edge_rmse_favorite_mean": 0.05838125944137573,
+      "edge_rmse_identity_mean": 0.08628621697425842
+    },
+    "rust_sound_bench": {
+      "n": 20,
+      "R_favorite_mean": 0.8956541419029236,
+      "R_identity_mean": 0.9616830945014954,
+      "R_dual_cosine_mean": 0.8207246661186218,
+      "delta_R_fav_minus_id_mean": -0.06602891534566879,
+      "delta_R_fav_minus_dc_mean": 0.07492943108081818,
+      "win_rate_vs_identity": 0.20000000298023224,
+      "win_rate_vs_dual_cosine": 0.75,
+      "worst10_delta_R_vs_id_mean": -0.238784521818161,
+      "corr_delta_id_vs_wrap_jump": 0.09490901352810856,
+      "corr_delta_id_vs_edge_rmse_gap": 0.9393907200570617,
+      "engine_wrap_jump_mean": 0.2624239921569824,
+      "edge_rmse_favorite_mean": 0.3022790849208832,
+      "edge_rmse_identity_mean": 0.08252569288015366
+    },
+    "sine_cliff_holdout": {
+      "n": 256,
+      "R_favorite_mean": 0.9910014867782593,
+      "R_identity_mean": 0.9704012274742126,
+      "R_dual_cosine_mean": 0.8208998441696167,
+      "delta_R_fav_minus_id_mean": 0.020600248128175735,
+      "delta_R_fav_minus_dc_mean": 0.17010170221328735,
+      "win_rate_vs_identity": 0.91796875,
+      "win_rate_vs_dual_cosine": 0.99609375,
+      "note": "Canonical generator; favorite leads DualCosine; N2N\u2248favorite expected."
+    }
+  }
+}

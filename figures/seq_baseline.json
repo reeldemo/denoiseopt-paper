@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "train_seed": 424243,
+    "holdout_seed": 20260719,
+    "steps": 15000
+  },
+  "models": {
+    "seq_lstm": {
+      "n_params": 75746,
+      "loss_first": 0.3201679587364197,
+      "loss_last": 1.3096221664454788e-05,
+      "elapsed_sec": 84.66702599999553,
+      "eval": {
+        "residual_R": 0.9951784610748291,
+        "dual_cosine_R": 0.8248767852783203,
+        "delta_R_vs_dual_cosine": 0.1703016757965088,
+        "snr_db_mean": 46.912109375,
+        "snr_db_std": 3.1092777252197266,
+        "sdr_db_mean": 47.077369689941406,
+        "sdr_db_std": 3.136431932449341,
+        "wrap_jump_mean": 0.8735140562057495,
+        "wrap_jump_std": 0.6331316828727722,
+        "edge_rmse_mean": 0.012328062206506729,
+        "edge_rmse_std": 0.005708831362426281,
+        "click_energy_mean": 1.1638823747634888,
+        "click_energy_std": 1.25209641456604
+      },
+      "checkpoint": "C:\\Users\\Julian\\Documents\\Programming\\github\\reeldemo\\reelsynth\\brand\\artifacts\\n2n_seam_baselines\\seq_lstm.pt"
+    },
+    "seq_cnn1d": {
+      "n_params": 3242,
+      "loss_first": 0.34428870677948,
+      "loss_last": 0.00010676142846932635,
+      "elapsed_sec": 50.80380409999634,
+      "eval": {
+        "residual_R": 0.9864155054092407,
+        "dual_cosine_R": 0.8248767852783203,
+        "delta_R_vs_dual_cosine": 0.1615387201309204,
+        "snr_db_mean": 38.190879821777344,
+        "snr_db_std": 3.697437047958374,
+        "sdr_db_mean": 38.53963088989258,
+        "sdr_db_std": 3.771022319793701,
+        "wrap_jump_mean": 0.8900738954544067,
+        "wrap_jump_std": 0.6487537026405334,
+        "edge_rmse_mean": 0.03627125173807144,
+        "edge_rmse_std": 0.02066183276474476,
+        "click_energy_mean": 1.2131130695343018,
+        "click_energy_std": 1.3145511150360107
+      },
+      "checkpoint": "C:\\Users\\Julian\\Documents\\Programming\\github\\reeldemo\\reelsynth\\brand\\artifacts\\n2n_seam_baselines\\seq_cnn1d.pt"
+    }
+  }
+}

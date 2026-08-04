@@ -1,0 +1,10 @@
+{
+  "schema": "denoiseopt.v14_hybrid_converge.v1",
+  "seed": 1902771841,
+  "iters": 750,
+  "champ_r_blend": 0.9911795258522034,
+  "champ_j": 0.9854005185089676,
+  "n2n_gate_r": 0.9750486612319946,
+  "beats_n2n": true,
+  "first_above_n2n_iter": 1
+}

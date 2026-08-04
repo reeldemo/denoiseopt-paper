@@ -1,0 +1,467 @@
+{
+  "seed": 1902771841,
+  "iters": 2,
+  "batch": 48,
+  "fit_steps": 24,
+  "device": "cuda",
+  "baseline_dual_cosine": 0.8165849447250366,
+  "lstm_in_search_vocab": true,
+  "approaches": {
+    "random": {
+      "approach": "random",
+      "iters": 2,
+      "iters_done": 2,
+      "seed": 1902771841,
+      "champ_r": 0.8593190332253774,
+      "champ_raw": 0.8572356998920441,
+      "delta_r_vs_dual_cosine": 0.040650755167007446,
+      "baseline_dual_cosine": 0.8165849447250366,
+      "wall_s": 5.927366256713867,
+      "wall_h": 0.0016464906268649632,
+      "lstm_in_champ": false,
+      "champ_arch": {
+        "depth": 10,
+        "width": 48,
+        "act": "gelu",
+        "ops": [
+          "asym_wet",
+          "hann_blend",
+          "dual_cosine",
+          "median3",
+          "fade_pull",
+          "classic"
+        ],
+        "wet": 0.34781097014968315,
+        "fir": [
+          0.45899631415483705,
+          0.3647230515042936,
+          0.14416460151428118,
+          0.3397290373664135,
+          0.4609319548177949
+        ],
+        "cell_kind": "dense",
+        "soft_logits": [
+          0.7690019391276717,
+          0.08361285904428506,
+          0.055156685630137536,
+          0.5867751895616828,
+          -0.3798645668803302,
+          -0.16218536532181793,
+          -0.7471670363317,
+          0.14211763680881062,
+          0.3017498039020585,
+          0.8739146163847176,
+          -0.5638962338432918,
+          0.4530517215300136,
+          0.9641326776326347,
+          0.22047986112060092,
+          0.1292662742831343
+        ],
+        "blocks": [
+          "dense",
+          "conv1d",
+          "residual",
+          "soft_mix"
+        ],
+        "use_adv_aux": false,
+        "moe_mode": "sequential"
+      },
+      "champ_hp": {
+        "lr": 0.0004778627658050028,
+        "fit_steps": 24,
+        "batch": 64,
+        "entropy_coef": 0.053751070735409356,
+        "ppo_clip": 0.2,
+        "adv_coef": 0.02
+      },
+      "history_path": "brand\\artifacts\\meta_approach_compare_smoke\\random\\history.jsonl",
+      "finished_at": "20260720T031300Z"
+    },
+    "cmaes": {
+      "approach": "cmaes",
+      "iters": 2,
+      "iters_done": 2,
+      "seed": 1902771841,
+      "champ_r": 0.9228002509276072,
+      "champ_raw": 0.9206335842609406,
+      "delta_r_vs_dual_cosine": 0.10404863953590393,
+      "baseline_dual_cosine": 0.8165849447250366,
+      "wall_s": 2.8648462295532227,
+      "wall_h": 0.0007957906193203396,
+      "lstm_in_champ": false,
+      "champ_arch": {
+        "depth": 6,
+        "width": 16,
+        "act": "tanh",
+        "ops": [
+          "mlp_seam",
+          "dual_cosine",
+          "fir3",
+          "cycle_net",
+          "hann_blend",
+          "asym_wet"
+        ],
+        "wet": 0.42354863039076845,
+        "fir": [
+          0.2,
+          0.5,
+          0.2,
+          0.1,
+          0.1
+        ],
+        "cell_kind": "conv1d",
+        "soft_logits": [
+          0.3228290370023076,
+          0.1270529218007287,
+          0.3022533215105765,
+          0.2860571580262211,
+          -0.05368352672004717,
+          0.18441739764845355,
+          0.14442327611899652,
+          -0.239286736275247,
+          0.4101557565119859,
+          -0.06372360318985304,
+          0.19326356722324234,
+          -0.037681723403929945,
+          -0.26722356933211255,
+          0.4344071759290907,
+          -0.42349850506298936
+        ],
+        "blocks": [
+          "attn",
+          "dense",
+          "conv1d"
+        ],
+        "use_adv_aux": false,
+        "moe_mode": "moe_parallel"
+      },
+      "champ_hp": {
+        "lr": 0.0011150077183826185,
+        "fit_steps": 24,
+        "batch": 48,
+        "entropy_coef": 0.02,
+        "ppo_clip": 0.2,
+        "adv_coef": 0.05
+      },
+      "history_path": "brand\\artifacts\\meta_approach_compare_smoke\\cmaes\\history.jsonl",
+      "finished_at": "20260720T031303Z"
+    },
+    "reinforce": {
+      "approach": "reinforce",
+      "iters": 2,
+      "iters_done": 2,
+      "seed": 1902771841,
+      "champ_r": 0.7998032867908478,
+      "champ_raw": 0.7998032867908478,
+      "delta_r_vs_dual_cosine": -0.016781657934188843,
+      "baseline_dual_cosine": 0.8165849447250366,
+      "wall_s": 12.947655439376831,
+      "wall_h": 0.003596570955382453,
+      "lstm_in_champ": true,
+      "champ_arch": {
+        "depth": 8,
+        "width": 15,
+        "act": "relu",
+        "ops": [
+          "hann_blend",
+          "dual_cosine",
+          "asym_wet",
+          "cycle_net"
+        ],
+        "wet": 0.6588840120364321,
+        "fir": [
+          0.1120762729842444,
+          0.23742888505537973,
+          0.4465197675969036,
+          0.1400507642220224,
+          0.07179242523612779
+        ],
+        "cell_kind": "lstm",
+        "soft_logits": [
+          0.4109097909264332,
+          -0.27879804719185164,
+          0.37770367523937587,
+          -0.24634286439165343,
+          0.37769695769555356,
+          0.02227645682992052,
+          0.9037494587044526,
+          -0.06538218627636172,
+          0.5253366863959423,
+          -0.8762500123376151,
+          0.04126837917944526,
+          -0.810211601023139,
+          0.004205372167003896,
+          0.21282838467351506,
+          0.2885937123659117
+        ],
+        "blocks": [
+          "lstm",
+          "moe_mix",
+          "conv1d"
+        ],
+        "use_adv_aux": true,
+        "moe_mode": "sequential"
+      },
+      "champ_hp": {
+        "lr": 0.000249592879303453,
+        "fit_steps": 20,
+        "batch": 32,
+        "entropy_coef": 0.053601572020588156,
+        "ppo_clip": 0.25,
+        "adv_coef": 0.029145694393671418
+      },
+      "history_path": "brand\\artifacts\\meta_approach_compare_smoke\\reinforce\\history.jsonl",
+      "finished_at": "20260720T031316Z"
+    },
+    "aging_evo": {
+      "approach": "aging_evo",
+      "iters": 2,
+      "iters_done": 2,
+      "seed": 1902771841,
+      "champ_r": 0.9163824174404144,
+      "champ_raw": 0.9128824174404144,
+      "delta_r_vs_dual_cosine": 0.09629747271537781,
+      "baseline_dual_cosine": 0.8165849447250366,
+      "wall_s": 4.024136543273926,
+      "wall_h": 0.0011178157064649795,
+      "lstm_in_champ": false,
+      "champ_arch": {
+        "depth": 11,
+        "width": 32,
+        "act": "gelu",
+        "ops": [
+          "skip_blend",
+          "soft_seam",
+          "fir5",
+          "cycle_net"
+        ],
+        "wet": 0.4186173590017732,
+        "fir": [
+          0.40245062870899084,
+          0.20627603872123274,
+          0.4256230971693873,
+          0.1787202024095041,
+          0.4840633957038117
+        ],
+        "cell_kind": "bottleneck",
+        "soft_logits": [
+          -0.9312981811884973,
+          -0.48620609388812586,
+          0.9670156766517359,
+          -0.5272890286791418,
+          -0.3671742163771625,
+          -0.7165641965720757,
+          -0.388013048195061,
+          -0.6340057304709956,
+          0.396119377116642,
+          -0.28575611479112784,
+          -0.7906821423538233,
+          -0.2225194658265397,
+          0.15931664644592458,
+          0.007578837519252923,
+          0.6802607510778342
+        ],
+        "blocks": [
+          "bottleneck",
+          "noise_cond",
+          "dilated",
+          "unet",
+          "mlp"
+        ],
+        "use_adv_aux": false,
+        "moe_mode": "moe_parallel"
+      },
+      "champ_hp": {
+        "lr": 0.0003385511520156813,
+        "fit_steps": 24,
+        "batch": 32,
+        "entropy_coef": 0.061137199865669394,
+        "ppo_clip": 0.15000000000000002,
+        "adv_coef": 0.03754335899225706
+      },
+      "history_path": "brand\\artifacts\\meta_approach_compare_smoke\\aging_evo\\history.jsonl",
+      "finished_at": "20260720T031321Z"
+    },
+    "tpe": {
+      "approach": "tpe",
+      "iters": 2,
+      "iters_done": 2,
+      "seed": 1902771841,
+      "champ_r": 0.8852374976476034,
+      "champ_raw": 0.88465416431427,
+      "delta_r_vs_dual_cosine": 0.0680692195892334,
+      "baseline_dual_cosine": 0.8165849447250366,
+      "wall_s": 2.4302589893341064,
+      "wall_h": 0.0006750719414816963,
+      "lstm_in_champ": false,
+      "champ_arch": {
+        "depth": 4,
+        "width": 32,
+        "act": "tanh",
+        "ops": [
+          "polish",
+          "soft_seam",
+          "cycle_net",
+          "asym_wet",
+          "median3",
+          "skip_blend"
+        ],
+        "wet": 0.39470174282297477,
+        "fir": [
+          0.34081801131311773,
+          0.09090092421494612,
+          0.10700241348884128,
+          0.43366383725309,
+          0.40875947757576947
+        ],
+        "cell_kind": "noise_cond",
+        "soft_logits": [
+          0.09658833261060695,
+          0.2446153826050026,
+          -0.9634237241011887,
+          0.014262343118304877,
+          0.8656153938383664,
+          0.7720200120523915,
+          0.06380428308367025,
+          -0.6716633252019859,
+          -0.14836042886337064,
+          0.9300547345784191,
+          0.5808269247351061,
+          0.6870996882169571,
+          0.30326973855046635,
+          -0.8665766045105603,
+          -0.31925611906635964
+        ],
+        "blocks": [
+          "noise_cond",
+          "conv1d"
+        ],
+        "use_adv_aux": false,
+        "moe_mode": "sequential"
+      },
+      "champ_hp": {
+        "lr": 0.0002179480550884169,
+        "fit_steps": 40,
+        "batch": 48,
+        "entropy_coef": 0.02,
+        "ppo_clip": 0.2,
+        "adv_coef": 0.05
+      },
+      "history_path": "brand\\artifacts\\meta_approach_compare_smoke\\tpe\\history.jsonl",
+      "finished_at": "20260720T031323Z"
+    },
+    "hybrid_lstm": {
+      "approach": "hybrid_lstm",
+      "iters": 2,
+      "iters_done": 2,
+      "seed": 1902771841,
+      "champ_r": 0.9687695881525675,
+      "champ_raw": 0.9666029214859009,
+      "delta_r_vs_dual_cosine": 0.15001797676086426,
+      "baseline_dual_cosine": 0.8165849447250366,
+      "wall_s": 4.849279880523682,
+      "wall_h": 0.0013470221890343561,
+      "lstm_in_champ": false,
+      "champ_arch": {
+        "depth": 3,
+        "width": 33,
+        "act": "tanh",
+        "ops": [
+          "fade_pull",
+          "fir5",
+          "soft_seam"
+        ],
+        "wet": 0.2004022082646077,
+        "fir": [
+          0.2019026340533448,
+          0.2710151073047324,
+          0.3897533732206837,
+          0.38284020120387835,
+          0.07822747121106362
+        ],
+        "cell_kind": "gated",
+        "soft_logits": [
+          -0.8323109269383513,
+          -0.44219605807382156,
+          -0.9928801453993965,
+          0.7385825167770426,
+          0.4636236080931224,
+          -0.7300824237615278,
+          0.9513152412220385,
+          0.255064282130967,
+          -0.7613858748484243,
+          0.8838487825857031,
+          -0.8462949918939116,
+          0.6846224422117644,
+          -0.8856479353616458,
+          0.32604362908373963,
+          0.6850834306966034
+        ],
+        "blocks": [
+          "gated",
+          "residual",
+          "dual_path",
+          "dense",
+          "moe_mix"
+        ],
+        "use_adv_aux": false,
+        "moe_mode": "moe_parallel"
+      },
+      "champ_hp": {
+        "lr": 0.00312939882851289,
+        "fit_steps": 48,
+        "batch": 64,
+        "entropy_coef": 0.05204700091715116,
+        "ppo_clip": 0.1,
+        "adv_coef": 0.04519377718808145
+      },
+      "history_path": "brand\\artifacts\\meta_approach_compare_smoke\\hybrid_lstm\\history.jsonl",
+      "finished_at": "20260720T031329Z"
+    }
+  },
+  "table": [
+    {
+      "method": "random",
+      "champ_r": 0.8572356998920441,
+      "delta_r_vs_dual_cosine": 0.040650755167007446,
+      "wall_h": 0.0016464906268649632,
+      "lstm_in_champ": false
+    },
+    {
+      "method": "cmaes",
+      "champ_r": 0.9206335842609406,
+      "delta_r_vs_dual_cosine": 0.10404863953590393,
+      "wall_h": 0.0007957906193203396,
+      "lstm_in_champ": false
+    },
+    {
+      "method": "reinforce",
+      "champ_r": 0.7998032867908478,
+      "delta_r_vs_dual_cosine": -0.016781657934188843,
+      "wall_h": 0.003596570955382453,
+      "lstm_in_champ": true
+    },
+    {
+      "method": "aging_evo",
+      "champ_r": 0.9128824174404144,
+      "delta_r_vs_dual_cosine": 0.09629747271537781,
+      "wall_h": 0.0011178157064649795,
+      "lstm_in_champ": false
+    },
+    {
+      "method": "tpe",
+      "champ_r": 0.88465416431427,
+      "delta_r_vs_dual_cosine": 0.0680692195892334,
+      "wall_h": 0.0006750719414816963,
+      "lstm_in_champ": false
+    },
+    {
+      "method": "hybrid_lstm",
+      "champ_r": 0.9666029214859009,
+      "delta_r_vs_dual_cosine": 0.15001797676086426,
+      "wall_h": 0.0013470221890343561,
+      "lstm_in_champ": false
+    }
+  ],
+  "created_at": "20260720T031329Z"
+}

@@ -1,0 +1,21 @@
+\section{Tooling and AI use}
+\label{sec:tooling}
+
+\paragraph{AI-assisted workflow.}
+The following tools assisted preparation.
+The author checked claims, numbers, and citations against code and frozen JSON artifacts by hand
+(evidence alignment only---not formal verification, not a trusted computing base / TCB, and not machine-checked proofs).
+\begin{itemize}
+  \item \textbf{Cursor} assisted software development (search runners, baselines, transfer benches, and figure scripts in the ReelSynth repository).
+  \item \textbf{SciSpace} assisted literature discovery and paper triage.
+  \item \textbf{NotebookLM} assisted citation checks (bibliography entries cross-checked against open-access sources and the manuscript text).
+  \item \textbf{aixiv.science} assisted manuscript quality review (clarity, structure, and reviewer-style feedback used to guide revisions).
+\end{itemize}
+AI did not invent experimental numbers.
+Fitting, residual scoring, baselines, and hybrid GPU search are conventional Rust / PyTorch with deterministic logs.
+
+\paragraph{Literature and reproducibility artifacts.}
+Open literature was also gathered with local OpenAlex / Crossref / arXiv providers. Every bibliography entry has a downloadable OA PDF
+(\href{https://github.com/reeldemo/denoise-opt-meta/tree/master/artifacts/literature_oa/pdfs}{literature PDFs}).
+Audible demos:
+\href{https://github.com/reeldemo/reelsynth/tree/main/brand/artifacts/meta_approach_compare/hear_samples}{hear-sample WAVs}.
