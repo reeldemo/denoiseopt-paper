@@ -15,7 +15,7 @@ Algorithm~\ref{alg:fit} (\textbf{FitCell}) is the inner trainer: Adam on $1-R_{\
 Algorithms~\ref{alg:ga}--\ref{alg:pbt} are the outer-loop branches that propose new graphs / hyperparameters; the hybrid runner interleaves them each iteration and keeps elites by $J$.
 Ablations that drop GA or PPO (Table~\ref{tab:ablation}, right column) still call Algorithm~\ref{alg:fit} but disable the corresponding outer branch.
 
-\begin{algorithm}[t]
+\begin{algorithm}[H]
 \caption{ResidualScore}
 \label{alg:residual}
 \begin{algorithmic}[1]
@@ -27,8 +27,9 @@ Ablations that drop GA or PPO (Table~\ref{tab:ablation}, right column) still cal
 \State \Return $\mathrm{clamp}(1 - r_{\mathrm{rms}}/i_{\mathrm{rms}},\,0,\,1)$
 \end{algorithmic}
 \end{algorithm}
+\FloatBarrier
 
-\begin{algorithm}[t]
+\begin{algorithm}[H]
 \caption{DualCosine baseline}
 \label{alg:dualcosine}
 \begin{algorithmic}[1]
@@ -37,8 +38,9 @@ Ablations that drop GA or PPO (Table~\ref{tab:ablation}, right column) still cal
 \State \Return $\mathrm{ResidualScore}(r^{\star},\,x_{\mathrm{faded}},\,N)$
 \end{algorithmic}
 \end{algorithm}
+\FloatBarrier
 
-\begin{algorithm}[t]
+\begin{algorithm}[H]
 \caption{No-bake (passthrough) control}
 \label{alg:no-bake}
 \begin{algorithmic}[1]
@@ -46,8 +48,9 @@ Ablations that drop GA or PPO (Table~\ref{tab:ablation}, right column) still cal
 \State \Return $\mathrm{ResidualScore}(r^{\star},\,x,\,N)$ \Comment{no operator: $x\mapsto x$}
 \end{algorithmic}
 \end{algorithm}
+\FloatBarrier
 
-\begin{algorithm}[t]
+\begin{algorithm}[H]
 \caption{MoE soft gating over bake experts}
 \label{alg:moe}
 \begin{algorithmic}[1]
@@ -57,8 +60,9 @@ Ablations that drop GA or PPO (Table~\ref{tab:ablation}, right column) still cal
 \State \Return $y$
 \end{algorithmic}
 \end{algorithm}
+\FloatBarrier
 
-\begin{algorithm}[t]
+\begin{algorithm}[H]
 \caption{FitCell (inner loop; converge protocol)}
 \label{alg:fit}
 \begin{algorithmic}[1]
@@ -87,8 +91,9 @@ Ablations that drop GA or PPO (Table~\ref{tab:ablation}, right column) still cal
 \State \Return cell, $R$, converged, $t$
 \end{algorithmic}
 \end{algorithm}
+\FloatBarrier
 
-\begin{algorithm}[t]
+\begin{algorithm}[H]
 \caption{GA tournament step}
 \label{alg:ga}
 \begin{algorithmic}[1]
@@ -100,8 +105,9 @@ Ablations that drop GA or PPO (Table~\ref{tab:ablation}, right column) still cal
 \State \Return updated $P$
 \end{algorithmic}
 \end{algorithm}
+\FloatBarrier
 
-\begin{algorithm}[t]
+\begin{algorithm}[H]
 \caption{PPO architecture update}
 \label{alg:ppo}
 \begin{algorithmic}[1]
@@ -113,8 +119,9 @@ Ablations that drop GA or PPO (Table~\ref{tab:ablation}, right column) still cal
 \State \Return updated $\pi_\phi$
 \end{algorithmic}
 \end{algorithm}
+\FloatBarrier
 
-\begin{algorithm}[t]
+\begin{algorithm}[H]
 \caption{PBT exploit--mutate}
 \label{alg:pbt}
 \begin{algorithmic}[1]
@@ -125,8 +132,9 @@ Ablations that drop GA or PPO (Table~\ref{tab:ablation}, right column) still cal
 \State \Return updated $P$
 \end{algorithmic}
 \end{algorithm}
+\FloatBarrier
 
-\begin{algorithm}[t]
+\begin{algorithm}[H]
 \caption{HybridMetaSearch}
 \label{alg:hybrid}
 \begin{algorithmic}[1]
@@ -157,3 +165,4 @@ Ablations that drop GA or PPO (Table~\ref{tab:ablation}, right column) still cal
 \State \Return champ
 \end{algorithmic}
 \end{algorithm}
+\FloatBarrier

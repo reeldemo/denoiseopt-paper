@@ -1,22 +1,35 @@
+\section{Supplementary tables and figures}
+\label{app:supplement}
+
+Material moved here for the conference-length reading path:
+multi-family / cliff boards, matched outer-loop bake-off, branch/compute freezes,
+hyperparameter probe, transfer latency / status notes, and search-monitor plots.
+Primary claims remain in Sections~\ref{sec:results}--\ref{sec:transfer-main}.
 
 \subsection{Multi-family ranking plots}
 \label{sec:app-sota-plots}
 
-\begin{figure}[t]
+Figure~\ref{fig:sota-method-bars} ranks methods on the multi-family board;
+Figure~\ref{fig:sota-heatmap} breaks the same board down by generative family.
+
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\columnwidth]{figures/fig_sota_method_bars.png}
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/fig_sota_method_bars.png}
   \caption{Multi-family mean $R_{\mathrm{blend}}$ by method
   (same $20$-waveform board as Table~\ref{tab:sota-main}).}
   \label{fig:sota-method-bars}
 \end{figure}
+\FloatBarrier
+\clearpage
 
-\begin{figure}[t]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\columnwidth]{figures/fig_sota_heatmap.png}
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/fig_sota_heatmap.png}
   \caption{Colorblind-safe (\texttt{cividis}) heatmap of mean $R_{\mathrm{blend}}$
   for selected methods $\times$ generative families (2 seeds each). Higher is better.}
   \label{fig:sota-heatmap}
 \end{figure}
+\FloatBarrier
 
 
 \subsection{Multi-family and cliff boards}
@@ -26,7 +39,7 @@ Full multi-family ranking (Table~\ref{tab:sota-main}) and hard-cliff strata
 (Table~\ref{tab:cliff-strata}) for the Results narrative in
 Sections~\ref{sec:sota-main}--\ref{sec:cliff-strata}.
 
-\begin{table}[t]
+\begin{table}[htbp]
   \centering
   \caption{Multi-family board (20 waveforms) under $R_{\mathrm{blend}}$ ($\alpha{=}0.7$).
   Core rank columns; SNR/SDR/jump in Table~\ref{tab:sota-main-metrics}.
@@ -52,8 +65,9 @@ Sections~\ref{sec:sota-main}--\ref{sec:cliff-strata}.
     \bottomrule
   \end{tabular}
 \end{table}
+\FloatBarrier
 
-\begin{table}[t]
+\begin{table}[htbp]
   \centering
   \caption{Multi-family secondary metrics (same board as Table~\ref{tab:sota-main}).}
   \label{tab:sota-main-metrics}
@@ -74,11 +88,12 @@ Sections~\ref{sec:sota-main}--\ref{sec:cliff-strata}.
     \bottomrule
   \end{tabular}
 \end{table}
+\FloatBarrier
 
 
 
 
-\begin{table}[t]
+\begin{table}[htbp]
   \centering
   \caption{Cliff strata on $4{,}096$ holdout tiles under $R_{\mathrm{blend}}$ ($\alpha{=}0.7$).
   Strata by engine wrap-jump ($n$: all $4096$, top25 $1024$, top10 $410$).
@@ -101,17 +116,50 @@ Sections~\ref{sec:sota-main}--\ref{sec:cliff-strata}.
     \bottomrule
   \end{tabular}
 \end{table}
+\FloatBarrier
 
 
 
 
 
-\section{Supplementary tables and figures}
-\label{app:supplement}
 
-Material moved here for the conference-length reading path:
-matched outer-loop bake-off, branch/compute freezes, hyperparameter probe, transfer latency, and search-monitor plots.
-Primary claims remain in Sections~\ref{sec:results}--\ref{sec:transfer-main}.
+\subsection{Transfer wrap-protocol status notes}
+\label{sec:app-transfer-status}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Author-method and data-cut status under this wrap-protocol stress test (no invented scores).}
+  \label{tab:transfer-sota-status}
+  \setlength{\tabcolsep}{3pt}
+  \resizebox{\columnwidth}{!}{%
+  \begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{@{}lp{0.52\columnwidth}@{}}
+    \toprule
+    Scope & Note \\
+    \midrule
+    SeamN2N (ours, N2N-style) & Scored on all seven Table~\ref{tab:transfer-main} boards
+      under $R_{\mathrm{blend}}$. Not Lehtinen code \\
+    Cycle-GAN (ECG, author) & OOD wrap probe in Table~\ref{tab:transfer-main}
+      (MIT-BIH $0.1063$, PTB-XL $0.2105$). Clinical restore $\neq$ wrap residual \\
+    BeatDiff (Bedin NeurIPS\,2024) & OOD wrap probe in Table~\ref{tab:transfer-main}
+      (MIT-BIH $0.4907$, PTB-XL $0.4933$). Drive prior (not HF).
+      Clinical morph prior $\neq$ wrap residual \\
+    Paderborn KAt deep (Al~Firdausi CNN) & Trained CNN\_1D\_2L from scratch (not frozen
+      \texttt{model.pth}) on bearings K001/KA04/KI04/KB23. File-holdout seed \texttt{20260726},
+      train seed \texttt{42}, $20$ epochs. 4-class holdout acc $0.8590$ ($n{=}2560$ segs,
+      NORMAL/IR/OR/OR+IR). Classifier wrap residual N/A. Arch-reuse wrap bake listed
+      in Table~\ref{tab:transfer-main}$^\dagger$.
+      Wrap board: Ours $0.9369$ / SeamN2N $0.8421$ / DualCosine $0.4710$ \\
+    Expanded PTB-XL & records500 lead-I expanded ($\sim$2k\,$+$\,\texttt{\_hr} records, board $n{=}256$,
+      Ours $0.9451$). Multi-lead still out of scope \\
+    Real KIT CNC / IEEE PMU & Synthetic pilots only (download walls) \\
+    Formal MOS / MUSHRA & Not collected \\
+    \bottomrule
+  \end{tabular}
+\end{adjustbox}%
+  }
+\end{table}
+\FloatBarrier
 
 \subsection{Matched-budget outer-loop comparison}
 \label{sec:meta-approaches-results}
@@ -120,22 +168,24 @@ Under a $5{,}000$ evaluation budget with LSTM and xLSTM in the searchable bake v
 
 \input{figures/meta_approaches_table}
 
-\begin{figure}[t]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\columnwidth]{figures/meta_approach_bars.png}
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/meta_approach_bars.png}
   \caption{Matched 5,000-evaluation search methods under locked $R_{\mathrm{blend}}{+}J$ (seed \texttt{1902771841}).
   Table~\ref{tab:meta-approaches} reports mean$\pm$std across three search seeds.
   Dashed line: Dual Cosine on the same runner.}
   \label{fig:meta-approach-bars}
 \end{figure}
+\FloatBarrier\clearpage
 
-\begin{figure}[t]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\columnwidth]{figures/fig_meta_approach_compare.png}
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/fig_meta_approach_compare.png}
   \caption{Champion $R_{\mathrm{blend}}$ over a matched 5,000-evaluation budget (Deferred D1 complete; seed \texttt{1902771841}).
   Dashed line: Dual Cosine.}
   \label{fig:meta-approach-compare}
 \end{figure}
+\FloatBarrier
 
 \subsection{Ablations and compute}
 \label{sec:ablation-compute}
@@ -176,6 +226,7 @@ Table~\ref{tab:compute} summarizes campaign compute (historical prolonged-$R$ ov
   \end{tabular}
 \end{adjustbox}
 \end{table}
+\FloatBarrier
 
 \begin{table}[htbp]
   \centering
@@ -199,6 +250,7 @@ Table~\ref{tab:compute} summarizes campaign compute (historical prolonged-$R$ ov
   \end{tabular}
 \end{adjustbox}
 \end{table}
+\FloatBarrier
 
 \subsection{Hyperparameter sensitivity}
 \label{para:hp-sensitivity}
@@ -209,12 +261,13 @@ All $11/11$ arms finished under this budget.
 
 \input{figures/tab_meta_hp_sensitivity}
 
-\begin{figure}[t]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{figures/fig_meta_hp_sensitivity.png}
+  \includegraphics[width=\linewidth,height=0.42\textheight,keepaspectratio]{figures/fig_meta_hp_sensitivity.png}
   \caption{One-at-a-time $\pm 50\%$ HP sensitivity of hybrid champion $R$ at 500 iterations. Blue bar: Table~\ref{tab:hyperparams} default.}
   \label{fig:hp-sensitivity}
 \end{figure}
+\FloatBarrier
 
 \subsection{Transfer inference latency}
 \label{sec:transfer-latency-app}
@@ -239,80 +292,91 @@ N2N latency uses the wavetable checkpoint zero-shot. Domain-trained N2N quality 
   \end{tabular}
 \end{adjustbox}
 \end{table}
+\FloatBarrier
 
-\begin{figure}[t]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\columnwidth]{figures/fig_signal_heal_transfer_latency.png}
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/fig_signal_heal_transfer_latency.png}
   \caption{Transfer-domain inference latency (ms/batch). N2N is wavetable-trained zero-shot when available.}
   \label{fig:signal-heal-transfer-latency}
 \end{figure}
+\FloatBarrier
 
 \subsection{Search-monitor figures}
 \label{sec:search-monitor-figs}
 
-\begin{figure}[t]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\columnwidth]{figures/champ_residual_vs_iter.png}
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/champ_residual_vs_iter.png}
   \caption{FitCell-to-plateau champion $R_{\mathrm{blend}}$ vs.\ outer-loop evaluation
   (seed \texttt{1902771841}; y-axis zoomed to the high-$R$ regime with Noise2Noise gate marked).}
   \label{fig:champ-residual}
 \end{figure}
+\FloatBarrier
 
-\begin{figure}[t]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\columnwidth]{figures/branch_bests_vs_iter.png}
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/branch_bests_vs_iter.png}
   \caption{Best residual by search branch (older overnight monitor freeze; search-trace artifact).}
   \label{fig:branch-bests}
 \end{figure}
+\FloatBarrier
 
-\begin{figure}[t]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\columnwidth]{figures/search_panel.png}
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/search_panel.png}
   \caption{Search progress: champion $R$ (top) and branch bests (bottom).}
   \label{fig:search-panel}
 \end{figure}
+\FloatBarrier
 
-\begin{figure}[t]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\columnwidth]{figures/residual_by_branch.png}
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/residual_by_branch.png}
   \caption{Per-trial residual by branch with champion trajectory overlaid.}
   \label{fig:residual-branch}
 \end{figure}
+\FloatBarrier
 
-\begin{figure}[t]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\columnwidth]{figures/champion_timeline.png}
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/champion_timeline.png}
   \caption{Champion updates (older overnight monitor freeze; search-trace artifact).}
   \label{fig:champ-timeline}
 \end{figure}
+\FloatBarrier
 
 \subsection{Inference and classical diagnostic plots}
 \label{sec:app-inference-diags}
 
-\begin{figure}[t]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\columnwidth]{figures/fig_inference_vs_residual.png}
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/fig_inference_vs_residual.png}
   \caption{High-$R$ fitted operators: residual vs CUDA latency. Star: favorite.}
   \label{fig:inference-pareto}
 \end{figure}
+\FloatBarrier
 
-\begin{figure}[t]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\columnwidth]{figures/fig_inference_latency_bars.png}
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/fig_inference_latency_bars.png}
   \caption{Inference latency for high-$R$ fitted models (CUDA, batch 64).}
   \label{fig:inference-bars}
 \end{figure}
+\FloatBarrier
 
-\begin{figure}[t]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\columnwidth]{figures/fig_classical_vs_ai_scatter.png}
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/fig_classical_vs_ai_scatter.png}
   \caption{Canonical holdout: classical methods and favorite in the $R$ vs ms/batch plane.}
   \label{fig:classical-vs-ai-scatter}
 \end{figure}
+\FloatBarrier
 
-\begin{figure}[t]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\columnwidth]{figures/fig_classical_vs_ai_bars.png}
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/fig_classical_vs_ai_bars.png}
   \caption{Canonical holdout ranking on $R_{\mathrm{blend}}$ (left) and latency (right).}
   \label{fig:classical-vs-ai-bars}
 \end{figure}
+\FloatBarrier

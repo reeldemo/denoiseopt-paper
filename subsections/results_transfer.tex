@@ -13,12 +13,12 @@ Numbers come from the released
 Domain-trained Noise2Noise-style SeamN2N (corrupt$\to$corrupt, $4000$ Adam steps, train seed \texttt{424242}, holdout seed \texttt{20260719})
 is scored on the same seven boards under the \emph{same} $R_{\mathrm{blend}}$.
 Author ECG Cycle-GAN and BeatDiff remain OOD wrap probes on ECG only
-(clinical restore $\neq$ wrap residual, Table~\ref{tab:transfer-sota-status}).
+(clinical restore $\neq$ wrap residual; status notes in Appendix~\ref{app:supplement}, Table~\ref{tab:transfer-sota-status}).
 These rows do \emph{not} transfer an audio-trained bake as fault/ECG diagnosis SOTA; they only stress the wrap geometry.
 Artifacts:
 \href{https://github.com/reeldemo/reelsynth/tree/main/brand/artifacts/signal_heal_transfer}{signal\_heal\_transfer}.
 
-\begin{table}[t]
+\begin{table}[htbp]
   \centering
   \caption{Wrap-heal transfer under locked $R_{\mathrm{blend}}$ (higher better; wrap-protocol stress test).
   Bearing boards ($n{=}256$ each). DenoiseOpt: \texttt{hybrid\_lstm}, seed \texttt{1902771841}.}
@@ -39,7 +39,7 @@ Artifacts:
   \end{tabular}
 \end{table}
 
-\begin{table}[t]
+\begin{table}[htbp]
   \centering
   \caption{Wrap-heal transfer under locked $R_{\mathrm{blend}}$ (continued): ECG and synthetic boards.
   BeatDiff / Cycle-GAN are author OOD wrap probes on ECG only.}
@@ -61,54 +61,7 @@ Artifacts:
     \bottomrule
   \end{tabular}
 \end{table}
-
-
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\columnwidth]{figures/fig_signal_heal_transfer.png}
-  \caption{Grouped bars for Tables~\ref{tab:transfer-main}--\ref{tab:transfer-main-b}: $R_{\mathrm{blend}}$ by board and method
-    (higher better). Core rows (Ours, SeamN2N, no-bake, endpoint-pin, \texttt{seam\_fir3}, DualCosine)
-    appear on all seven boards. Hatched bars are author OOD wrap probes on ECG (BeatDiff, Cycle-GAN)
-    and the Paderborn Al~Firdausi architecture-reuse wrap bake
-    (not the published fault classifier, see Table~\ref{tab:transfer-sota-status}).
-    Missing cells are omitted rather than zero-filled.}
-  \label{fig:signal-heal-transfer-main}
-\end{figure}
-
-\begin{table}[htbp]
-  \centering
-  \caption{Author-method and data-cut status under this wrap-protocol stress test (no invented scores).}
-  \label{tab:transfer-sota-status}
-  \setlength{\tabcolsep}{3pt}
-  \resizebox{\columnwidth}{!}{%
-  \begin{adjustbox}{max width=\columnwidth}
-\begin{tabular}{@{}lp{0.52\columnwidth}@{}}
-    \toprule
-    Scope & Note \\
-    \midrule
-    SeamN2N (ours, N2N-style) & Scored on all seven Table~\ref{tab:transfer-main} boards
-      under $R_{\mathrm{blend}}$. Not Lehtinen code \\
-    Cycle-GAN (ECG, author) & OOD wrap probe in Table~\ref{tab:transfer-main}
-      (MIT-BIH $0.1063$, PTB-XL $0.2105$). Clinical restore $\neq$ wrap residual \\
-    BeatDiff (Bedin NeurIPS\,2024) & OOD wrap probe in Table~\ref{tab:transfer-main}
-      (MIT-BIH $0.4907$, PTB-XL $0.4933$). Drive prior (not HF).
-      Clinical morph prior $\neq$ wrap residual \\
-    Paderborn KAt deep (Al~Firdausi CNN) & Trained CNN\_1D\_2L from scratch (not frozen
-      \texttt{model.pth}) on bearings K001/KA04/KI04/KB23. File-holdout seed \texttt{20260726},
-      train seed \texttt{42}, $20$ epochs. 4-class holdout acc $0.8590$ ($n{=}2560$ segs,
-      NORMAL/IR/OR/OR+IR). Classifier wrap residual N/A. Arch-reuse wrap bake listed
-      in Table~\ref{tab:transfer-main}$^\dagger$.
-      Wrap board: Ours $0.9369$ / SeamN2N $0.8421$ / DualCosine $0.4710$ \\
-    Expanded PTB-XL & records500 lead-I expanded ($\sim$2k\,$+$\,\texttt{\_hr} records, board $n{=}256$,
-      Ours $0.9451$). Multi-lead still out of scope \\
-    Real KIT CNC / IEEE PMU & Synthetic pilots only (download walls) \\
-    Formal MOS / MUSHRA & Not collected \\
-    \bottomrule
-  \end{tabular}
-\end{adjustbox}%
-  }
-\end{table}
+\FloatBarrier
 
 \paragraph{Takeaways.}
 Under $R_{\mathrm{blend}}$, Ours leads every classical-board column in Tables~\ref{tab:transfer-main}--\ref{tab:transfer-main-b},
@@ -122,9 +75,24 @@ Synthetic CNC shows the largest classical collapse with Ours near $0.991$.
 Synth PMU is the strongest SeamN2N row ($0.9589$) but still below Ours ($0.9919$).
 Paderborn wrap board shows Ours $0.9369$ vs SeamN2N $0.8421$ and DualCosine $0.4710$.
 Separately, we train Al~Firdausi CNN as a 4-class fault classifier and do not rename classification as wrap residual
-(Table~\ref{tab:transfer-sota-status}).
+(Appendix Table~\ref{tab:transfer-sota-status}).
+Figure~\ref{fig:signal-heal-transfer-main} summarizes the same boards as grouped bars.
 Latency timings in Appendix~\ref{app:supplement} remain wavetable-checkpoint zero-shot.
 Primary claim remains cycle-local wavetable seam restoration.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\columnwidth,height=0.42\textheight,keepaspectratio]{figures/fig_signal_heal_transfer.png}
+  \caption{Grouped bars for Tables~\ref{tab:transfer-main}--\ref{tab:transfer-main-b}: $R_{\mathrm{blend}}$ by board and method
+    (higher better). Core rows (Ours, SeamN2N, no-bake, endpoint-pin, \texttt{seam\_fir3}, DualCosine)
+    appear on all seven boards. Hatched bars are author OOD wrap probes on ECG (BeatDiff, Cycle-GAN)
+    and the Paderborn Al~Firdausi architecture-reuse wrap bake
+    (not the published fault classifier, see Table~\ref{tab:transfer-sota-status}).
+    Missing cells are omitted rather than zero-filled.}
+  \label{fig:signal-heal-transfer-main}
+\end{figure}
+\FloatBarrier
+\clearpage
 
 \subsection{Listening protocol (no formal listening study)}
 \label{sec:listening-protocol}
