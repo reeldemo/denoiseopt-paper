@@ -18,6 +18,74 @@
   \label{fig:sota-heatmap}
 \end{figure*}
 
+
+\subsection{Multi-family and cliff boards}
+\label{sec:app-sota-cliff-tables}
+
+Full multi-family ranking (Table~\ref{tab:sota-main}) and hard-cliff strata
+(Table~\ref{tab:cliff-strata}) for the Results narrative in
+Sections~\ref{sec:sota-main}--\ref{sec:cliff-strata}.
+
+\begin{table*}[htbp]
+  \centering
+  \caption{Multi-family board (20 waveforms) under $R_{\mathrm{blend}}$ ($\alpha{=}0.7$).
+  $\Delta R$* and ms* vs Dual Cosine only. N2N/seq use train seeds \texttt{424242}/\texttt{424243}.}
+  \label{tab:sota-main}
+  \setlength{\tabcolsep}{2.2pt}
+  \begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{@{}lrrrrrrr@{}}
+    \toprule
+    Method & $R_{\mathrm{blend}}$ (20-wave) & SNR (dB) & SDR (dB) & wrap-jump & ms* & params & $\Delta R$* \\
+    \midrule
+    neural favorite & $0.931\pm0.026$ & $34.6\pm3.2$ & $34.7\pm3.2$ & $0.89\pm0.14$ & 4.50 & 121\,451 & ${+}0.417$ \\
+    N2N corrupt$\to$corrupt & $0.925\pm0.038$ & $33.8\pm4.0$ & $33.9\pm4.0$ & $0.89\pm0.15$ & 0.74 & 53\,506 & ${+}0.410$ \\
+    N2N sibling-sup. & $0.924\pm0.035$ & $33.9\pm4.1$ & $34.0\pm4.1$ & $0.91\pm0.15$ & 0.74 & 53\,506 & ${+}0.410$ \\
+    seq CNN1D & $0.920\pm0.026$ & $32.2\pm3.5$ & $32.4\pm3.5$ & $0.92\pm0.15$ & 0.53 & 3\,242 & ${+}0.405$ \\
+    no-bake & $0.893\pm0.028$ & $30.9\pm1.9$ & $31.0\pm1.9$ & $0.91\pm0.15$ & 0.00 & 0 & ${+}0.379$ \\
+    seq LSTM & $0.891\pm0.075$ & $32.2\pm5.8$ & $32.4\pm5.8$ & $0.86\pm0.15$ & 1.53 & 75\,746 & ${+}0.376$ \\
+    \texttt{seam\_fir3} & $0.868\pm0.019$ & $28.1\pm1.2$ & $28.1\pm1.2$ & $0.46\pm0.08$ & 0.17 & 0 & ${+}0.353$ \\
+    MLP-on-$R$ & $0.807\pm0.018$ & $24.7\pm0.9$ & $24.8\pm0.9$ & $0.59\pm0.07$ & 1.76 & 8\,604 & ${+}0.292$ \\
+    CNN/U-Net-on-$R$ & $0.690\pm0.027$ & $19.5\pm0.9$ & $19.5\pm0.9$ & $0.47\pm0.06$ & 3.08 & 11\,752 & ${+}0.175$ \\
+    classic quadratic & $0.547\pm0.031$ & $17.9\pm1.1$ & $17.7\pm1.2$ & $0.32\pm0.05$ & 1.02 & 0 & ${+}0.032$ \\
+    DualCosine & $0.514\pm0.032$ & $16.9\pm1.2$ & $16.8\pm1.2$ & $0.32\pm0.05$ & 0.98 & 0 & $0$ \\
+    cosine fade & $0.514\pm0.032$ & $16.9\pm1.2$ & $16.8\pm1.2$ & $0.32\pm0.05$ & 1.07 & 0 & $0$ \\
+    crossfade & $0.505\pm0.032$ & $16.7\pm1.2$ & $16.4\pm1.2$ & $0.91\pm0.15$ & 0.95 & 0 & ${-}0.010$ \\
+    hann blend & $0.495\pm0.032$ & $16.1\pm1.2$ & $15.8\pm1.2$ & $0.32\pm0.05$ & 0.19 & 0 & ${-}0.020$ \\
+    soft wide fade & $0.462\pm0.021$ & $14.0\pm1.1$ & $13.6\pm1.1$ & $0.63\pm0.08$ & 1.87 & 0 & ${-}0.053$ \\
+    detrend & $0.311\pm0.040$ & $5.5\pm1.0$ & $5.4\pm1.0$ & $0.00\pm0.00$ & 0.06 & 0 & ${-}0.203$ \\
+    ensemble DC+FIR & $0.275\pm0.043$ & $5.1\pm1.0$ & $5.0\pm1.0$ & $0.12\pm0.02$ & 1.05 & 0 & ${-}0.239$ \\
+    \bottomrule
+  \end{tabular}
+\end{adjustbox}
+\end{table*}
+
+\begin{table*}[htbp]
+  \centering
+  \caption{Cliff strata on $4{,}096$ holdout tiles under $R_{\mathrm{blend}}$ ($\alpha{=}0.7$). Strata by engine wrap-jump.}
+  \label{tab:cliff-strata}
+  \setlength{\tabcolsep}{2.5pt}
+  \begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{@{}lrrrrrr@{}}
+    \toprule
+    Method & all $R_{\mathrm{blend}}$ & all jump & top25 $R_{\mathrm{blend}}$ & top25 jump & top10 $R_{\mathrm{blend}}$ & top10 jump \\
+    \midrule
+    seq LSTM (ceiling) & $0.986\pm0.009$ & 0.865 & 0.989 & 1.637 & 0.990 & 1.810 \\
+    N2N sibling-sup. & $0.981\pm0.013$ & 0.874 & 0.985 & 1.656 & 0.985 & 1.827 \\
+    N2N corrupt$\to$corrupt & $0.976\pm0.015$ & 0.861 & 0.981 & 1.631 & 0.983 & 1.804 \\
+    neural favorite & $0.971\pm0.020$ & 0.863 & 0.978 & 1.634 & 0.978 & 1.817 \\
+    seq CNN1D & $0.960\pm0.028$ & 0.881 & 0.969 & 1.684 & 0.970 & 1.871 \\
+    no-bake & $0.913\pm0.077$ & 0.913 & 0.929 & 1.797 & 0.922 & 2.094 \\
+    \texttt{seam\_fir3} & $0.886\pm0.067$ & 0.456 & 0.870 & 0.893 & 0.869 & 1.034 \\
+    DualCosine & $0.525\pm0.239$ & 0.335 & 0.318 & 0.290 & 0.305 & 0.335 \\
+    \bottomrule
+  \end{tabular}
+\end{adjustbox}
+
+  \vspace{0.5em}
+  {\footnotesize $n$: all $4096$, top25 $1024$, top10 $410$. $\pm$ is tile std on the all stratum.}
+  \vspace{1.2em}
+\end{table*}
+
 \section{Supplementary tables and figures}
 \label{app:supplement}
 
