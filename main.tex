@@ -27,11 +27,12 @@
 \renewcommand{\textfraction}{0.07}
 \renewcommand{\floatpagefraction}{0.7}
 \renewcommand{\dblfloatpagefraction}{0.7}
-\setlength{\floatsep}{10pt plus 2pt minus 2pt}
-\setlength{\textfloatsep}{12pt plus 2pt minus 2pt}
-\setlength{\intextsep}{10pt plus 2pt minus 2pt}
-\setlength{\dblfloatsep}{14pt plus 2pt minus 2pt}
-\setlength{\dbltextfloatsep}{16pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 1pt minus 2pt}
+\setlength{\textfloatsep}{8pt plus 1pt minus 2pt}
+\setlength{\intextsep}{6pt plus 1pt minus 2pt}
+\setlength{\dblfloatsep}{8pt plus 1pt minus 2pt}
+\setlength{\dbltextfloatsep}{10pt plus 1pt minus 2pt}
+\flushbottom
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{tikz}
@@ -103,13 +104,7 @@ Hybrid GA--PPO Meta-Search}
 \input{subsections/conclusion}
 \input{subsections/acknowledgments}
 
-\appendix
-\input{subsections/appendix_algorithms}
-\input{subsections/appendix_supplement}
-\input{subsections/appendix_transfer_pilot}
-
 \FloatBarrier
-\raggedbottom
 \balance
 {\footnotesize
 \setlength{\baselineskip}{11.5pt}
@@ -342,5 +337,10 @@ S.~Pascual, A.~Bonafonte, and J.~Serr\`a.
 
 \end{thebibliography}
 }
+
+\appendix
+\input{subsections/appendix_algorithms}
+\input{subsections/appendix_supplement}
+\input{subsections/appendix_transfer_pilot}
 
 \end{document}

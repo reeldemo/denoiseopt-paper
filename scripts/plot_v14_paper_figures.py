@@ -20,15 +20,12 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
-import torch
 
 PAPER = Path(__file__).resolve().parents[1]
 # Optional sibling reelsynth for champ artifacts
 ROOT = PAPER.parent / "reelsynth"
 if not (ROOT / "scripts" / "overnight_gpu_rl_arch.py").is_file():
     ROOT = Path(r"C:/Users/Julian/Documents/Programming/github/reeldemo/reelsynth")
-sys.path.insert(0, str(ROOT / "scripts"))
-import overnight_gpu_rl_arch as og  # noqa: E402
 
 V14_FIG = Path(__file__).resolve().parents[1] / "figures"
 COMPARE_V10 = ROOT / "brand" / "artifacts" / "meta_approach_compare_v10"
@@ -72,22 +69,29 @@ def first_above(xs: np.ndarray, ys: np.ndarray, thr: float) -> int | None:
     return int(xs[int(hit[0])]) if hit.size else None
 
 
-def load_v14_cell(device: torch.device) -> tuple[og.ArchConfig, og.SeamCell, dict]:
+def load_v14_cell(device):
+    import torch
+
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import overnight_gpu_rl_arch as og  # noqa: E402
+
     blob = torch.load(CONVERGE / "champ_cell.pt", map_location=device, weights_only=False)
     cfg = og.ArchConfig.from_dict(blob["architecture"])
     cell = og.SeamCell(cfg).to(device)
     cell.load_state_dict(blob["cell_state_dict"])
     cell.eval()
-    return cfg, cell, blob
+    return cfg, cell, blob, og
 
 
-def prolong(cycle: torch.Tensor, periods: int = 3) -> np.ndarray:
+def prolong(cycle, periods: int = 3, og=None) -> np.ndarray:
     return og.prolong_tile(cycle.unsqueeze(0), periods=periods)[0].detach().cpu().numpy()
 
 
-@torch.no_grad()
-def score_batch(ideal: torch.Tensor, out: torch.Tensor) -> float:
-    return float(og.residual_score(ideal, out).mean().item())
+def score_batch(ideal, out, og) -> float:
+    import torch
+
+    with torch.no_grad():
+        return float(og.residual_score(ideal, out).mean().item())
 
 
 def plot_learning_curves(out_dir: Path) -> dict:
@@ -102,75 +106,102 @@ def plot_learning_curves(out_dir: Path) -> dict:
     dc_v14 = float(v14[0].get("baseline_dual_cosine", 0.504))
     n2n_v14 = float(v14[0].get("n2n_gate_r", n2n))
 
-    fig, axes = plt.subplots(2, 1, figsize=(3.35, 4.6), constrained_layout=True)
+    # Compact column figure: zoom each panel's y-range to the data (no empty air).
+    fig, axes = plt.subplots(
+        2,
+        1,
+        figsize=(3.25, 3.05),
+        gridspec_kw={"hspace": 0.38, "height_ratios": [1.0, 1.0]},
+    )
+    fig.subplots_adjust(left=0.18, right=0.98, top=0.92, bottom=0.10)
 
     ax = axes[0]
-    ax.plot(vx, vr, color=C_RAW, lw=1.8, label=r"Champ $R_{\mathrm{blend}}$")
-    ax.axhline(dc_v10, color="#999999", ls="--", lw=1.2, label=f"Dual Cosine ({dc_v10:.3f})")
-    ax.axhline(n2n, color=C_N2N, ls=":", lw=1.3, label=f"N2N gate ({n2n:.3f})")
-    ax.set_title("Short FitCell hybrid ($1{,}200$ evals)")
-    ax.set_xlabel("Outer-loop evaluation")
-    ax.set_ylabel(r"Champion $R_{\mathrm{blend}}$")
+    ax.plot(vx, vr, color=C_RAW, lw=1.6, label=r"Champ $R_{\mathrm{blend}}$")
+    ax.axhline(dc_v10, color="#999999", ls="--", lw=1.1, label=f"Dual Cosine ({dc_v10:.3f})")
+    ax.axhline(n2n, color=C_N2N, ls=":", lw=1.2, label=f"N2N gate ({n2n:.3f})")
+    ax.set_title("Short FitCell ($1{,}200$ evals)", fontsize=9, pad=2)
+    ax.set_ylabel(r"$R_{\mathrm{blend}}$", fontsize=8)
     ax.set_xlim(1, int(vx[-1]))
+    y0 = float(min(vr.min(), dc_v10))
+    y1 = float(max(vr.max(), n2n))
+    pad = 0.04 * (y1 - y0 + 1e-6)
+    ax.set_ylim(y0 - pad, min(1.0, y1 + pad))
+    ax.tick_params(labelsize=7)
     ax.grid(True, alpha=0.25)
-    ax.legend(loc="lower right", fontsize=8)
+    ax.legend(loc="lower right", fontsize=6.5, framealpha=0.92, borderpad=0.3)
 
     ax = axes[1]
-    ax.plot(cx, cr, color=C_RAW, lw=1.8, label=r"Champ $R_{\mathrm{blend}}$")
-    ax.axhline(dc_v14, color="#999999", ls="--", lw=1.2, label=f"Dual Cosine ({dc_v14:.3f})")
-    ax.axhline(n2n_v14, color=C_N2N, ls=":", lw=1.3, label=f"N2N gate ({n2n_v14:.3f})")
+    ax.plot(cx, cr, color=C_RAW, lw=1.6, label=r"Champ $R_{\mathrm{blend}}$")
+    ax.axhline(n2n_v14, color=C_N2N, ls=":", lw=1.2, label=f"N2N gate ({n2n_v14:.3f})")
     gate_it = first_above(cx, cr, n2n_v14)
     if gate_it is not None:
         ax.axvline(gate_it, color=C_N2N, ls=":", lw=0.9, alpha=0.7)
         ax.text(
             0.02,
-            0.98,
-            rf"$R_{{\mathrm{{blend}}}}$$>$N2N @ {gate_it}; final {cr[-1]:.4f}",
+            0.96,
+            rf"$>$N2N @ {gate_it}; final {cr[-1]:.4f}",
             transform=ax.transAxes,
             va="top",
-            fontsize=8,
+            fontsize=7,
         )
-    ax.set_title("FitCell-to-plateau hybrid ($750$ evals)")
-    ax.set_xlabel("Outer-loop evaluation")
-    ax.set_ylabel(r"Champion $R_{\mathrm{blend}}$")
+    ax.set_title("FitCell-to-plateau ($750$ evals)", fontsize=9, pad=2)
+    ax.set_xlabel("Outer-loop evaluation", fontsize=8)
+    ax.set_ylabel(r"$R_{\mathrm{blend}}$", fontsize=8)
     ax.set_xlim(1, int(cx[-1]))
+    # Plateau run sits near the ceiling — zoom so the curve fills the panel.
+    # Dual Cosine (~0.5) is omitted here; it sits far below this zoom.
+    y0 = float(min(cr.min(), n2n_v14))
+    y1 = float(cr.max())
+    pad = max(0.002, 0.12 * (y1 - y0 + 1e-6))
+    ax.set_ylim(y0 - pad, min(1.0, y1 + pad))
+    ax.tick_params(labelsize=7)
     ax.grid(True, alpha=0.25)
-    ax.legend(loc="lower right", fontsize=8)
+    ax.legend(loc="lower right", fontsize=6.5, framealpha=0.92, borderpad=0.3)
 
     stem = out_dir / "fig_search_learning_curve"
     fig.savefig(stem.with_suffix(".png"), dpi=220)
     fig.savefig(stem.with_suffix(".pdf"))
     plt.close(fig)
 
-    # Dedicated single-panel for the plateau section
-    fig, ax = plt.subplots(figsize=(3.4, 2.6), constrained_layout=True)
-    ax.plot(cx, cr, color=C_RAW, lw=1.7, label=r"Champ $R_{\mathrm{blend}}$")
-    ax.axhline(dc_v14, color="#999999", ls="--", lw=1.2, label=f"Dual Cosine ({dc_v14:.3f})")
-    ax.axhline(n2n_v14, color=C_N2N, ls=":", lw=1.4, label=f"N2N gate ({n2n_v14:.3f})")
+    # Dedicated single-panel for the plateau section (tight y-zoom).
+    fig, ax = plt.subplots(figsize=(3.25, 1.85))
+    fig.subplots_adjust(left=0.18, right=0.98, top=0.88, bottom=0.20)
+    ax.plot(cx, cr, color=C_RAW, lw=1.6, label=r"Champ $R_{\mathrm{blend}}$")
+    ax.axhline(n2n_v14, color=C_N2N, ls=":", lw=1.2, label=f"N2N gate ({n2n_v14:.3f})")
     if gate_it is not None:
         ax.axvline(gate_it, color=C_N2N, ls=":", lw=0.9, alpha=0.75)
-    ax.set_xlabel("Outer-loop evaluation")
-    ax.set_ylabel(r"Champion $R_{\mathrm{blend}}$")
-    ax.set_title(r"FitCell-to-plateau")
+    ax.set_xlabel("Outer-loop evaluation", fontsize=8)
+    ax.set_ylabel(r"$R_{\mathrm{blend}}$", fontsize=8)
+    ax.set_title("FitCell-to-plateau", fontsize=9, pad=2)
     ax.set_xlim(1, int(cx[-1]))
+    y0 = float(min(cr.min(), n2n_v14))
+    y1 = float(cr.max())
+    pad = max(0.002, 0.12 * (y1 - y0 + 1e-6))
+    ax.set_ylim(y0 - pad, min(1.0, y1 + pad))
+    ax.tick_params(labelsize=7)
     ax.grid(True, alpha=0.25)
-    ax.legend(loc="lower right", fontsize=7)
+    ax.legend(loc="lower right", fontsize=6.5, framealpha=0.92, borderpad=0.3)
     stem2 = out_dir / "fig_v14_converge_learning_curve"
     fig.savefig(stem2.with_suffix(".png"), dpi=220)
     fig.savefig(stem2.with_suffix(".pdf"))
     plt.close(fig)
 
-    # Appendix champ residual (raw R_blend)
-    fig, ax = plt.subplots(figsize=(3.4, 2.6), constrained_layout=True)
-    ax.plot(cx, cr, color="#000000", lw=1.7, marker="o", markevery=max(1, len(cx) // 25), markersize=3.5)
-    ax.axhline(dc_v14, color="#999999", ls="--", lw=1.3, label=f"Dual Cosine ({dc_v14:.3f})")
-    ax.axhline(n2n_v14, color=C_N2N, ls=":", lw=1.3, label=f"N2N gate ({n2n_v14:.3f})")
-    ax.set_xlabel("Outer-loop evaluation")
-    ax.set_ylabel(r"Champion $R_{\mathrm{blend}}$")
-    ax.set_title("FitCell-to-plateau champion residual")
+    # Appendix champ residual (raw R_blend) — same zoom as plateau panel.
+    fig, ax = plt.subplots(figsize=(3.25, 1.85))
+    fig.subplots_adjust(left=0.18, right=0.98, top=0.88, bottom=0.20)
+    ax.plot(cx, cr, color="#000000", lw=1.5, marker="o", markevery=max(1, len(cx) // 25), markersize=3.0)
+    ax.axhline(n2n_v14, color=C_N2N, ls=":", lw=1.2, label=f"N2N gate ({n2n_v14:.3f})")
+    ax.set_xlabel("Outer-loop evaluation", fontsize=8)
+    ax.set_ylabel(r"$R_{\mathrm{blend}}$", fontsize=8)
+    ax.set_title("FitCell-to-plateau champion residual", fontsize=9, pad=2)
     ax.set_xlim(1, int(cx[-1]))
+    y0 = float(min(cr.min(), n2n_v14))
+    y1 = float(cr.max())
+    pad = max(0.002, 0.12 * (y1 - y0 + 1e-6))
+    ax.set_ylim(y0 - pad, min(1.0, y1 + pad))
+    ax.tick_params(labelsize=7)
     ax.grid(True, alpha=0.25)
-    ax.legend(loc="lower right", fontsize=7)
+    ax.legend(loc="lower right", fontsize=6.5, framealpha=0.92, borderpad=0.3)
     fig.savefig(out_dir / "champ_residual_vs_iter.png", dpi=220)
     plt.close(fig)
 
@@ -190,8 +221,10 @@ def plot_learning_curves(out_dir: Path) -> dict:
     return summary
 
 
-def plot_heal(out_dir: Path, device: torch.device) -> dict:
-    cfg, cell, blob = load_v14_cell(device)
+def plot_heal(out_dir: Path, device: str = "cpu") -> dict:
+    import torch
+
+    cfg, cell, blob, og = load_v14_cell(device)
     holdout = ROOT / "brand" / "artifacts" / "canonical_eval_dataset" / "holdout_batch.pt"
     if holdout.is_file():
         packed = torch.load(holdout, map_location="cpu", weights_only=False)
@@ -212,56 +245,70 @@ def plot_heal(out_dir: Path, device: torch.device) -> dict:
         ours = og.apply_ops(eng, cell, cfg.ops)
 
     scores = {
-        "no_bake": score_batch(ideal, eng),
-        "dual_cosine": score_batch(ideal, dual),
-        "ours": score_batch(ideal, ours),
+        "no_bake": score_batch(ideal, eng, og),
+        "dual_cosine": score_batch(ideal, dual, og),
+        "ours": score_batch(ideal, ours, og),
         "champ_r_blend_ckpt": float(blob.get("r_blend", blob.get("champ_raw", 0.0))),
     }
 
     periods = 3
     L = int(ideal.shape[-1])
     x = np.arange(L * periods)
-    y_ideal = prolong(ideal[0], periods)
-    y_eng = prolong(eng[0], periods)
-    y_dual = prolong(dual[0], periods)
-    y_ours = prolong(ours[0], periods)
+    y_ideal = prolong(ideal[0], periods, og=og)
+    y_eng = prolong(eng[0], periods, og=og)
+    y_dual = prolong(dual[0], periods, og=og)
+    y_ours = prolong(ours[0], periods, og=og)
     wrap_abs = float((eng[0, 0] - eng[0, -1]).abs().item())
 
-    fig = plt.figure(figsize=(7.2, 5.6), constrained_layout=True)
-    gs = fig.add_gridspec(2, 2, height_ratios=[1.15, 1.0])
+    # Column-native size so includegraphics[width=\columnwidth] is dense, not sparse.
+    fig = plt.figure(figsize=(3.35, 3.55))
+    gs = fig.add_gridspec(2, 2, height_ratios=[1.2, 1.0], hspace=0.42, wspace=0.35)
+    fig.subplots_adjust(left=0.14, right=0.98, top=0.90, bottom=0.10)
     ax = fig.add_subplot(gs[0, :])
-    ax.plot(x, y_ideal, color=C_IDEAL, lw=1.15, label=r"ideal sibling $r^\star$")
-    ax.plot(x, y_eng, color=C_ENGINE, lw=1.1, ls="--", label=f"no-bake $R$={scores['no_bake']:.3f}")
-    ax.plot(x, y_dual, color=C_DUAL, lw=1.15, ls="-.", label=f"Dual Cosine $R$={scores['dual_cosine']:.3f}")
-    ax.plot(x, y_ours, color=C_OURS, lw=1.4, label=f"Ours (plateau) $R$={scores['ours']:.3f}")
+    ax.plot(x, y_ideal, color=C_IDEAL, lw=1.0, label=r"ideal $r^\star$")
+    ax.plot(x, y_eng, color=C_ENGINE, lw=0.95, ls="--", label=f"no-bake {scores['no_bake']:.3f}")
+    ax.plot(x, y_dual, color=C_DUAL, lw=1.0, ls="-.", label=f"DualCos {scores['dual_cosine']:.3f}")
+    ax.plot(x, y_ours, color=C_OURS, lw=1.25, label=f"Ours {scores['ours']:.3f}")
     for k in range(1, periods):
-        ax.axvline(k * L - 0.5, color="#888888", lw=0.7, ls=":", alpha=0.7)
+        ax.axvline(k * L - 0.5, color="#888888", lw=0.6, ls=":", alpha=0.7)
     ax.axvspan(L - 24, L + 24, color="#F0E442", alpha=0.15, zorder=0)
-    ax.set_title(f"Holdout wrap-seam heal (plateau champ, tile={idx}, $|wrap|={wrap_abs:.3f}$)")
-    ax.set_xlabel("sample (tiled)")
-    ax.set_ylabel("amplitude")
-    ax.legend(loc="upper right", fontsize=7, ncol=2)
+    ax.set_title(f"Holdout heal (tile={idx}, $|wrap|={wrap_abs:.3f}$)", fontsize=8, pad=2)
+    ax.set_xlabel("sample (tiled)", fontsize=7)
+    ax.set_ylabel("amp.", fontsize=7)
+    amp = np.concatenate([y_ideal, y_eng, y_dual, y_ours])
+    lo_a, hi_a = float(amp.min()), float(amp.max())
+    pad_a = 0.06 * (hi_a - lo_a + 1e-6)
+    ax.set_ylim(lo_a - pad_a, hi_a + pad_a)
+    ax.legend(loc="upper right", fontsize=5.5, ncol=2, framealpha=0.92, borderpad=0.25, columnspacing=0.6)
+    ax.tick_params(labelsize=6)
     ax.grid(True, alpha=0.2)
 
     axz = fig.add_subplot(gs[1, 0])
     lo, hi = L - 40, L + 40
-    axz.plot(x[lo:hi], y_ideal[lo:hi], color=C_IDEAL, lw=1.2)
-    axz.plot(x[lo:hi], y_eng[lo:hi], color=C_ENGINE, lw=1.1, ls="--")
-    axz.plot(x[lo:hi], y_dual[lo:hi], color=C_DUAL, lw=1.15, ls="-.")
-    axz.plot(x[lo:hi], y_ours[lo:hi], color=C_OURS, lw=1.4)
-    axz.axvline(L - 0.5, color="#888888", lw=0.8, ls=":")
-    axz.set_title("Seam zoom")
-    axz.set_xlabel("sample")
+    axz.plot(x[lo:hi], y_ideal[lo:hi], color=C_IDEAL, lw=1.05)
+    axz.plot(x[lo:hi], y_eng[lo:hi], color=C_ENGINE, lw=0.95, ls="--")
+    axz.plot(x[lo:hi], y_dual[lo:hi], color=C_DUAL, lw=1.0, ls="-.")
+    axz.plot(x[lo:hi], y_ours[lo:hi], color=C_OURS, lw=1.25)
+    axz.axvline(L - 0.5, color="#888888", lw=0.7, ls=":")
+    axz.set_title("Seam zoom", fontsize=8, pad=2)
+    axz.set_xlabel("sample", fontsize=7)
+    zamp = np.concatenate([y_ideal[lo:hi], y_eng[lo:hi], y_dual[lo:hi], y_ours[lo:hi]])
+    z0, z1 = float(zamp.min()), float(zamp.max())
+    zp = 0.08 * (z1 - z0 + 1e-6)
+    axz.set_ylim(z0 - zp, z1 + zp)
+    axz.tick_params(labelsize=6)
     axz.grid(True, alpha=0.2)
 
     axb = fig.add_subplot(gs[1, 1])
-    labels = ["no-bake", "Dual Cosine", "Ours"]
+    labels = ["no-bake", "DualCos", "Ours"]
     vals = [scores["no_bake"], scores["dual_cosine"], scores["ours"]]
     colors = [C_ENGINE, C_DUAL, C_OURS]
     axb.bar(labels, vals, color=colors, width=0.65)
-    axb.set_ylim(0.0, 1.05)
-    axb.set_ylabel(r"Absolute $R$ (tile)")
-    axb.set_title("Tile residual")
+    vmax = max(vals)
+    axb.set_ylim(max(0.0, min(vals) - 0.08), min(1.05, vmax + 0.06))
+    axb.set_ylabel(r"$R$", fontsize=7)
+    axb.set_title("Tile residual", fontsize=8, pad=2)
+    axb.tick_params(labelsize=6)
     axb.grid(True, axis="y", alpha=0.25)
 
     stem = out_dir / "fig_meta_heal_samples"
@@ -294,9 +341,12 @@ def main() -> int:
     print("learning curves:", json.dumps(summary, indent=2))
 
     if not args.skip_heal:
-        device = torch.device(args.device if args.device != "cuda" or torch.cuda.is_available() else "cpu")
+        import torch
+
+        device = args.device if (args.device != "cuda" or torch.cuda.is_available()) else "cpu"
         heal = plot_heal(out_dir, device)
-        print("heal:", json.dumps(heal, indent=2))
+        print("heal:", json.dumps({k: v for k, v in heal.items() if k != "champ_ops"}, indent=2))
+        print("heal ops:", heal.get("champ_ops"))
 
     # Mirror summary JSON into paper results blob for the converge table
     paper_json = out_dir / "v14_hybrid_converge_results.json"

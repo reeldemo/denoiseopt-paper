@@ -117,10 +117,10 @@ Figure~\ref{fig:v14-converge-curve} shows the learning curve; Table~\ref{tab:v14
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\columnwidth]{figures/fig_v14_converge_learning_curve.png}
+  \includegraphics[width=0.92\columnwidth]{figures/fig_v14_converge_learning_curve.png}
   \caption{Hybrid FitCell-to-plateau learning curve (seed \texttt{1902771841}, $750$ evaluations).
-  Champion $R_{\mathrm{blend}}$ vs.\ outer-loop evaluation;
-  Dual Cosine and the frozen Noise2Noise gate are marked.
+  Champion $R_{\mathrm{blend}}$ vs.\ outer-loop evaluation with the frozen Noise2Noise gate
+  (y-axis zoomed to the high-$R$ regime; Dual Cosine sits far below).
   Final champion $R_{\mathrm{blend}}{\approx}0.9912$.}
   \label{fig:v14-converge-curve}
 \end{figure}
@@ -212,10 +212,10 @@ Live hybrid champions stay compact (${\approx}24$k$\pm$2k params across short-Fi
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\columnwidth]{figures/fig_search_learning_curve.png}
+  \includegraphics[width=0.92\columnwidth]{figures/fig_search_learning_curve.png}
   \caption{Hybrid search learning curves under $R_{\mathrm{blend}}$ (seed \texttt{1902771841}).
-    Top: short FitCell ($1{,}200$ evaluations; champ.\ ${\approx}0.9695$).
-    Bottom: FitCell-to-plateau ($750$ evaluations; champ.\ ${\approx}0.9912$).}
+    Top: short FitCell ($1{,}200$ evaluations; champ.\ ${\approx}0.9695$; Dual Cosine + N2N gate).
+    Bottom: FitCell-to-plateau ($750$ evaluations; champ.\ ${\approx}0.9912$; y-axis zoomed to the high-$R$ regime).}
   \label{fig:search-learning-curve}
 \end{figure}
 
