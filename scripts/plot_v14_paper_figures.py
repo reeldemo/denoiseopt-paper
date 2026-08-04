@@ -102,10 +102,10 @@ def plot_learning_curves(out_dir: Path) -> dict:
     dc_v14 = float(v14[0].get("baseline_dual_cosine", 0.504))
     n2n_v14 = float(v14[0].get("n2n_gate_r", n2n))
 
-    fig, axes = plt.subplots(1, 2, figsize=(3.4, 2.55), constrained_layout=True)
+    fig, axes = plt.subplots(2, 1, figsize=(7.0, 5.0), constrained_layout=True)
 
     ax = axes[0]
-    ax.plot(vx, vr, color=C_RAW, lw=1.6, label=r"Champ $R_{\mathrm{blend}}$")
+    ax.plot(vx, vr, color=C_RAW, lw=1.8, label=r"Champ $R_{\mathrm{blend}}$")
     ax.axhline(dc_v10, color="#999999", ls="--", lw=1.2, label=f"Dual Cosine ({dc_v10:.3f})")
     ax.axhline(n2n, color=C_N2N, ls=":", lw=1.3, label=f"N2N gate ({n2n:.3f})")
     ax.set_title("Short FitCell hybrid ($1{,}200$ evals)")
@@ -113,10 +113,10 @@ def plot_learning_curves(out_dir: Path) -> dict:
     ax.set_ylabel(r"Champion $R_{\mathrm{blend}}$")
     ax.set_xlim(1, int(vx[-1]))
     ax.grid(True, alpha=0.25)
-    ax.legend(loc="lower right", fontsize=7)
+    ax.legend(loc="lower right", fontsize=8)
 
     ax = axes[1]
-    ax.plot(cx, cr, color=C_RAW, lw=1.6, label=r"Champ $R_{\mathrm{blend}}$")
+    ax.plot(cx, cr, color=C_RAW, lw=1.8, label=r"Champ $R_{\mathrm{blend}}$")
     ax.axhline(dc_v14, color="#999999", ls="--", lw=1.2, label=f"Dual Cosine ({dc_v14:.3f})")
     ax.axhline(n2n_v14, color=C_N2N, ls=":", lw=1.3, label=f"N2N gate ({n2n_v14:.3f})")
     gate_it = first_above(cx, cr, n2n_v14)
@@ -128,14 +128,14 @@ def plot_learning_curves(out_dir: Path) -> dict:
             rf"$R_{{\mathrm{{blend}}}}$$>$N2N @ {gate_it}; final {cr[-1]:.4f}",
             transform=ax.transAxes,
             va="top",
-            fontsize=7,
+            fontsize=8,
         )
     ax.set_title("FitCell-to-plateau hybrid ($750$ evals)")
     ax.set_xlabel("Outer-loop evaluation")
     ax.set_ylabel(r"Champion $R_{\mathrm{blend}}$")
     ax.set_xlim(1, int(cx[-1]))
     ax.grid(True, alpha=0.25)
-    ax.legend(loc="lower right", fontsize=7)
+    ax.legend(loc="lower right", fontsize=8)
 
     stem = out_dir / "fig_search_learning_curve"
     fig.savefig(stem.with_suffix(".png"), dpi=220)

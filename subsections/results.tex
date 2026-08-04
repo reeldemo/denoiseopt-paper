@@ -206,22 +206,22 @@ Artifacts: \texttt{v13\_ours\_vs\_n2n\_latency/latency\_compare.json}.
 
 Figure~\ref{fig:search-learning-curve} plots champion score against outer-loop evaluations
 on seed \texttt{1902771841}.
-The left panel is the short FitCell hybrid under locked $R_{\mathrm{blend}}{+}J$ ($1{,}200$ evaluations):
+The top panel is the short FitCell hybrid under locked $R_{\mathrm{blend}}{+}J$ ($1{,}200$ evaluations):
 raw $R_{\mathrm{blend}}$ clears Dual Cosine immediately and plateaus below the Noise2Noise gate (${\approx}0.975$).
-The right panel is the FitCell-to-plateau follow-up ($750$ evaluations):
+The bottom panel is the FitCell-to-plateau follow-up ($750$ evaluations):
 the same outer loop continues until residual plateau and clears the Noise2Noise gate
 (final $R_{\mathrm{blend}}{\approx}0.9912$; Section~\ref{sec:v14-converge}).
 The matched multi-seed $R_{\mathrm{blend}}$ bake-off is in Table~\ref{tab:meta-approaches}.
 Live hybrid champions stay compact (${\approx}24$k$\pm$2k params across short-FitCell seeds), while mid-search graphs can swing from ${\approx}15$k to ${\approx}370$k.
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=\columnwidth]{figures/fig_search_learning_curve.png}
+  \includegraphics[width=\textwidth]{figures/fig_search_learning_curve.png}
   \caption{Hybrid search learning curves under $R_{\mathrm{blend}}$ (seed \texttt{1902771841}).
-    Left: short FitCell ($1{,}200$ evaluations; champ.\ ${\approx}0.9695$).
-    Right: FitCell-to-plateau ($750$ evaluations; champ.\ ${\approx}0.9912$).}
+    Top: short FitCell ($1{,}200$ evaluations; champ.\ ${\approx}0.9695$).
+    Bottom: FitCell-to-plateau ($750$ evaluations; champ.\ ${\approx}0.9912$).}
   \label{fig:search-learning-curve}
-\end{figure}
+\end{figure*}
 
 \begin{table}[htbp]
   \centering
