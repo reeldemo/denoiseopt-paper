@@ -78,15 +78,21 @@ $r^{\star}$ is a procedural self-supervised scoring twin, not a perceptual groun
 \textbf{Primary metric.}
 After tiling each cycle $N$ times, let $y$ be the repaired output, $r^{\star}$ the ideal sibling, and $x$ the cracked engine.
 Define the wrap-neighborhood mask $\mathcal{S}$ of width $W{=}8$ at each period head/tail and the complementary mid-cycle body mask $\mathcal{B}$.
-Component scores use the unit clamp of relative RMS:
+For masked sample set $\mathcal{M}$ (seam or body windows after tiling $N$ periods), let $|\mathcal{M}|$ be the number of scored samples and
+\begin{equation}
+\mathrm{RMS}_{\mathcal{M}}(u)=\sqrt{\frac{1}{|\mathcal{M}|}\sum_{i\in\mathcal{M}} u_i^2}.
+\end{equation}
+The implementation fixes $\varepsilon>0$ with $\varepsilon=10^{-6}$ (\texttt{reelsynth/scripts/metrics\_snr\_sdr.py}; mirrored in \texttt{overnight\_gpu\_rl\_arch.py}).
+Component scores use the unit clamp
 \begin{equation}
 \label{eq:R-component}
 R(a,b;\mathcal{M})
 =\mathrm{clamp}\!\left(
-  1-\frac{\mathrm{RMS}\bigl((a-b)\odot\mathbf{1}_{\mathcal{M}}\bigr)}
-         {\mathrm{RMS}\bigl(a\odot\mathbf{1}_{\mathcal{M}}\bigr)+\varepsilon},
+  1-\frac{\mathrm{RMS}_{\mathcal{M}}(a-b)}
+         {\max\!\bigl(\mathrm{RMS}_{\mathcal{M}}(a),\,\varepsilon\bigr)},
   0,1\right).
 \end{equation}
+$R(a,b;\mathcal{M})\neq R(b,a;\mathcal{M})$ in general: the denominator uses the RMS of the \emph{first} argument only (ideal for $R_{\mathrm{seam}}$, engine for $R_{\mathrm{body}}$).
 Then $R_{\mathrm{seam}}=R(r^{\star},y;\mathcal{S})$ (seam fidelity vs the ideal) and
 $R_{\mathrm{body}}=R(x,y;\mathcal{B})$ (mid-cycle identity vs the engine).
 The primary reported score is

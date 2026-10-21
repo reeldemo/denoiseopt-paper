@@ -17,7 +17,7 @@ These constraints bound claim strength; they are not optional honesty footnotes.
   \item \textbf{Metric lock and seed labeling.}
     Primary holdout claims use locked $R_{\mathrm{blend}}$ (Table~\ref{tab:n2n-vs-ours}, Section~\ref{sec:residual-score}) as mean$\pm$std over five evaluation seeds.
     Matched-$5$k outer-loop means use three search seeds (Table~\ref{tab:meta-approaches}).
-    FitCell-to-plateau $R_{\mathrm{blend}}{\approx}0.9912$ is a single-seed freeze (Table~\ref{tab:v14-hybrid-converge}), not a multi-seed mean.
+    FitCell-to-plateau $R_{\mathrm{blend}}{\approx}0.9912$ is a single \emph{search}-seed in-loop score (seed \texttt{1902771841}; Table~\ref{tab:v14-hybrid-converge}), not a five-seed holdout mean and not yet replicated on seeds \texttt{2026072701}/\texttt{02}.
     Whole-curve prolonged $R$ near $0.991$ is a superseded debug score and must not overwrite holdout or converge readings.
   \item \textbf{Synthetic / proxy boards.}
     Primary search and holdout use procedural sine{+}cliff generators, not private studio stems.
@@ -25,7 +25,7 @@ These constraints bound claim strength; they are not optional honesty footnotes.
     they do \emph{not} validate industrial toolpath or live-grid claims.
   \item \textbf{Domain Noise2Noise vs transfer depth.}
     Domain-trained Noise2Noise was scored on the seven wrap-protocol stress-test boards
-    (Table~\ref{tab:transfer-main}). It trails Ours on every column under $R_{\mathrm{blend}}$.
+    (Appendix Table~\ref{tab:transfer-main}). It trails Ours on every column under $R_{\mathrm{blend}}$.
     Latency timings in Appendix~\ref{app:supplement} still use the wavetable checkpoint zero-shot.
     Cycle-GAN / BeatDiff / real KIT--PMU remain incomplete where noted
     (Table~\ref{tab:transfer-sota-status}).
