@@ -1,0 +1,26 @@
+\begin{table}[t]
+  \centering
+  \caption{Compute comparison (RTX~3090; single GPU).
+    \textbf{Evaluations} counts outer-loop architecture proposals for hybrid search, or Adam steps for the one-shot Noise2Noise trainer.
+    GPU-hours are wall-clock on the logged run; TBD marks missing logs.
+    Noise2Noise gate $R_{\mathrm{blend}}$ is evaluated on the frozen holdout (seed \texttt{20260719}); hybrid $R_{\mathrm{blend}}$ rows are in-loop search scores unless noted.}
+  \label{tab:compute-n2n-hybrid}
+  \setlength{\tabcolsep}{3pt}
+  \footnotesize
+  \begin{adjustbox}{max width=\columnwidth}
+  \begin{tabular}{@{}lp{0.34\columnwidth}rr@{}}
+    \toprule
+    Method & Protocol & Evaluations & GPU-h \\
+    \midrule
+    SeamN2N (corrupt$\to$corrupt) & One training run; holdout eval & $20{,}000$ steps & ${\approx}0.043$ \\
+    Hybrid (matched D1) & Outer loop; 3 search seeds & $5{,}000$/seed & ${\approx}8.4$ mean \\
+    Hybrid FitCell-to-plateau & Outer loop; search seed \texttt{1902771841} & $750/750$ & ${\approx}46.9$ \\
+    Multi-seed plateau (planned) & Seeds \texttt{2026072701}/\texttt{02} & TBD & TBD \\
+    Five-seed holdout re-score (planned) & Eval seeds \texttt{20260719}--\texttt{23} & TBD & TBD \\
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}\\[0.35em]
+  {\footnotesize SeamN2N wall from \texttt{figures/n2n\_baseline.json} (\texttt{elapsed\_sec}${\approx}155.2$).
+  Matched-$5$k mean wall from Table~\ref{tab:meta-approaches}.
+  Plateau wall from Section~\ref{sec:v14-converge}.}
+\end{table}

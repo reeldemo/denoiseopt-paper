@@ -6,18 +6,11 @@
 All primary tables use the same locked residual.
 Given a cracked engine tile $x\in\mathbb{R}^{L}$ and an ideal sibling $r^{\star}$ (cliff withheld),
 prolong each cycle $N{=}16$ times, form wrap neighborhoods of width $W{=}8$ at every period head/tail,
-and compute unit residuals
-\[
-R_{\mathrm{seam}}=\mathrm{clamp}\!\bigl(1-\mathrm{rms}_{\mathrm{seam}}(y,r^{\star})/\mathrm{rms}_{\mathrm{seam}}(x,r^{\star}),0,1\bigr),
-\]
-\[
-R_{\mathrm{body}}=\mathrm{clamp}\!\bigl(1-\mathrm{rms}_{\mathrm{body}}(y,x)/\mathrm{rms}_{\mathrm{ref}},0,1\bigr),
-\]
-then
+and compute $R_{\mathrm{seam}}=R(r^{\star},y;\mathcal{S})$ and $R_{\mathrm{body}}=R(x,y;\mathcal{B})$ via~\eqref{eq:R-component} with $\varepsilon=10^{-6}$, then
 \[
 R_{\mathrm{blend}}=\alpha R_{\mathrm{seam}}+(1-\alpha)R_{\mathrm{body}},\qquad\alpha{=}0.7.
 \]
-Body residual is scored against the engine $x$ (not $r^{\star}$) so mid-cycle identity is rewarded.
+Body residual uses the engine $x$ as the first argument so mid-cycle identity is rewarded; swapping arguments changes the score.
 No per-table rescaling: reported scores are that clamp in $[0,1]$.
 Search maximizes
 $J=R_{\mathrm{blend}}-\lambda\cdot\mathrm{latency\_norm}$ with $\lambda{=}0.02$ and
@@ -47,7 +40,7 @@ Listening: $N_{\mathrm{listeners}}{=}0$ (Table~\ref{tab:listening-stats}); no pr
   \item \textbf{Primary procedural datasets.} Generator $G$: $L{=}256$ two-harmonic sine{+}cliff; seam width $W{=}8$; cliff amplitude $\pm\mathcal{U}(0.08,0.43)$; FitCell/search draws i.i.d.; frozen holdout metrics draw $n{=}4096$ (seed \texttt{20260719}) plus five-seed score batches (\texttt{20260719}--\texttt{20260723}).
     Multi-family SOTA: $10$ families $\times$ $2$ seeds $\times$ batch $64$ ($n{=}1280$).
     Factory+FX / AKWF wavetable-native boards: $n{=}1280$ each (ReelSynth exports; AKWF CC0).
-  \item \textbf{Transfer stress boards.} CWRU / MFPT / Paderborn K001 / MIT-BIH / PTB-XL subset / synth CNC / synth PMU: $n{=}256$ periods each under the same wrap protocol (Table~\ref{tab:dataset-stats}; public sources + procedural pilots).
+  \item \textbf{Transfer stress boards.} Seven wrap-protocol boards ($n{=}256$ each); full protocol and tables in Appendix~\ref{app:transfer-bundle}.
   \item \textbf{FitCell / outer loop.} Adam on $1-R_{\mathrm{blend}}$; D1 short cap ${\approx}16$--$48$ steps; converge campaign searchable patience/$\varepsilon$/$T_{\max}\!\in\!\{512,\ldots,2048\}$, batch ${\approx}96$, two sequential proposals/iter (Section~\ref{sec:pipeline-overview}).
     Matched $5$k evals: Random, CMA-ES, REINFORCE, Aging, TPE, hybrid (3 search seeds).
     Hybrid-only FitCell-to-plateau: $750$ outer iters, seed \texttt{1902771841} (${\approx}46.9$\,h wall).
@@ -81,11 +74,11 @@ DualCosine is one classical comparator and a PPO centering constant.
 It is not the reward target.
 
 \paragraph{Dataset statistics.}
-Table~\ref{tab:dataset-stats} and Figures~\ref{fig:dataset-size}--\ref{fig:dataset-transfer-sizes} inventory every evaluation board used in this paper.
+Table~\ref{tab:dataset-stats} and Figure~\ref{fig:dataset-size} inventory primary evaluation boards; transfer sizes are in Appendix~\ref{app:transfer-bundle}.
 The primary procedural holdout is a frozen $4{,}096$-cycle metrics draw ($L{=}256$, $N{=}16$ tiles, seed \texttt{20260719}) plus a matched score batch of $64$ cycles (five consecutive seeds for classical mean$\pm$std).
 Multi-family SOTA scores $20$ waveforms ($10$ families $\times$ $2$ seeds, batch $64$, $1{,}280$ cycles).
 Wavetable-native boards use ReelSynth Factory+FX exports ($n{=}1{,}280$: $640$ dry + $640$ FX) and AKWF CC0 cycles ($n{=}1{,}280$) so Plot~4 corpus bars are comparable to multi-family ($1{,}280$).
-Sci/eng transfer tiles $1{,}536$ periods across CWRU, MFPT ($n{=}256$), MIT-BIH, PTB-XL subset, and synthetic CNC/PMU.
+Sci/eng transfer tiles ($1{,}536$ periods total) are summarized in Appendix~\ref{app:transfer-bundle}.
 Search never trains on the frozen holdout. N2N/seq baselines use disjoint train seeds \texttt{424242}/\texttt{424243}.
 Artifacts: \href{https://github.com/reeldemo/denoise-opt-meta/tree/master/paper/Unsupervised_Wrap-Discontinuity_Repair_in_Wavetable_Synthesis_via_Hybrid_GA-PPO_Meta-Search_v14/figures}{dataset artifacts}.
 
@@ -125,13 +118,6 @@ Artifacts: \href{https://github.com/reeldemo/denoise-opt-meta/tree/master/paper/
   \label{fig:dataset-size}
 \end{figure}
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\columnwidth]{figures/fig_dataset_transfer_sizes.png}
-  \caption{Sci/eng transfer domain sizes: tiled eval periods at $L{=}256$ (with source $f_s$ where applicable).}
-  \label{fig:dataset-transfer-sizes}
-\end{figure}
-
 \paragraph{Dataset metrics.}
 A metrics draw of $4{,}096$ cycles under the holdout seed yields mean ideal RMS $0.721\pm0.016$, mean engine residual RMS $0.021\pm0.013$, and mean absolute wrap jump $|x_0-x_{L-1}|$ of $0.913\pm0.634$.
 No-bake (passthrough) on that draw scores mean $R\approx0.971$.
@@ -153,13 +139,6 @@ Figure~\ref{fig:intro-sine} is the documented sine-wrap edge case: a high-$|wrap
   \label{fig:dataset-distributions}
 \end{figure}
 
-\paragraph{Hybrid search campaign (5,000-iteration freeze).}
-A CUDA search tagged \texttt{PPO+GA+PBT+NAS+depth+MoE} runs with a large declared iteration budget (order $10^{5}$).
-At the reported freeze (run \texttt{gpu-rl-arch-20260719T083019Z}, $\approx 6{,}922$ clean iters / $\approx 7.9$\,h on RTX~3090) the champion residual is $R\approx 0.99093$ against DualCosine baseline $\approx 0.81658$ ($\Delta R\approx{+}0.174$).
-Branch-best residuals at the freeze: GA $\approx 0.99016$, PBT $\approx 0.99012$, PPO $\approx 0.98924$, combo $\approx 0.98854$, NAS $\approx 0.98677$.
-Isolated short-budget re-runs (GA-only, PPO-only, GA{+}PPO, full, 150 iters, same search seed, plateau adapt off) are reported beside those freezes in Table~\ref{tab:ablation}.
-Figures in Section~\ref{sec:results} regenerate from the archived \href{https://github.com/reeldemo/denoise-opt-meta/blob/master/paper/Unsupervised_Wrap-Discontinuity_Repair_in_Wavetable_Synthesis_via_Hybrid_GA-PPO_Meta-Search_v12/figures/meta_approach_compare_v10.json}{search results}.
-
 \paragraph{Inference, classical, and learned baselines.}
 High-$R$ fitted operators ($R\ge 0.98$) are timed on CUDA (batch 64, prolonged residual).
 Ten non-learnable bake denoisers share the frozen canonical holdout against the neural favorite (Table~\ref{tab:canonical-methods}).
@@ -177,4 +156,9 @@ Wavetable-native transfer (Phase~F1) scores true ReelSynth-exported factory peri
 Procedural stand-ins are tertiary smoke only.
 Speech/music LibriSpeech/MUSDB corpora remain off.
 \input{subsections/experiments_eval_listening}
-\input{subsections/experiments_transfer}
+
+\paragraph{Compute budget (matched reporting).}
+Table~\ref{tab:compute-n2n-hybrid} compares evaluation counts and logged GPU wall time for Noise2Noise vs hybrid search.
+Hybrid search spends many more outer evaluations than the one-shot N2N trainer; holdout replication of plateau champions is pending (TBD rows).
+
+\input{figures/tab_compute_n2n_vs_hybrid}

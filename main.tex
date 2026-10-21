@@ -59,7 +59,7 @@ Hybrid GA--PPO Meta-Search}
   Email:
   \href{mailto:julian.m.kleber@gmail.com}{\texttt{julian.m.kleber@gmail.com}}
 }
-\date{3 August 2026}
+\date{19 October 2026}
 \newcommand{\papershorttitle}{Wavetable Wrap-Discontinuity Repair}
 
 \begin{document}
@@ -68,8 +68,9 @@ Hybrid GA--PPO Meta-Search}
   \maketitle
   \begin{center}\footnotesize
     Code (ReelSynth engine + DenoiseOpt meta-search):
-    \url{https://github.com/reeldemo/denoiseopt-paper},
-    \url{https://github.com/reeldemo/denoise-opt-meta}
+    \url{https://github.com/reeldemo/reelsynth},
+    \url{https://github.com/reeldemo/denoise-opt-meta},
+    \url{https://github.com/reeldemo/denoiseopt-paper}
   \end{center}
   \begin{abstract}
     Wavetable oscillators click when the stored period does not join cleanly at the wrap.
@@ -83,10 +84,10 @@ Hybrid GA--PPO Meta-Search}
     below frozen Noise2Noise ($0.9767{\pm}0.0015$) but far above Dual Cosine ($0.542{\pm}0.038$; Table~\ref{tab:n2n-vs-ours}).
     A matched $5{,}000$-evaluation bake-off across three search seeds ranks the hybrid first among six outer-loop families
     ($0.9748{\pm}0.0018$; Table~\ref{tab:meta-approaches}).
-    Training that hybrid to residual plateau then clears the Noise2Noise gate
-    ($R_{\mathrm{blend}}{\approx}0.9912$ vs gate ${\approx}0.9750$; Table~\ref{tab:v14-hybrid-converge}).
+    On search seed \texttt{1902771841} only, hybrid FitCell-to-plateau logs in-loop $R_{\mathrm{blend}}{\approx}0.9912$
+    vs a frozen holdout Noise2Noise gate ${\approx}0.9750$ (Table~\ref{tab:v14-hybrid-converge}); clearing that gate is provisional pending multi-search-seed plateau and five-seed holdout replication.
     On hard wrap cliffs, classical fades collapse while searched operators hold.
-    Cross-domain boards reuse the same wrap protocol as residual stress tests only.
+    Cross-domain transfer stress tests are in Appendix~\ref{app:transfer-bundle}.
   \end{abstract}
   \keywords{wavetable synthesis; wrap discontinuity; unsupervised repair; DenoiseOpt; seam restoration; Noise2Noise; neural architecture search; reinforcement learning; genetic algorithms; proximal policy optimization; hybrid meta-search; population-based training; audio signal processing}
   \vspace{0.6em}
@@ -98,7 +99,6 @@ Hybrid GA--PPO Meta-Search}
 \input{subsections/experiments}
 \input{subsections/results}
 \input{subsections/results_eval_listening}
-\input{subsections/results_transfer}
 \input{subsections/discussion}
 \input{subsections/tooling}
 \input{subsections/ethics}
@@ -345,6 +345,8 @@ S.~Pascual, A.~Bonafonte, and J.~Serr\`a.
 \input{subsections/appendix_algorithms}
 \clearpage
 \input{subsections/appendix_supplement}
+\input{subsections/appendix_extra_results}
+\input{subsections/appendix_transfer_bundle}
 \input{subsections/appendix_transfer_pilot}
 
 \end{document}
