@@ -4,7 +4,7 @@
 Material moved here for the conference-length reading path:
 vibrato / hear / diversity panels, multi-family / cliff boards, matched outer-loop bake-off,
 branch/compute freezes, hyperparameter probe, transfer latency / status notes, and search-monitor plots.
-Primary claims remain in Sections~\ref{sec:results}--\ref{sec:transfer-main}.
+Primary claims remain in Sections~\ref{sec:results}--\ref{sec:discussion}; cross-domain transfer is Appendix~\ref{app:transfer-bundle}.
 
 \subsection{Vibrato, hear-sample, and diversity panels}
 \label{sec:app-listening-figs}
@@ -80,7 +80,7 @@ Figure~\ref{fig:sota-heatmap} breaks the same board down by generative family.
 
 Full multi-family ranking (Table~\ref{tab:sota-main}) and hard-cliff strata
 (Table~\ref{tab:cliff-strata}) for the Results narrative in
-Sections~\ref{sec:sota-main}--\ref{sec:cliff-strata}.
+Appendix~\ref{app:secondary-results} and Section~\ref{sec:cliff-strata}.
 
 \begin{table}[htbp]
   \centering
@@ -207,7 +207,16 @@ Sections~\ref{sec:sota-main}--\ref{sec:cliff-strata}.
 \subsection{Matched-budget outer-loop comparison}
 \label{sec:meta-approaches-results}
 
-Under a $5{,}000$ evaluation budget with LSTM and xLSTM in the searchable bake vocabulary, Table~\ref{tab:meta-approaches} compares Random NAS, Cont.\ CMA-ES, Arch REINFORCE, Aging evolution, TPE Bayes NAS, and our hybrid GA+PPO approach (Ours). The table reports results from a matched Deferred D1 re-search under locked $R_{\mathrm{blend}}{+}J$ (mean $\pm$ std over three search seeds; artifacts \texttt{meta\_approach\_compare\_v13\_rblend/}). Our hybrid GA+PPO leads with an $R_{\mathrm{blend}}$ of $0.9748{\pm}0.0018$, taking approximately 8.4 hours on average. Aging evolution ranks second at $0.9635{\pm}0.0049$, while Arch REINFORCE shows the highest variance with $0.9599{\pm}0.0116$. Only seed \texttt{1902771841} of our hybrid approach clears the frozen Noise2Noise gate under the short-FitCell D1 protocol, achieving an $R_{\mathrm{blend}}$ of approximately 0.9766 compared to the gate's approximate value of 0.9750. Despite mid-search graphs ranging from about 15k to 370k parameters, our hybrid approach maintains compact models (${\approx}24$k$\pm$2k params across seeds). Since our hybrid method dominated this matched bake-off, the subsequent campaign focuses solely on running hybrid-only FitCell-to-convergence (Section~\ref{sec:v14-converge}, Table~\ref{tab:v14-hybrid-converge}). Note that Noise2Noise is not an outer-loop method in this context (see Tables~\ref{tab:n2n-vs-ours} and~\ref{tab:sota-main}). Learning-curve and bar figures use trajectories from seed \texttt{1902771841} under the same locked objective.
+Under a $5{,}000$ evaluation budget with LSTM and xLSTM in the searchable bake vocabulary, Table~\ref{tab:meta-approaches} compares Random NAS, Cont.\ CMA-ES, Arch REINFORCE, Aging evolution, TPE Bayes NAS, and our hybrid GA+PPO approach (Ours).
+The table reports a matched Deferred D1 re-search under locked $R_{\mathrm{blend}}{+}J$ (mean$\pm$std over three search seeds; artifacts \texttt{meta\_approach\_compare\_v13\_rblend/}).
+Our hybrid GA+PPO has the highest mean $R_{\mathrm{blend}}$ ($0.9748{\pm}0.0018$; ${\approx}8.4$\,h mean wall).
+Aging evolution ranks second ($0.9635{\pm}0.0049$); Arch REINFORCE shows the highest variance ($0.9599{\pm}0.0116$).
+With only $n{=}3$ matched seeds we do \emph{not} claim formal superiority from non-overlapping uncertainty bands or ANOVA; we use the bake-off to \emph{select} which outer-loop family receives the FitCell-to-plateau budget.
+Only search seed \texttt{1902771841} of the hybrid short-FitCell run clears the frozen holdout Noise2Noise gate under D1 ($R_{\mathrm{blend}}{\approx}0.9766$ vs gate ${\approx}0.9750$).
+Mid-search graphs range from about $15$k to $370$k parameters, yet short-FitCell champions stay compact (${\approx}24$k$\pm$2k params across seeds).
+Because hybrid had the top mean among the six families, later compute focuses on hybrid-only FitCell-to-plateau (Section~\ref{sec:v14-converge}, Table~\ref{tab:v14-hybrid-converge}).
+Noise2Noise is not an outer-loop competitor here (Tables~\ref{tab:n2n-vs-ours},~\ref{tab:sota-main}).
+Learning-curve and bar figures use seed \texttt{1902771841} trajectories under the same locked objective.
 
 \input{figures/meta_approaches_table}
 

@@ -23,7 +23,7 @@ then FitCell-to-plateau clearing the Noise2Noise gate (Figure~\ref{fig:v14-conve
 Matched-$5$k outer-loop bake-offs under locked $R_{\mathrm{blend}}{+}J$ rank hybrid first across three search seeds
 (Appendix~\ref{app:supplement}, Table~\ref{tab:meta-approaches}), which is why the follow-up spends GPU on hybrid alone
 (Section~\ref{sec:v14-converge}).
-Training candidates to residual plateau (rather than a $16$--$48$-step FitCell cap) is what lets seed \texttt{1902771841} clear the Noise2Noise gate ($R_{\mathrm{blend}}{\approx}0.9912$).
+Training candidates to residual plateau (rather than a $16$--$48$-step FitCell cap) raises in-loop $R_{\mathrm{blend}}$ on search seed \texttt{1902771841} to ${\approx}0.9912$ vs the frozen holdout Noise2Noise gate; we treat beating that gate as provisional until multi-seed plateau and holdout means land.
 Future search work can target family-specialist graphs and cliff-conditioned FitCell schedules under the same outer loop.
 
 \paragraph{Evidence beyond static tiles.}
@@ -31,5 +31,5 @@ Vibrato spectrograms and downloadable hear WAVs are informal file checks only
 (Sections~\ref{sec:vibrato-eval}--\ref{sec:hear-samples}; Table~\ref{tab:listening-stats}: $N_{\mathrm{listeners}}{=}0$).
 They do \emph{not} support perceptual claims of any kind---not preference, not ``sounds better,'' not MOS/MUSHRA proxies.
 Sci/eng wrap transfer reports locked $R_{\mathrm{blend}}$ on seven boards as a wrap-protocol stress test
-(Section~\ref{sec:transfer-main}, Table~\ref{tab:transfer-main}), not audio$\to$fault/ECG diagnosis SOTA.
+(Appendix~\ref{app:transfer-bundle}), not audio$\to$fault/ECG diagnosis SOTA.
 Scope limits are collected in Section~\ref{sec:limitations}.
