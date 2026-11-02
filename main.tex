@@ -82,8 +82,8 @@ Hybrid GA--PPO Meta-Search}
 
     On a five-seed holdout, a short-FitCell hybrid freeze reaches $0.9708{\pm}0.0014$,
     below frozen Noise2Noise ($0.9767{\pm}0.0015$) but far above Dual Cosine ($0.542{\pm}0.038$; Table~\ref{tab:n2n-vs-ours}).
-    A matched $5{,}000$-evaluation bake-off across three search seeds ranks the hybrid first among six outer-loop families
-    ($0.9748{\pm}0.0018$; Table~\ref{tab:meta-approaches}).
+    A matched $5{,}000$-evaluation bake-off across three search seeds gives hybrid the highest mean $R_{\mathrm{blend}}$ among six outer-loop families
+    ($0.9748{\pm}0.0018$; Table~\ref{tab:meta-approaches}; $n{=}3$ seeds, selection not ANOVA).
     On search seed \texttt{1902771841} only, hybrid FitCell-to-plateau logs in-loop $R_{\mathrm{blend}}{\approx}0.9912$
     vs a frozen holdout Noise2Noise gate ${\approx}0.9750$ (Table~\ref{tab:v14-hybrid-converge}); clearing that gate is provisional pending multi-search-seed plateau and five-seed holdout replication.
     On hard wrap cliffs, classical fades collapse while searched operators hold.

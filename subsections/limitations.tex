@@ -43,6 +43,8 @@ These constraints bound claim strength; they are not optional honesty footnotes.
   \item \textbf{Transfer scope.}
     Sci/eng wrap transfer is a classical-board stress test of the wrap protocol, not deep CWRU/ECG SOTA
     (Table~\ref{tab:transfer-sota-status}).
+  \item \textbf{Small-$n$ statistics.}
+    Holdout ($n{=}5$ eval seeds), matched outer-loop ($n{=}3$ search seeds), multi-family Wilcoxon ($n{=}20$ waveforms), and Rust transfer ($n{=}20$ tiles) use the reported sign/Wilcoxon tests as exploratory checks only; we do not treat overlapping mean$\pm$std bands as proof of superiority without those paired tests.
   \item \textbf{Hyperparameter probe.}
     The $\pm 50\%$ one-at-a-time probe (Appendix~\ref{app:supplement}) is not a full re-search of Table~\ref{tab:hyperparams}.
 \end{itemize}

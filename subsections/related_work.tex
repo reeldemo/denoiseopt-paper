@@ -13,6 +13,10 @@ We treat those OA papers as the wavetable/VA lineage for this seam task and scor
 DDSP frames DSP modules as composable blocks~\cite{engel2020}.
 We reuse that framing for small bake/FIR/MLP seam operators at cycle scale, rather than end-to-end vocoders.
 
+\paragraph{Normalized cycle metrics.}
+Audio restoration and synthesis surveys routinely rank models with SNR/SDR-style normalized errors on declared masks~\cite{purwins2019,stoller2018}.
+Our locked $R_{\mathrm{blend}}$ applies the same one-minus-relative-RMS clamp (Section~\ref{sec:residual-score}, Eq.~\eqref{eq:R-component}) separately on seam and body masks after tiling; it is a task-specific objective, not a perceptual score.
+
 \paragraph{Label-free restoration.}
 Noise2Noise learns restorers from corrupted observations alone~\cite{lehtinen2018,kashyap2021n2n}.
 Mixture-invariant training ranks unsupervised systems without stem labels~\cite{wisdom2020}.

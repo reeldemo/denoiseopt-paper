@@ -107,9 +107,9 @@ Ours $0.934$, corrupt$\to$corrupt N2N $0.931$, seq CNN $0.920$, no-bake $0.893$,
 \texttt{seam\_fir3} $0.868$, DualCosine $0.514$
 (aligned with Table~\ref{tab:n2n-vs-ours} multifamily).
 Fixed MLP-on-$R$ and CNN/U-Net-lite-on-$R$ (no outer NAS) sit between DualCosine and the neural rows.
-Paired Wilcoxon signed-rank (normal approx.) of favorite vs DualCosine on the 20 waveforms: $W{=}0$, $p{\approx}8.9{\times}10^{-5}$, mean $\Delta R_{\mathrm{blend}}{=}{+}0.417$ (bootstrap 95\% CI $[0.398,0.435]$).
+Vs DualCosine on the same $n{=}20$ waveforms, a paired Wilcoxon signed-rank test (normal approx.) gives $W{=}0$, $p{\approx}8.9{\times}10^{-5}$, mean $\Delta R_{\mathrm{blend}}{=}{+}0.417$ (bootstrap 95\% CI $[0.398,0.435]$); treat this as a small-$n$ exploratory check, not a powered multi-study claim.
 Vs no-bake the multifamily mean gap is $\approx{+}0.038$.
-Vs corrupt$\to$corrupt N2N the mean-of-means gap is $\approx{+}0.003$ (mean win fraction $0.47$ across five seeds).
+Vs corrupt$\to$corrupt N2N the mean-of-means gap is $\approx{+}0.003$ with sign-test parity (mean win fraction $0.47$ across five eval seeds; Section~\ref{sec:n2n-vs-ours-boards})---overlapping std bands must not be read as Ours superiority.
 
 \paragraph{Cliff stratification (full).}
 Main-text summary: Section~\ref{sec:cliff-strata}.

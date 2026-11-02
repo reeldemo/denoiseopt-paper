@@ -74,9 +74,9 @@ The engineering choice is to combine them as an outer loop over compact seam-rep
 \paragraph{Key findings.}
 Under the locked v10.1 $R_{\mathrm{blend}}$ protocol with multi-seed evaluation (primary story: Table~\ref{tab:n2n-vs-ours}):
 \begin{itemize}
-  \item On the primary holdout, the short-FitCell hybrid champion sits just below frozen Noise2Noise---the strongest neural baseline for this locked protocol---on every seed ($0.9708{\pm}0.0014$ vs $0.9767{\pm}0.0015$) and well above Dual Cosine ($0.542{\pm}0.038$).
+  \item On the primary holdout, the short-FitCell hybrid sits below frozen Noise2Noise on every evaluation seed ($0.9708{\pm}0.0014$ vs $0.9767{\pm}0.0015$; paired mean $\Delta{\approx}{-}0.006$; sign test $p{=}0.062$) and well above Dual Cosine ($0.542{\pm}0.038$).
   \item On twenty multi-family boards, Ours and Noise2Noise are statistically indistinguishable on board-mean deltas ($0.9337{\pm}0.0028$ vs $0.9308{\pm}0.0045$; mean win fraction $0.47$; sign-test $p{=}1.0$).
-  \item Matched-$5$k outer-loop comparison ranks hybrid first among six search families ($0.9748{\pm}0.0018$, three search seeds); on search seed \texttt{1902771841} only, FitCell-to-plateau logs in-loop $R_{\mathrm{blend}}{\approx}0.9912$ above the frozen holdout Noise2Noise gate (provisional; Section~\ref{sec:v14-converge}).
+  \item Matched-$5$k outer-loop comparison gives hybrid the highest mean $R_{\mathrm{blend}}$ among six search families ($0.9748{\pm}0.0018$, three search seeds; selection only, not formal $n{=}3$ superiority); on search seed \texttt{1902771841} only, FitCell-to-plateau logs in-loop $R_{\mathrm{blend}}{\approx}0.9912$ above the frozen holdout Noise2Noise gate (provisional; Section~\ref{sec:v14-converge}).
   \item On hard wrap cliffs, classical fades collapse while searched operators and Noise2Noise hold (Section~\ref{sec:cliff-strata}).
   \item On Factory+FX and AKWF corpora under $R_{\mathrm{blend}}$, Noise2Noise leads Ours; both still beat Dual Cosine.
 \end{itemize}

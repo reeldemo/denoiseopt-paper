@@ -47,16 +47,19 @@ Dual Cosine is the classical fade on every board.
 Noise2Noise is the primary neural gate for this protocol (not a DenoiseOpt variant).
 
 \paragraph{Holdout.}
-Over five evaluation seeds (\texttt{20260719}--\texttt{20260723}), Noise2Noise leads the short-FitCell hybrid on every seed:
-$0.9767{\pm}0.0015$ vs $0.9708{\pm}0.0014$.
+Over five evaluation seeds (\texttt{20260719}--\texttt{20260723}), table means are
+$0.9767{\pm}0.0015$ (Noise2Noise) vs $0.9708{\pm}0.0014$ (short-FitCell hybrid).
+Those $\pm$ values are sample std over seeds, not confidence intervals; the bands can overlap even when one method leads on every draw.
+Paired per-seed holdout scores give mean $\Delta R_{\mathrm{blend}}$ (Ours$-$N2N) $={-}0.0059$ with Noise2Noise strictly higher on all five seeds (two-sided sign test $p{=}0.062$, $n{=}5$).
 Dual Cosine sits at $0.542{\pm}0.038$.
-The hybrid is therefore competitive with Noise2Noise and far better than a classical fade, but it does not win the holdout gate under short FitCell.
+The hybrid is close to Noise2Noise and far above a classical fade, but it does not beat the frozen holdout gate under short FitCell.
 
 \paragraph{Multi-family board.}
 On twenty generative waveforms, board means are close:
 Ours $0.9337{\pm}0.0028$, Noise2Noise $0.9308{\pm}0.0045$
 (mean win fraction $0.47$; sign test on board-mean deltas $p{=}1.0$).
-That is no significant mean difference. Both beat Dual Cosine.
+Overlapping std bands here reflect parity, not a claim that Ours beats Noise2Noise.
+Both beat Dual Cosine (Appendix~\ref{app:secondary-results}).
 
 \paragraph{Factory and AKWF.}
 On wavetable-native corpora ($n{=}1{,}280$ each), Noise2Noise leads both Factory+FX
@@ -97,6 +100,7 @@ Search seeds, the N2N train seed \texttt{424242}, and holdout seeds remain disjo
 Holdout and multi-family rows in Table~\ref{tab:n2n-vs-ours} use five evaluation seeds.
 The matched $5$k outer-loop bake-off uses three search seeds
 (Table~\ref{tab:meta-approaches}: hybrid $0.9748{\pm}0.0018$, Aging $0.9635{\pm}0.0049$).
+Hybrid has the highest mean among six families; we do not infer formal outer-loop superiority from $n{=}3$ seed std alone.
 
 \subsection{Hybrid-only FitCell-to-convergence}
 \label{sec:v14-converge}
@@ -140,7 +144,7 @@ Figure~\ref{fig:v14-converge-curve} shows the learning curve; Table~\ref{tab:v14
     \toprule
     Setting & Iters & $R_{\mathrm{blend}}$ & $t$\,ms & vs N2N gate \\
     \midrule
-    FitCell-to-plateau & $750/750$ & $0.9912$ & $8.70$ & clears \\
+    FitCell-to-plateau & $750/750$ & $0.9912$ & $8.70$ & prov.\\
     Short FitCell (ref.) & $1{,}200$ & ${\approx}0.9695$ & ${\approx}5.08$ & below \\
     Frozen N2N gate & --- & ${\approx}0.9750$ & --- & --- \\
     \bottomrule
@@ -223,7 +227,8 @@ Live hybrid champions stay compact (${\approx}24$k$\pm$2k params across short-Fi
 \begin{table}[t]
   \centering
   \caption{Ours vs Noise2Noise and Dual Cosine under $R_{\mathrm{blend}}$ ($\alpha{=}0.7$).
-    Holdout / multi-family: mean$\pm$std over five seeds (\texttt{20260719}--\texttt{20260723}).
+    Holdout / multi-family: mean$\pm$sample std over five eval seeds (\texttt{20260719}--\texttt{20260723}); not CIs.
+    Holdout: N2N higher on every seed (Section~\ref{sec:n2n-vs-ours-boards}); multi-family: sign-test parity vs N2N.
     $\Delta$ $=$ Ours $-$ baseline.}
   \label{tab:n2n-vs-ours}
   \setlength{\tabcolsep}{2.5pt}

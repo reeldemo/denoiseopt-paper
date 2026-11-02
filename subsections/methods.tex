@@ -83,7 +83,7 @@ For masked sample set $\mathcal{M}$ (seam or body windows after tiling $N$ perio
 \mathrm{RMS}_{\mathcal{M}}(u)=\sqrt{\frac{1}{|\mathcal{M}|}\sum_{i\in\mathcal{M}} u_i^2}.
 \end{equation}
 The implementation fixes $\varepsilon>0$ with $\varepsilon=10^{-6}$ (\texttt{reelsynth/scripts/metrics\_snr\_sdr.py}; mirrored in \texttt{overnight\_gpu\_rl\_arch.py}).
-Component scores use the unit clamp
+Component scores use the unit clamp (same normalized-error form as SNR-style objectives on a mask~\cite{purwins2019}):
 \begin{equation}
 \label{eq:R-component}
 R(a,b;\mathcal{M})
