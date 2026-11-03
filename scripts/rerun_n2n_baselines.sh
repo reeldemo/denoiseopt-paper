@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Re-score all paper/reelsynth N2N baseline JSON and figures after checkpoint retrain.
-# Requires REELSYNTH_ROOT @ 0a8567b, PAPER_PYTHON+torch, checkpoint sha256 in results/n2n_retrain_provenance.json.
+# Requires REELSYNTH_ROOT @ 0a8567b, PAPER_PYTHON+torch, results/n2n_retrain_provenance.json sha256.
+# PYTHONPATH: scripts/compat first (sitecustomize → SeamN2N.from_state shim for legacy benches).
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=experiment_env.sh
