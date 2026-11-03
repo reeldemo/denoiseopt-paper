@@ -13,24 +13,42 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 FIG = ROOT / "figures"
 
-# Multi-family means from locked Table tab:sota-main / sota_matrix (R_blend).
-ROWS = [
-    ("Ours", 0.931, 0.026),
-    ("N2N", 0.925, 0.038),
-    ("seq CNN", 0.920, 0.026),
-    ("no-bake", 0.893, 0.028),
-    ("seam FIR3", 0.868, 0.019),
-    ("MLP-on-R", 0.807, 0.018),
-    ("CNN/UNet", 0.690, 0.027),
-    ("DualCosine", 0.514, 0.032),
-    ("soft fade", 0.462, 0.021),
-]
+# Multi-family means from figures/sota_matrix.json (R_blend), refreshed by rerun_n2n_baselines.sh
+SOTA = FIG / "sota_matrix.json"
+
+
+def load_rows() -> list[tuple[str, float, float]]:
+    if not SOTA.is_file():
+        raise SystemExit(f"Missing {SOTA}; run ./scripts/rerun_n2n_baselines.sh first")
+    sota = json.loads(SOTA.read_text(encoding="utf-8"))
+    order = [
+        ("neural_favorite", "Ours"),
+        ("n2n_corrupt_corrupt", "N2N"),
+        ("seq_lstm", "seq LSTM"),
+        ("seq_cnn1d", "seq CNN"),
+        ("no_bake", "no-bake"),
+        ("seam_fir3", "seam FIR3"),
+        ("mlp_on_R", "MLP-on-R"),
+        ("cnn_unet_on_R", "CNN/UNet"),
+        ("dual_cosine", "DualCosine"),
+    ]
+    by = {r["name"]: r for r in sota.get("results_multifamily") or []}
+    rows: list[tuple[str, float, float]] = []
+    for key, label in order:
+        if key not in by:
+            continue
+        r = by[key]
+        rows.append((label, float(r["residual_R_mean"]), float(r.get("residual_R_std") or 0.0)))
+    if not rows:
+        raise SystemExit(f"No methods found in {SOTA}")
+    return rows
 
 
 def main() -> None:
-    labels = [r[0] for r in ROWS][::-1]
-    means = np.array([r[1] for r in ROWS][::-1])
-    stds = np.array([r[2] for r in ROWS][::-1])
+    rows = load_rows()
+    labels = [r[0] for r in rows][::-1]
+    means = np.array([r[1] for r in rows][::-1])
+    stds = np.array([r[2] for r in rows][::-1])
     colors = ["#0072B2"] * len(labels)
     colors[-1] = "#009E73"  # Ours after reverse is last? wait reversed: soft fade first, Ours last
     # After reverse, Ours is at the top of barh (last in list drawn at top in barh? barh plots bottom-first)

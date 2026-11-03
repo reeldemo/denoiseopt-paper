@@ -16,7 +16,7 @@ from common import DEFAULT_HOLDOUT_SEEDS, bootstrap_reelsynth, save_json, utc_no
 def load_n2n(root: Path, device: torch.device):
     bootstrap_reelsynth()
     import overnight_gpu_rl_arch as og  # noqa: E402
-    from baselines.n2n_seam import SeamN2N  # noqa: E402
+    from baselines import n2n_seam  # noqa: E402
 
     path = root / "brand" / "artifacts" / "n2n_seam_baselines" / "n2n_corrupt_corrupt.pt"
     if not path.is_file():
@@ -25,7 +25,7 @@ def load_n2n(root: Path, device: torch.device):
             "Train via ./scripts/run_n2n_baseline_retrain.sh or pin reelsynth artifacts."
         )
     blob = torch.load(path, map_location=device, weights_only=False)
-    model = SeamN2N.from_state(blob["state_dict"], device)
+    model = n2n_seam.from_state(blob["state_dict"], device)
     model.eval()
 
     def fn(eng: torch.Tensor) -> torch.Tensor:

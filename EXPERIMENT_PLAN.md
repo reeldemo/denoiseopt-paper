@@ -1,6 +1,8 @@
 # Experiment plan (aiXiv v2.0 / v2.1 reviews — compute required)
 
-**Approved queue (Julian, single RTX 3060):** `E1 → E5 → E4 → E2 → E3` via `scripts/queue_all.sh`.
+**Approved queue (Julian, single RTX 3060):** `N2N baseline rerun → E1 → E5 → E4 → E2 → E3` via `scripts/queue_all.sh`.
+
+After retraining `n2n_corrupt_corrupt.pt`, run `./scripts/rerun_n2n_baselines.sh` once (or let `queue_all.sh` run it first when `results/n2n_baseline_rerun_complete.json` does not match `results/n2n_retrain_provenance.json` sha256).
 
 ## Launchers (paper repo)
 
