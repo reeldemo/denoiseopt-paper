@@ -7,3 +7,8 @@
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+results/e*.json
+results/e*_holdout_*.json
+figures/e*.json
+!results/experiment_queue_status.json
+__pycache__/

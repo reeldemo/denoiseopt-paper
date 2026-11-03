@@ -62,10 +62,9 @@ Artifacts:
   \end{tabular}
 \end{table}
 
-\paragraph{Takeaways.}
-Under $R_{\mathrm{blend}}$, Ours leads every classical-board column in Tables~\ref{tab:transfer-main}--\ref{tab:transfer-main-b},
-including Dual Cosine and SeamN2N on every domain.
-SeamN2N beats Dual Cosine everywhere and sits near no-bake on several bearing / ECG columns, but trails Ours
+\paragraph{Takeaways (wrap-protocol stress test; not domain SOTA).}
+Under $R_{\mathrm{blend}}$, Ours has the top \emph{pointwise} score in each column of Tables~\ref{tab:transfer-main}--\ref{tab:transfer-main-b} on these seven boards (diagnostic comparison; no multi-seed inferential claim).
+SeamN2N exceeds Dual Cosine on every column and sits near no-bake on several bearing / ECG columns, but trails Ours
 on ECG and synth CNC.
 On MIT-BIH and PTB-XL, endpoint-pin remains a strong classical ECG row above SeamN2N. Ours still leads both.
 Author Operational Cycle-GAN and BeatDiff collapse under OOD wrap scoring relative to Ours / SeamN2N / no-bake.

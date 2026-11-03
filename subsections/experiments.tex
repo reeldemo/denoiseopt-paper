@@ -31,8 +31,10 @@ Venue: DSP / synthesis artifact repair (DAFx / AES / arXiv cs.SD).
 
 \paragraph{Statistical reporting (what we compute).}
 Unless a table caption says otherwise, multi-seed cells are arithmetic mean$\pm$sample std over the named seed list (not Gaussian confidence intervals).
-Paired holdout comparisons use a two-sided sign test on per-seed Ours$-$N2N deltas (all five seeds favor N2N; $p{=}0.062$).
+Paired holdout comparisons use a two-sided sign test on per-seed Ours$-$N2N deltas (all five seeds favor N2N; $p{=}0.062$) with bootstrap 95\% CIs and Hedges $g_z$ in Appendix~\ref{app:secondary-results} (\texttt{figures/stats\_paired\_holdout.json}).
+Win/loss \emph{counts} at small $n$ also report Wilson 95\% score intervals for the win proportion (e.g.\ 10/20 board wins $\Rightarrow$ CI $[0.30,0.70]$).
 Paired multi-family comparisons use a two-sided sign test on per-board mean deltas (reported $p$ values; $p{=}1.0$ means parity, not overlap-driven superiority).
+Matched-$5$k outer-loop comparisons use paired deltas across three search seeds per family (\texttt{figures/stats\_meta\_approach\_5k.json}); with $n{=}3$, two-sided sign-flip tests cannot reach $p<0.25$ when all deltas share sign---treat Table~\ref{tab:meta-approaches} as descriptive selection, not inferential ranking.
 We do \emph{not} run ANOVA across outer-loop families beyond mean$\pm$std in Table~\ref{tab:meta-approaches}, and we do not invent MOS confidence intervals.
 Listening: $N_{\mathrm{listeners}}{=}0$ (Table~\ref{tab:listening-stats}); no preference rates.
 

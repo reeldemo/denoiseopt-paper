@@ -1,0 +1,51 @@
+{
+  "queue_order": [
+    "N2N_BASELINES",
+    "E1",
+    "E5",
+    "E4",
+    "E2",
+    "E3"
+  ],
+  "current": "N2N_BASELINES",
+  "experiments": {
+    "E5": {
+      "status": "dry_run_ok",
+      "error": "no history",
+      "updated_at": "2026-11-03T04:47:12Z",
+      "dry_run": true,
+      "started_at": "2026-11-03T04:47:12Z",
+      "result": "/home/s4il0r/denoiseopt-paper_git/results/e5_pareto_export.json"
+    },
+    "E1": {
+      "status": "dry_run_ok",
+      "dry_run": true,
+      "started_at": "2026-11-03T04:46:35Z",
+      "updated_at": "2026-11-03T04:46:37Z",
+      "result": "/home/s4il0r/denoiseopt-paper_git/results/e1_holdout_10seed.json"
+    },
+    "E2": {
+      "status": "dry_run_ok",
+      "dry_run": true,
+      "started_at": "2026-11-03T04:46:42Z",
+      "updated_at": "2026-11-03T04:46:44Z",
+      "result": "/home/s4il0r/denoiseopt-paper_git/results/e2_v14_converge_multiseed.json"
+    },
+    "E3": {
+      "status": "dry_run_ok",
+      "dry_run": true,
+      "started_at": "2026-11-03T04:46:50Z",
+      "updated_at": "2026-11-03T04:46:53Z",
+      "result": "/home/s4il0r/denoiseopt-paper_git/results/e3_meta_extra_seeds.json"
+    },
+    "E4": {
+      "status": "dry_run_ok",
+      "dry_run": true,
+      "started_at": "2026-11-03T04:46:59Z",
+      "updated_at": "2026-11-03T04:47:06Z",
+      "result": "/home/s4il0r/denoiseopt-paper_git/results/e4_branch_ablation_5k.json"
+    }
+  },
+  "note": "Updated by scripts/queue_all.sh and scripts/engine/e*.py drivers.",
+  "updated_at": "2026-11-03T07:12:25Z"
+}

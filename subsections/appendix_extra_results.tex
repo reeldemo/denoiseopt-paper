@@ -142,7 +142,7 @@ Does the wrap protocol transfer beyond synthetic sine cliffs onto true exports a
 Table~\ref{tab:real-wt} scores ReelSynth-exported factory periods (primary realism) and Adventure Kid Waveforms (AKWF) CC0 single-cycle WAVs (secondary) after close-seam idealization and the same open-wrap cliff, under $R_{\mathrm{blend}}$.
 Procedural stand-ins are demoted to tertiary smoke and no longer carry the primary realism claim.
 On exported factory periods the favorite ($R_{\mathrm{blend}}{\approx}0.699$) trails no-bake / FIR / poly / N2N while still beating Dual Cosine ($0.589$).
-On AKWF OA cycles the favorite ($0.679$) trails no-bake / N2N and beats Dual Cosine ($0.424$).
+On AKWF OA cycles the favorite ($0.679$) trails no-bake / N2N and scores above Dual Cosine ($0.424$) on mean $R_{\mathrm{blend}}$ (single-board means; not a listening claim).
 Export gaps are listed in Section~\ref{sec:limitations}.
 
 \begin{table}[t]
@@ -253,15 +253,14 @@ Export / Rust gaps vs no-bake are listed in Section~\ref{sec:limitations}.
 \subsection{Transfer to Rust engine tiles}
 \label{sec:rust-bench}
 
-Table~\ref{tab:rust-bench} scores the Python-trained favorite on 20 Rust-exported tiles under $R_{\mathrm{blend}}$.
-The favorite beats Dual Cosine on mean $\Delta R_{\mathrm{blend}}{+}0.082$, but the signed-rank test is not significant at $\alpha{=}0.05$ ($p{\approx}0.30$),
-and absolute score trails no-bake and \texttt{seam\_fir3}.
+Table~\ref{tab:rust-bench} scores the Python-trained favorite on 20 Rust-exported tiles under $R_{\mathrm{blend}}$ (\textbf{pilot / diagnostic}; $n{=}20$).
+The favorite shows mean $\Delta R_{\mathrm{blend}}{+}0.082$ vs Dual Cosine, but the signed-rank test is not significant at $\alpha{=}0.05$ ($p{\approx}0.30$); do not read the mean gap as superiority.
 The primary SOTA claim remains the Python multi-family matrix.
 
 \begin{table}[t]
   \centering
-  \caption{Rust \texttt{sound\_bench} transfer ($n{=}20$) under $R_{\mathrm{blend}}$ ($\alpha{=}0.7$).
-  $\Delta$ is vs Dual Cosine.}
+  \caption{Rust \texttt{sound\_bench} transfer (\textbf{pilot / diagnostic}, $n{=}20$ tiles) under $R_{\mathrm{blend}}$ ($\alpha{=}0.7$).
+  $\Delta$ is vs Dual Cosine. Absolute scores trail no-bake and \texttt{seam\_fir3}.}
   \label{tab:rust-bench}
   \setlength{\tabcolsep}{6pt}
   \begin{adjustbox}{max width=\columnwidth}
@@ -278,3 +277,10 @@ The primary SOTA claim remains the Python multi-family matrix.
   \end{tabular}
 \end{adjustbox}
 \end{table}
+
+\paragraph{Paired statistics on the five-seed holdout and multifamily boards.}
+Computed by \texttt{scripts/stats\_paired\_holdout.py} from \texttt{figures/multiseed\_summary.json} (output \texttt{figures/stats\_paired\_holdout.json}).
+Hybrid minus frozen Noise2Noise on the five-seed holdout: mean $\Delta R_{\mathrm{blend}}={-}0.0060$ (bootstrap 95\% CI $[{-}0.0066,{-}0.0053]$; 0/5 seed wins, Wilson 95\% CI $[0.00,0.43]$; exact sign-flip $p=0.0625$, the minimum attainable at $n{=}5$; Hedges $g_z={-}5.6$).
+Hybrid minus DualCosine: $\Delta={+}0.429$ ($[0.402,0.462]$; 5/5 wins, Wilson CI $[0.57,1.00]$; $p=0.0625$).
+On the 20 multifamily boards, hybrid minus Noise2Noise is $\Delta={+}0.0030$ ($[{-}0.006,0.013]$; 10/20 wins, Wilson CI $[0.30,0.70]$; exact permutation $p=0.55$; $g_z=0.13$): no detectable difference (CIs overlap zero).
+These tests are exploratory; $n{=}5$ seeds cannot reach $p<0.05$ under an exact two-sided paired test, so a powered claim needs $\ge 6$ holdout seeds (see \texttt{EXPERIMENT\_PLAN.md}).

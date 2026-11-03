@@ -209,9 +209,13 @@ Appendix~\ref{app:secondary-results} and Section~\ref{sec:cliff-strata}.
 
 Under a $5{,}000$ evaluation budget with LSTM and xLSTM in the searchable bake vocabulary, Table~\ref{tab:meta-approaches} compares Random NAS, Cont.\ CMA-ES, Arch REINFORCE, Aging evolution, TPE Bayes NAS, and our hybrid GA+PPO approach (Ours).
 The table reports a matched Deferred D1 re-search under locked $R_{\mathrm{blend}}{+}J$ (mean$\pm$std over three search seeds; artifacts \texttt{meta\_approach\_compare\_v13\_rblend/}).
-Our hybrid GA+PPO has the highest mean $R_{\mathrm{blend}}$ ($0.9748{\pm}0.0018$; ${\approx}8.4$\,h mean wall).
-Aging evolution ranks second ($0.9635{\pm}0.0049$); Arch REINFORCE shows the highest variance ($0.9599{\pm}0.0116$).
+Our hybrid GA+PPO has the top descriptive mean $R_{\mathrm{blend}}$ ($0.9748{\pm}0.0018$; ${\approx}8.4$\,h mean wall).
+Aging evolution ranks second ($0.9635{\pm}0.0049$); Arch REINFORCE shows the largest cross-seed variance ($0.9599{\pm}0.0116$).
 With only $n{=}3$ matched seeds we do \emph{not} claim formal superiority from non-overlapping uncertainty bands or ANOVA; we use the bake-off to \emph{select} which outer-loop family receives the FitCell-to-plateau budget.
+Paired per-search-seed champion deltas (hybrid minus each family) are in \texttt{figures/stats\_meta\_approach\_5k.json} from \texttt{scripts/stats\_meta\_approach\_5k.py}.
+Hybrid leads the runner-up (Aging evolution) on all three seeds (mean $\Delta R_{\mathrm{blend}}{=}{+}0.0114$; bootstrap 95\% CI $[0.0064,0.0144]$; Wilson 95\% CI on 3/3 wins $[0.44,1.00]$), but the exact sign-flip test gives $p{=}0.25$ at $n{=}3$ (minimum attainable when all deltas share sign).
+Hybrid vs Arch REINFORCE is $2/3$ seed wins ($p{=}0.5$; Wilson 95\% CI $[0.21,0.94]$).
+These tests support descriptive selection only.
 Only search seed \texttt{1902771841} of the hybrid short-FitCell run clears the frozen holdout Noise2Noise gate under D1 ($R_{\mathrm{blend}}{\approx}0.9766$ vs gate ${\approx}0.9750$).
 Mid-search graphs range from about $15$k to $370$k parameters, yet short-FitCell champions stay compact (${\approx}24$k$\pm$2k params across seeds).
 Because hybrid had the top mean among the six families, later compute focuses on hybrid-only FitCell-to-plateau (Section~\ref{sec:v14-converge}, Table~\ref{tab:v14-hybrid-converge}).
@@ -307,9 +311,9 @@ Table~\ref{tab:compute} summarizes campaign compute (historical prolonged-$R$ ov
 \subsection{Hyperparameter sensitivity}
 \label{para:hp-sensitivity}
 One-at-a-time $\pm 50\%$ probe of Table~\ref{tab:hyperparams} knobs at $500$ outer iterations (seed \texttt{1902771841}).
-Not a full $5$k re-search.
+\textbf{Pilot / diagnostic only} (not a $5$k re-search).
 Default champion $R{\approx}0.9888$. The largest $|\Delta R|$ among OAT arms is ${\approx}0.0123$ (50\% lower learning rate).
-All $11/11$ arms finished under this budget.
+All eleven configurations completed ($1$ default plus ten $\pm 50\%$ one-at-a-time perturbations), each running $500/500$ outer iterations---``$11/11$'' counts finished configs, not an $11/11$ win rate at 50\%.
 
 \input{figures/tab_meta_hp_sensitivity}
 

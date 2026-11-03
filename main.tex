@@ -82,10 +82,9 @@ Hybrid GA--PPO Meta-Search}
 
     On a five-seed holdout, a short-FitCell hybrid freeze reaches $0.9708{\pm}0.0014$,
     below frozen Noise2Noise ($0.9767{\pm}0.0015$) but far above Dual Cosine ($0.542{\pm}0.038$; Table~\ref{tab:n2n-vs-ours}).
-    A matched $5{,}000$-evaluation bake-off across three search seeds gives hybrid the highest mean $R_{\mathrm{blend}}$ among six outer-loop families
-    ($0.9748{\pm}0.0018$; Table~\ref{tab:meta-approaches}; $n{=}3$ seeds, selection not ANOVA).
-    On search seed \texttt{1902771841} only, hybrid FitCell-to-plateau logs in-loop $R_{\mathrm{blend}}{\approx}0.9912$
-    vs a frozen holdout Noise2Noise gate ${\approx}0.9750$ (Table~\ref{tab:v14-hybrid-converge}); clearing that gate is provisional pending multi-search-seed plateau and five-seed holdout replication.
+    A matched $5{,}000$-evaluation bake-off ($n{=}3$ search seeds) ranks hybrid first \emph{descriptively} among six outer-loop families
+    ($0.9748{\pm}0.0018$; Table~\ref{tab:meta-approaches}): vs runner-up Aging evolution, mean $\Delta R_{\mathrm{blend}}{=}{+}0.0114$ with bootstrap 95\% CI $[0.0064,0.0144]$ and exact sign-flip $p{=}0.25$ (not inferential superiority; selection only).
+    \textbf{Provisional (single search seed, in-loop only):} FitCell-to-plateau on seed \texttt{1902771841} logs $R_{\mathrm{blend}}{\approx}0.9912$ during search (Table~\ref{tab:v14-hybrid-converge}), not a five-seed holdout mean; replication pending.
     On hard wrap cliffs, classical fades collapse while searched operators hold.
     Cross-domain transfer stress tests are in Appendix~\ref{app:transfer-bundle}.
   \end{abstract}
