@@ -2,6 +2,12 @@
 # E5: Pareto / champion-rule export from campaign history (CPU-light).
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+for arg in "$@"; do
+  if [[ "${arg}" == "--dry-run" ]]; then
+    export RESEARCH_BACKUP_OPTIONAL=1
+    break
+  fi
+done
 # shellcheck source=experiment_env.sh
 source "${SCRIPT_DIR}/experiment_env.sh"
 # shellcheck source=experiment_helpers.sh
@@ -14,5 +20,5 @@ if [[ "${1:-}" == "--dry-run" ]]; then
 fi
 "${PAPER_PYTHON}" "${PAPER_ENGINE}/e5_pareto_export.py" "${DRY[@]}" "$@"
 rc=$?
-research_backup_step "E5"
+research_backup_step "E5" || exit $?
 exit "$rc"

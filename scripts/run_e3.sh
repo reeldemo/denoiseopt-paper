@@ -2,6 +2,12 @@
 # E3: matched 5k meta-compare on two extra search seeds (six approaches each).
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+for arg in "$@"; do
+  if [[ "${arg}" == "--dry-run" ]]; then
+    export RESEARCH_BACKUP_OPTIONAL=1
+    break
+  fi
+done
 # shellcheck source=experiment_env.sh
 source "${SCRIPT_DIR}/experiment_env.sh"
 # shellcheck source=experiment_helpers.sh
@@ -14,5 +20,5 @@ if [[ "${1:-}" == "--dry-run" ]]; then
 fi
 "${PAPER_PYTHON}" "${PAPER_ENGINE}/e3_meta_extra_seeds.py" "${DRY[@]}" "$@"
 rc=$?
-research_backup_step "E3"
+research_backup_step "E3" || exit $?
 exit "$rc"

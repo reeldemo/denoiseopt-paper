@@ -6,8 +6,38 @@ export REELSYNTH_PIN_COMMIT="${REELSYNTH_PIN_COMMIT:-0a8567b}"
 N2N_CKPT_REL="brand/artifacts/n2n_seam_baselines/n2n_corrupt_corrupt.pt"
 export N2N_CHECKPOINT="${REELSYNTH_ROOT}/${N2N_CKPT_REL}"
 
+_preflight_writable_dir() {
+  local label="$1"
+  local dir="$2"
+  if [[ ! -d "${dir}" ]]; then
+    echo "ERROR: ${label} must exist (not auto-created): ${dir}" >&2
+    return 1
+  fi
+  if [[ ! -w "${dir}" ]]; then
+    echo "ERROR: ${label} is not writable: ${dir}" >&2
+    return 1
+  fi
+  return 0
+}
+
 _experiment_preflight() {
   local err=0
+  local hook="${HOME}/bin/research-backup-now"
+
+  if ! _preflight_writable_dir "RESULTS_DIR" "${RESULTS_DIR}"; then
+    err=1
+  fi
+  if ! _preflight_writable_dir "REELSYNTH brand/artifacts" "${REELSYNTH_ARTIFACTS_DIR}"; then
+    err=1
+  fi
+
+  if [[ "${RESEARCH_BACKUP_OPTIONAL:-0}" != "1" ]]; then
+    if [[ ! -x "${hook}" ]]; then
+      echo "ERROR: mandatory backup hook missing or not executable: ${hook}" >&2
+      echo "  Set RESEARCH_BACKUP_OPTIONAL=1 only for dry-run/CI." >&2
+      err=1
+    fi
+  fi
 
   if [[ ! -d "${REELSYNTH_ROOT}/scripts/baselines" ]]; then
     echo "ERROR: REELSYNTH_ROOT is missing scripts/baselines/ (holdout_eval imports baselines.n2n_seam)." >&2
@@ -42,4 +72,4 @@ _experiment_preflight() {
 if ! _experiment_preflight; then
   return 1 2>/dev/null || exit 1
 fi
-unset _experiment_preflight
+unset _experiment_preflight _preflight_writable_dir

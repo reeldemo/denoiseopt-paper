@@ -77,16 +77,11 @@ def utc_now() -> str:
 def reelsynth_root() -> Path:
     root = os.environ.get("REELSYNTH_ROOT")
     if not root:
-        guess = PAPER_ROOT.parent / "reelsynth"
-        if (guess / "scripts").is_dir():
-            p = guess
-        else:
-            raise SystemExit(
-                "REELSYNTH_ROOT not set and ../reelsynth not found. "
-                "export REELSYNTH_ROOT=/path/to/reelsynth"
-            )
-    else:
-        p = Path(root)
+        raise SystemExit(
+            "REELSYNTH_ROOT must be set (no default ../reelsynth path). "
+            "export REELSYNTH_ROOT=/path/to/reelsynth"
+        )
+    p = Path(root)
     if not (p / "scripts").is_dir():
         raise SystemExit(f"Invalid REELSYNTH_ROOT (no scripts/): {p}")
     if not (p / "scripts" / "baselines").is_dir():

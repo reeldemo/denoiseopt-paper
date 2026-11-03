@@ -28,7 +28,7 @@ cd /path/to/denoiseopt-paper
 ./scripts/queue_all.sh           # full queue, one GPU job at a time, skips complete JSON
 ```
 
-Preflight (in `scripts/experiment_env.sh` → `experiment_preflight.sh`) fails fast if `scripts/baselines/` is missing, `PAPER_PYTHON` is unset or lacks torch, or `brand/artifacts/n2n_seam_baselines/n2n_corrupt_corrupt.pt` is absent.
+Preflight (in `scripts/experiment_env.sh` → `experiment_preflight.sh`) requires **`REELSYNTH_ROOT` explicitly** (no `../reelsynth` guess), existing writable **`results/`** and **`$REELSYNTH_ROOT/brand/artifacts/`**, N2N checkpoint + `scripts/baselines/`, and **`~/bin/research-backup-now`** (mandatory unless `RESEARCH_BACKUP_OPTIONAL=1` for `--dry-run`/CI). Launchers do not create missing output directories.
 
 **Optional — retrain N2N baseline (not started by `queue_all.sh`):**
 
@@ -39,7 +39,7 @@ Preflight (in `scripts/experiment_env.sh` → `experiment_preflight.sh`) fails f
 
 Uses `reelsynth/scripts/train_n2n_seam_baseline.py` (20k steps default). Published log: ~155 s GPU for `n2n_corrupt_corrupt` on RTX 3090; budget **~2.5–3 h** on RTX 3060 for the primary mode alone (~5 h if both modes).
 
-After each launcher step, `~/bin/research-backup-now <step>` runs when that executable exists.
+After each launcher step, **`~/bin/research-backup-now <step>` must succeed** (exit 0) or the run aborts. Set `RESEARCH_BACKUP_OPTIONAL=1` only for `--dry-run` or CI (`scripts/tests/`).
 
 `scripts/experiment_env.sh` resolves `ENGINE_PYTHON` from `reelsynth/.venv_gpu` (Linux or Windows layout).
 Resume: re-run the same launcher; engine checkpoints (`checkpoint.json`, `history.jsonl`) skip finished arms/seeds.  

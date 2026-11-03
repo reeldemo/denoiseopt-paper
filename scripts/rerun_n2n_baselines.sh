@@ -22,7 +22,7 @@ run_step() {
   shift
   echo "== ${name} START $(date -u +%Y-%m-%dT%H:%M:%SZ)"
   "$@"
-  research_backup_step "${name}"
+  research_backup_step "${name}" || exit $?
   echo "== ${name} DONE"
 }
 
@@ -53,5 +53,5 @@ run_step n2n_stats_paired_post "${PAPER_PYTHON}" "${PAPER_ROOT}/scripts/stats_pa
 run_step n2n_plot_v14 "${PAPER_PYTHON}" "${PAPER_ROOT}/scripts/plot_v14_paper_figures.py"
 run_step n2n_fix_sota_bars "${PAPER_PYTHON}" "${PAPER_ROOT}/scripts/fix_sota_method_bars.py"
 
-research_backup_step "n2n_baseline_rerun"
+research_backup_step "n2n_baseline_rerun" || exit $?
 echo "N2N baseline rerun complete. Marker: ${RESULTS_DIR}/n2n_baseline_rerun_complete.json"

@@ -20,7 +20,8 @@ import json, os
 from datetime import datetime, timezone
 from pathlib import Path
 p = Path(os.environ["QUEUE_STATUS"])
-p.parent.mkdir(parents=True, exist_ok=True)
+if not p.parent.is_dir():
+    raise SystemExit(f"RESULTS_DIR missing: {p.parent}")
 data = json.loads(p.read_text(encoding="utf-8")) if p.is_file() else {}
 data["queue_order"] = ["N2N_BASELINES", "E1", "E5", "E4", "E2", "E3"]
 data["updated_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -60,7 +61,10 @@ run_step() {
   fi
   echo "== ${name} START $(date -u +%Y-%m-%dT%H:%M:%SZ)"
   mark_queue "${name}"
-  bash "${runner}"
+  if ! bash "${runner}"; then
+    echo "== ${name} FAILED (aborting queue)" >&2
+    exit 1
+  fi
   echo "== ${name} DONE"
 }
 
@@ -71,7 +75,10 @@ run_n2n_step() {
   fi
   echo "== N2N_BASELINES START $(date -u +%Y-%m-%dT%H:%M:%SZ)"
   mark_queue "N2N_BASELINES"
-  bash "${SCRIPT_DIR}/rerun_n2n_baselines.sh"
+  if ! bash "${SCRIPT_DIR}/rerun_n2n_baselines.sh"; then
+    echo "== N2N_BASELINES FAILED (aborting queue)" >&2
+    exit 1
+  fi
   echo "== N2N_BASELINES DONE"
 }
 
