@@ -20,6 +20,55 @@ DEFAULT_HOLDOUT_SEEDS = tuple(range(20_260_719, 20_260_724))
 EXTENDED_HOLDOUT_SEEDS = tuple(range(20_260_719, 20_260_729))
 E3_EXTRA_SEARCH_SEEDS = (2_026_072_703, 2_026_072_704)
 
+REELSYNTH_PIN_COMMIT = "0a8567b"
+N2N_CHECKPOINT_REL = Path("brand/artifacts/n2n_seam_baselines/n2n_corrupt_corrupt.pt")
+
+
+def paper_python() -> str:
+    py = os.environ.get("PAPER_PYTHON")
+    if not py:
+        raise SystemExit(
+            "PAPER_PYTHON must be set to a Python with torch (see scripts/experiment_env.sh)."
+        )
+    return py
+
+
+def n2n_checkpoint_path() -> Path:
+    return reelsynth_root() / N2N_CHECKPOINT_REL
+
+
+def run_holdout_eval(
+    *,
+    champ: str | Path | None,
+    out: Path,
+    dry_run: bool = False,
+    holdout_seeds: tuple[int, ...] | None = None,
+    batch: int | None = None,
+) -> dict[str, Any]:
+    """Run holdout_eval.py; raise RuntimeError on failure (no placeholder JSON)."""
+    cmd = [
+        paper_python(),
+        str(PAPER_ROOT / "scripts/engine/holdout_eval.py"),
+        "--out",
+        str(out),
+    ]
+    if champ is not None:
+        cmd.extend(["--champ", str(champ)])
+    if holdout_seeds is not None:
+        cmd.extend(["--holdout-seeds", ",".join(map(str, holdout_seeds))])
+    if batch is not None:
+        cmd.extend(["--batch", str(batch)])
+    if dry_run:
+        cmd.append("--dry-run")
+    rc = subprocess.run(cmd, cwd=str(PAPER_ROOT)).returncode
+    if rc != 0:
+        if out.is_file():
+            out.unlink()
+        raise RuntimeError(f"holdout_eval failed rc={rc} out={out}")
+    if not out.is_file():
+        raise RuntimeError(f"holdout_eval did not write {out}")
+    return load_json(out)
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -30,14 +79,27 @@ def reelsynth_root() -> Path:
     if not root:
         guess = PAPER_ROOT.parent / "reelsynth"
         if (guess / "scripts").is_dir():
-            return guess
-        raise SystemExit(
-            "REELSYNTH_ROOT not set and ../reelsynth not found. "
-            "export REELSYNTH_ROOT=/path/to/reelsynth"
-        )
-    p = Path(root)
+            p = guess
+        else:
+            raise SystemExit(
+                "REELSYNTH_ROOT not set and ../reelsynth not found. "
+                "export REELSYNTH_ROOT=/path/to/reelsynth"
+            )
+    else:
+        p = Path(root)
     if not (p / "scripts").is_dir():
         raise SystemExit(f"Invalid REELSYNTH_ROOT (no scripts/): {p}")
+    if not (p / "scripts" / "baselines").is_dir():
+        raise SystemExit(
+            f"REELSYNTH_ROOT missing scripts/baselines/: {p}\n"
+            f"Pin reelsynth to commit {REELSYNTH_PIN_COMMIT} (see EXPERIMENT_PLAN.md)."
+        )
+    ckpt = p / N2N_CHECKPOINT_REL
+    if not ckpt.is_file():
+        raise SystemExit(
+            f"Missing N2N checkpoint: {ckpt}\n"
+            "Run ./scripts/run_n2n_baseline_retrain.sh manually or copy the artifact."
+        )
     return p
 
 

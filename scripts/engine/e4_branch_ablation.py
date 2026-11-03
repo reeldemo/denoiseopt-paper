@@ -20,6 +20,7 @@ from common import (
     meta_approach_done,
     og_last_iter,
     reelsynth_root,
+    run_holdout_eval,
     save_json,
     update_queue_status,
     utc_now,
@@ -190,19 +191,13 @@ def main() -> int:
                 champ = row.get("champ_pt")
                 if champ and Path(champ).is_file():
                     hout = RESULTS_DIR / f"e4_holdout_{arm}_{seed}.json"
-                    cmd = [
-                        sys.executable,
-                        str(PAPER_ROOT / "scripts/engine/holdout_eval.py"),
-                        "--champ",
-                        champ,
-                        "--out",
-                        str(hout),
-                    ]
-                    if args.dry_run:
-                        cmd.append("--dry-run")
-                    subprocess.run(cmd, cwd=str(PAPER_ROOT), check=False)
-                    if hout.is_file():
-                        holdouts.append({"arm": arm, "seed": seed, "path": str(hout)})
+                    try:
+                        run_holdout_eval(champ=champ, out=hout, dry_run=args.dry_run)
+                    except RuntimeError as exc:
+                        update_queue_status("E4", status="failed", error=str(exc))
+                        print(exc, file=sys.stderr)
+                        return 1
+                    holdouts.append({"arm": arm, "seed": seed, "path": str(hout)})
             except RuntimeError as exc:
                 update_queue_status("E4", status="failed", error=str(exc))
                 print(exc, file=sys.stderr)

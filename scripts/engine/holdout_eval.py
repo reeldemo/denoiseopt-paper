@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 import time
 from pathlib import Path
 from typing import Any, Callable
@@ -18,6 +19,11 @@ def load_n2n(root: Path, device: torch.device):
     from baselines.n2n_seam import SeamN2N  # noqa: E402
 
     path = root / "brand" / "artifacts" / "n2n_seam_baselines" / "n2n_corrupt_corrupt.pt"
+    if not path.is_file():
+        raise FileNotFoundError(
+            f"Missing N2N checkpoint: {path}\n"
+            "Train via ./scripts/run_n2n_baseline_retrain.sh or pin reelsynth artifacts."
+        )
     blob = torch.load(path, map_location=device, weights_only=False)
     model = SeamN2N.from_state(blob["state_dict"], device)
     model.eval()
@@ -141,13 +147,19 @@ def main() -> int:
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
     seeds = tuple(int(s.strip()) for s in args.holdout_seeds.split(",") if s.strip())
-    payload = eval_holdout(
-        champ_path=args.champ,
-        eval_seeds=seeds,
-        batch=args.batch,
-        device=args.device,
-        dry_run=args.dry_run,
-    )
+    try:
+        payload = eval_holdout(
+            champ_path=args.champ,
+            eval_seeds=seeds,
+            batch=args.batch,
+            device=args.device,
+            dry_run=args.dry_run,
+        )
+    except Exception as exc:
+        print(f"holdout_eval failed: {exc}", file=sys.stderr)
+        if args.out.is_file():
+            args.out.unlink()
+        return 1
     save_json(args.out, payload)
     print(f"Wrote {args.out}")
     return 0

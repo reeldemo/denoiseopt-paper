@@ -4,11 +4,11 @@
 _experiment_env_dir="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 export PAPER_ROOT="$(cd "${_experiment_env_dir}/.." && pwd)"
 export REELSYNTH_ROOT="${REELSYNTH_ROOT:-$(cd "${PAPER_ROOT}/../reelsynth" 2>/dev/null && pwd)}"
-unset _experiment_env_dir
 
 if [[ -z "${REELSYNTH_ROOT}" || ! -d "${REELSYNTH_ROOT}/scripts" ]]; then
   echo "ERROR: REELSYNTH_ROOT must point at the reelsynth repo (with scripts/)." >&2
   echo "  export REELSYNTH_ROOT=/path/to/reelsynth" >&2
+  unset _experiment_env_dir
   return 1 2>/dev/null || exit 1
 fi
 
@@ -20,7 +20,13 @@ else
   export ENGINE_PYTHON="${ENGINE_PYTHON:-python3}"
 fi
 
-export PAPER_PYTHON="${PAPER_PYTHON:-python3}"
+if [[ -z "${PAPER_PYTHON:-}" ]]; then
+  echo "ERROR: PAPER_PYTHON must be set (Python with torch for holdout_eval)." >&2
+  echo "  export PAPER_PYTHON=/path/to/.venv/bin/python" >&2
+  unset _experiment_env_dir
+  return 1 2>/dev/null || exit 1
+fi
+
 export RESULTS_DIR="${PAPER_ROOT}/results"
 export FIGURES_DIR="${PAPER_ROOT}/figures"
 export QUEUE_STATUS="${RESULTS_DIR}/experiment_queue_status.json"
@@ -28,3 +34,7 @@ mkdir -p "${RESULTS_DIR}"
 
 export ENGINE_SCRIPTS="${REELSYNTH_ROOT}/scripts"
 export PAPER_ENGINE="${PAPER_ROOT}/scripts/engine"
+
+# shellcheck source=experiment_preflight.sh
+source "${_experiment_env_dir}/experiment_preflight.sh"
+unset _experiment_env_dir

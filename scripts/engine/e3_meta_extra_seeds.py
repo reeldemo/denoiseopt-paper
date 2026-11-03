@@ -11,13 +11,13 @@ from pathlib import Path
 from common import (
     E3_EXTRA_SEARCH_SEEDS,
     FIGURES_DIR,
-    PAPER_ROOT,
     RESULTS_DIR,
     engine_python,
     is_experiment_complete,
     load_json,
     meta_approach_done,
     reelsynth_root,
+    run_holdout_eval,
     save_json,
     update_queue_status,
     utc_now,
@@ -89,19 +89,13 @@ def main() -> int:
         champ = hybrid_dir / "champ_cell.pt"
         if champ.is_file():
             hpath = RESULTS_DIR / f"e3_holdout_hybrid_{seed}.json"
-            cmd = [
-                sys.executable,
-                str(PAPER_ROOT / "scripts/engine/holdout_eval.py"),
-                "--champ",
-                str(champ),
-                "--out",
-                str(hpath),
-            ]
-            if args.dry_run:
-                cmd.append("--dry-run")
-            subprocess.run(cmd, cwd=str(PAPER_ROOT))
-            if hpath.is_file():
-                holdouts.append({"search_seed": seed, "holdout_json": str(hpath)})
+            try:
+                run_holdout_eval(champ=champ, out=hpath, dry_run=args.dry_run)
+            except RuntimeError as exc:
+                update_queue_status("E3", status="failed", error=str(exc))
+                print(exc, file=sys.stderr)
+                return 1
+            holdouts.append({"search_seed": seed, "holdout_json": str(hpath)})
 
     payload = {
         "schema": "denoiseopt.e3_meta_extra_seeds.v1",

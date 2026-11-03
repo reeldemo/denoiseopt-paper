@@ -15,6 +15,7 @@ from common import (
     is_experiment_complete,
     load_json,
     reelsynth_root,
+    run_holdout_eval,
     save_json,
     update_queue_status,
     utc_now,
@@ -50,25 +51,18 @@ def main() -> int:
 
     update_queue_status("E1", status="running", dry_run=args.dry_run, started_at=utc_now())
 
-    holdout_script = PAPER_ROOT / "scripts/engine/holdout_eval.py"
-    cmd = [
-        sys.executable,
-        str(holdout_script),
-        "--champ",
-        str(champ),
-        "--holdout-seeds",
-        ",".join(map(str, seeds)),
-        "--out",
-        str(out),
-        "--batch",
-        "8" if args.dry_run else "64",
-    ]
-    if args.dry_run:
-        cmd.append("--dry-run")
-    rc = subprocess.run(cmd, cwd=str(PAPER_ROOT)).returncode
-    if rc != 0:
-        update_queue_status("E1", status="failed", exit_code=rc)
-        return rc
+    try:
+        run_holdout_eval(
+            champ=champ,
+            out=out,
+            dry_run=args.dry_run,
+            holdout_seeds=seeds,
+            batch=8 if args.dry_run else 64,
+        )
+    except RuntimeError as exc:
+        update_queue_status("E1", status="failed", error=str(exc))
+        print(exc, file=sys.stderr)
+        return 1
 
     payload = load_json(out)
     payload["experiment"] = "E1"

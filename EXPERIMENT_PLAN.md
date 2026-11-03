@@ -14,14 +14,32 @@
 
 **Environment (no secrets in repo):**
 
+Reelsynth **main** may no longer include `scripts/baselines/`; pin a snapshot that does (paper-tested: commit **`0a8567b`**) before running holdout or GPU search:
+
 ```bash
-export REELSYNTH_ROOT=/path/to/reelsynth   # sibling clone of github.com/reeldemo/reelsynth
+export REELSYNTH_ROOT=/path/to/reelsynth
+git -C "$REELSYNTH_ROOT" fetch origin 0a8567b
+git -C "$REELSYNTH_ROOT" checkout 0a8567b   # or a fork tag that restores scripts/baselines/
+export PAPER_PYTHON=/path/to/.venv/bin/python   # required; must import torch
 cd /path/to/denoiseopt-paper
-./scripts/run_e1.sh --dry-run    # each launcher: smoke <2 min
+./scripts/run_e1.sh --dry-run    # each launcher: smoke <2 min (needs N2N ckpt + baselines/)
 ./scripts/queue_all.sh           # full queue, one GPU job at a time, skips complete JSON
 ```
 
-`scripts/experiment_env.sh` resolves `ENGINE_PYTHON` from `reelsynth/.venv_gpu` (Linux or Windows layout).  
+Preflight (in `scripts/experiment_env.sh` → `experiment_preflight.sh`) fails fast if `scripts/baselines/` is missing, `PAPER_PYTHON` is unset or lacks torch, or `brand/artifacts/n2n_seam_baselines/n2n_corrupt_corrupt.pt` is absent.
+
+**Optional — retrain N2N baseline (not started by `queue_all.sh`):**
+
+```bash
+./scripts/run_n2n_baseline_retrain.sh              # primary corrupt→corrupt only
+./scripts/run_n2n_baseline_retrain.sh --steps 500  # smoke
+```
+
+Uses `reelsynth/scripts/train_n2n_seam_baseline.py` (20k steps default). Published log: ~155 s GPU for `n2n_corrupt_corrupt` on RTX 3090; budget **~2.5–3 h** on RTX 3060 for the primary mode alone (~5 h if both modes).
+
+After each launcher step, `~/bin/research-backup-now <step>` runs when that executable exists.
+
+`scripts/experiment_env.sh` resolves `ENGINE_PYTHON` from `reelsynth/.venv_gpu` (Linux or Windows layout).
 Resume: re-run the same launcher; engine checkpoints (`checkpoint.json`, `history.jsonl`) skip finished arms/seeds.  
 Status file: `results/experiment_queue_status.json`.
 
