@@ -4,7 +4,7 @@
 \paragraph{Main story under $R_{\mathrm{blend}}$.}
 Under the locked holdout protocol, Noise2Noise still leads the short-FitCell hybrid freeze
 ($0.9767{\pm}0.0015$ vs $0.9708{\pm}0.0014$ over five seeds; Dual Cosine $0.542{\pm}0.038$).
-The operative claim is narrower: compact searchable repair operators beat classical fades, stay competitive with Noise2Noise on multi-family means without a significant win (sign-test $p{=}1.0$), and hold on hard cliffs where Dual Cosine collapses
+The operative claim is narrower: compact searchable repair operators exceed classical fades on holdout means, stay competitive with Noise2Noise on multi-family means without a significant win (sign-test $p{=}1.0$; Wilson win-rate CI overlaps 0.5), and retain score on hard cliffs where Dual Cosine collapses
 (Table~\ref{tab:n2n-vs-ours}, Section~\ref{sec:cliff-strata}).
 Favorite $\Theta$ on the v10.1 freeze is larger than SeamN2N (${\approx}121$k vs ${\approx}53.5$k) and still trails N2N on holdout $R_{\mathrm{blend}}$
 (Table~\ref{tab:param-fairness}).
@@ -20,8 +20,8 @@ Mean scores hide that structure.
 Under near-ceiling residuals, further gains are small in absolute units and sensitive to reward shaping and branch weights.
 Learning curves (Figure~\ref{fig:search-learning-curve}) show Dual Cosine cleared early under short FitCell,
 then FitCell-to-plateau clearing the Noise2Noise gate (Figure~\ref{fig:v14-converge-curve}).
-Matched-$5$k outer-loop bake-offs under locked $R_{\mathrm{blend}}{+}J$ give hybrid the highest \emph{descriptive} mean across three search seeds
-(Appendix~\ref{app:supplement}, Table~\ref{tab:meta-approaches}; paired tests $n{=}3$, not powered superiority), which is why the follow-up spends GPU on hybrid alone
+Matched-$5$k outer-loop bake-offs under locked $R_{\mathrm{blend}}{+}J$ place hybrid first \emph{descriptively} across three search seeds
+(Appendix~\ref{app:supplement}, Table~\ref{tab:meta-approaches}; mean $\Delta$ vs runner-up with bootstrap CI; sign-flip $p{=}0.25$ at $n{=}3$), which is why the follow-up spends GPU on hybrid alone
 (Section~\ref{sec:v14-converge}).
 
 \paragraph{Practical advantage over a frozen Noise2Noise baseline.}
