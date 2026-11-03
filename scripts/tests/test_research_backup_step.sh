@@ -8,6 +8,7 @@ source "${ROOT}/experiment_helpers.sh"
 TMP_HOME="$(mktemp -d)"
 trap 'rm -rf "${TMP_HOME}"' EXIT
 export HOME="${TMP_HOME}"
+export RESEARCH_BACKUP_HOOK="${HOME}/bin/research-backup-now"
 mkdir -p "${HOME}/bin"
 
 pass=0

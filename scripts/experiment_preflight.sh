@@ -22,7 +22,7 @@ _preflight_writable_dir() {
 
 _experiment_preflight() {
   local err=0
-  local hook="${HOME}/bin/research-backup-now"
+  local hook="${RESEARCH_BACKUP_HOOK:-${HOME}/bin/research-backup-now}"
 
   if ! _preflight_writable_dir "RESULTS_DIR" "${RESULTS_DIR}"; then
     err=1

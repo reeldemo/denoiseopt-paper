@@ -44,6 +44,10 @@ fi
 echo "ok fails_missing_results_dir"
 
 mkdir -p "${PAPER}/results"
+NO_HOOK_HOME="${TMP}/no-hook-home"
+mkdir -p "${NO_HOOK_HOME}"
+export HOME="${NO_HOOK_HOME}"
+export RESEARCH_BACKUP_HOOK="${NO_HOOK_HOME}/bin/research-backup-now"
 unset RESEARCH_BACKUP_OPTIONAL
 if source "${ROOT}/experiment_preflight.sh" 2>/dev/null; then
   echo "FAIL: expected failure when backup hook missing and not optional" >&2

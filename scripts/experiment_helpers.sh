@@ -1,8 +1,13 @@
 # Shared helpers for experiment launchers (source after experiment_env.sh).
 
+research_backup_hook_path() {
+  printf '%s\n' "${RESEARCH_BACKUP_HOOK:-${HOME}/bin/research-backup-now}"
+}
+
 research_backup_step() {
   local step="${1:?step name required}"
-  local hook="${HOME}/bin/research-backup-now"
+  local hook
+  hook="$(research_backup_hook_path)"
   if [[ "${RESEARCH_BACKUP_OPTIONAL:-0}" == "1" ]]; then
     if [[ -x "${hook}" ]]; then
       "${hook}" "${step}" || true
