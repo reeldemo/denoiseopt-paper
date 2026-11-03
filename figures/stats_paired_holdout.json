@@ -1,0 +1,61 @@
+{
+  "schema": "denoiseopt.stats_paired_holdout.v1",
+  "source": "figures/multiseed_summary.json",
+  "results": [
+    {
+      "comparison": "hybrid_vs_n2n_holdout_5seed",
+      "n": 5,
+      "mean_diff": -0.005955910682678223,
+      "sd_diff": 0.0008575756616039849,
+      "t_ci95": [
+        -0.007020560800906968,
+        -0.004891260564449478
+      ],
+      "bootstrap_ci95": [
+        -0.0066345810890197756,
+        -0.005308890342712402
+      ],
+      "exact_signflip_p": 0.0625,
+      "cohen_dz": -6.945055636885098,
+      "hedges_gz": -5.556044509508079,
+      "wins_a": 0
+    },
+    {
+      "comparison": "hybrid_vs_dualcosine_holdout_5seed",
+      "n": 5,
+      "mean_diff": 0.42881003618240354,
+      "sd_diff": 0.03704957787638867,
+      "t_ci95": [
+        0.38281428416602076,
+        0.4748057881987863
+      ],
+      "bootstrap_ci95": [
+        0.4023400545120239,
+        0.4620705246925354
+      ],
+      "exact_signflip_p": 0.0625,
+      "cohen_dz": 11.573952005960098,
+      "hedges_gz": 9.25916160476808,
+      "wins_a": 5
+    },
+    {
+      "comparison": "hybrid_minus_n2n_multifamily_20boards",
+      "n": 20,
+      "mean_diff": 0.0029651594161987306,
+      "sd_diff": 0.021439085571261965,
+      "t_ci95": [
+        -0.007068526176585425,
+        0.012998845008982886
+      ],
+      "bootstrap_ci95": [
+        -0.006020319461822509,
+        0.012549437880516053
+      ],
+      "exact_signflip_p": 0.5476169586181641,
+      "cohen_dz": 0.13830624474830122,
+      "hedges_gz": 0.13277399495836917,
+      "wins_a": 10
+    }
+  ],
+  "note": "n=5 sign-flip test has minimum attainable p=0.0625; n=20 permutation is exact over 2^20 flips. Exploratory, not a powered multi-study claim."
+}
