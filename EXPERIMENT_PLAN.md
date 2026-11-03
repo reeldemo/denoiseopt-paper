@@ -1,17 +1,61 @@
 # Experiment plan (aiXiv v2.0 / v2.1 reviews — compute required)
 
-All commands assume the **reelsynth** repo root with CUDA venv (RTX 3090 class, PyTorch 2.6+cu124).  
-Holdout evaluation for new search champions: five seeds `20260719`–`20260723` via existing multiseed bench scripts (same locked \(R_{\mathrm{blend}}\), \(\alpha=0.7\)).  
+**Approved queue (Julian, single RTX 3060):** `E1 → E5 → E4 → E2 → E3` via `scripts/queue_all.sh`.
+
+## Launchers (paper repo)
+
+| Step | Script | Driver | Primary JSON output |
+|------|--------|--------|---------------------|
+| E1 | `scripts/run_e1.sh` | `scripts/engine/e1_holdout_10seed.py` | `results/e1_holdout_10seed.json` (+ `figures/`) |
+| E5 | `scripts/run_e5.sh` | `scripts/engine/e5_pareto_export.py` | `results/e5_pareto_export.json` |
+| E4 | `scripts/run_e4.sh` | `scripts/engine/e4_branch_ablation.py` | `results/e4_branch_ablation_5k.json` |
+| E2 | `scripts/run_e2.sh` | `scripts/engine/e2_v14_converge.py` | `results/e2_v14_converge_multiseed.json` |
+| E3 | `scripts/run_e3.sh` | `scripts/engine/e3_meta_extra_seeds.py` | `results/e3_meta_extra_seeds.json` |
+
+**Environment (no secrets in repo):**
+
+```bash
+export REELSYNTH_ROOT=/path/to/reelsynth   # sibling clone of github.com/reeldemo/reelsynth
+cd /path/to/denoiseopt-paper
+./scripts/run_e1.sh --dry-run    # each launcher: smoke <2 min
+./scripts/queue_all.sh           # full queue, one GPU job at a time, skips complete JSON
+```
+
+`scripts/experiment_env.sh` resolves `ENGINE_PYTHON` from `reelsynth/.venv_gpu` (Linux or Windows layout).  
+Resume: re-run the same launcher; engine checkpoints (`checkpoint.json`, `history.jsonl`) skip finished arms/seeds.  
+Status file: `results/experiment_queue_status.json`.
+
+Long runs write artifacts under **`reelsynth/brand/artifacts/`**; paper repo stores aggregated JSON only.
+
+---
+
+## RTX 3060 wall-clock estimates (vs RTX 3090 plan rows)
+
+Rough scale **×1.35** from published 3090 meta-search walls (`hybrid_lstm` ≈ 8.4 h / 5k iters on 3090). Single GPU, no rental.
+
+| ID | RTX 3060 estimate | Notes |
+|----|-------------------|--------|
+| E1 | **~3 h** | Rescore frozen champs; 10 eval seeds × 4 methods |
+| E5 | **~15 min** | CPU parse of `history.jsonl` |
+| E4 | **~135 h** | 4 arms × 3 search seeds @ ~5k evals (GA/PPO/PBT via `overnight_gpu_rl_arch`; full hybrid via `bench_meta_approaches_5k`) + holdout JSON |
+| E2 | **~190 h** | 750-iter hybrid converge × 3 search seeds + holdout |
+| E3 | **~135 h** | 2 new search seeds × six approaches @ 5k + holdout |
+| **Queue total** | **~463 h** | ~19 days continuous on one 3060 |
+
+---
+
+All commands below assume the **reelsynth** repo root with CUDA venv (PyTorch 2.6+cu124 class).  
+Holdout evaluation for new search champions: five seeds `20260719`–`20260723` via `scripts/engine/holdout_eval.py` (same locked \(R_{\mathrm{blend}}\), \(\alpha=0.7\)).  
 **Do not invent numbers** — copy means into the paper only from emitted JSON.
 
-| ID | Experiment | Review driver | Search seeds (≥3) | Holdout eval | Est. wall / run | Est. total |
-|----|------------|---------------|-------------------|--------------|-----------------|------------|
-| E1 | Extend primary holdout to **10 eval seeds** (hybrid short-FitCell, SeamN2N, DualCosine, no-bake) | v2.0 W4; v2.1 Q3 | N/A (eval seeds only) | 10 seeds × 4 methods | ~15–25 min/GPU (rescore frozen champs) | **~2 h** |
-| E2 | **Multi-search-seed FitCell-to-plateau** (hybrid-only converge) | v2.1 S1; provisional 0.9912 | `1902771841`, `2026072701`, `2026072702` (existing) + optional 4th/5th | 5 holdout seeds per champ | ~47 h/search seed (v14 log) | **~141 h** (3 seeds) |
-| E3 | **Matched 5k + fourth/fifth search seed** for Table meta-approaches | v2.1 S3 | add e.g. `2026072703`, `2026072704` | per-seed champ → 5 holdout | ~8.4 h × 6 approaches × seed | **~50 h/seed** |
-| E4 | **GA-only / PPO-only / PBT-only** matched 5k arms | v2.1 W4, S4 | ≥3: same as D1 list | 5 holdout seeds per champ | ~8 h/arm/seed (hybrid ref) | **~72 h** (3 arms × 3 seeds) |
-| E5 | **Pareto front + champion rule export** (5k campaign logs) | v2.0 W5 | campaign-dependent | N/A (post-hoc on logs) | CPU <1 h | **<1 h** |
-| E6 | **Formal listening study** (MUSHRA or forced-choice on wrap tiles) | v2.1 W5; \(N_{\mathrm{listeners}}=0\) | N/A | informal WAVs only today | human recruitment | **out of GPU scope** |
+| ID | Experiment | Review driver | Search seeds (≥3) | Holdout eval | Est. wall / run (3060) | Est. total (3060) |
+|----|------------|---------------|-------------------|--------------|------------------------|-------------------|
+| E1 | Extend primary holdout to **10 eval seeds** (hybrid short-FitCell, SeamN2N, DualCosine, no-bake) | v2.0 W4; v2.1 Q3 | N/A (eval seeds only) | 10 seeds × 4 methods | ~20 min/rescore batch | **~3 h** |
+| E2 | **Multi-search-seed FitCell-to-plateau** (hybrid-only converge) | v2.1 S1; provisional 0.9912 | `1902771841`, `2026072701`, `2026072702` | 5 holdout seeds per champ | ~63 h/search seed | **~190 h** |
+| E3 | **Matched 5k + fourth/fifth search seed** for Table meta-approaches | v2.1 S3 | `2026072703`, `2026072704` | per-seed champ → 5 holdout | ~11 h × 6 approaches | **~135 h** |
+| E4 | **GA-only / PPO-only / PBT-only** matched 5k arms | v2.1 W4, S4 | `1902771841`, `2026072701`, `2026072702` | 5 holdout seeds per champ | ~11 h/arm/seed | **~135 h** |
+| E5 | **Pareto front + champion rule export** (5k campaign logs) | v2.0 W5 | campaign-dependent | N/A | CPU | **~15 min** |
+| E6 | **Formal listening study** (MUSHRA, ≥15 listeners) | v2.1 W5; \(N_{\mathrm{listeners}}=0\) | N/A | informal WAVs only today | human time | **out of GPU scope** |
 
 ---
 
@@ -20,12 +64,10 @@ Holdout evaluation for new search champions: five seeds `20260719`–`20260723` 
 **Goal:** Reach \(p<0.05\) on hybrid vs N2N holdout paired test if effect persists.
 
 ```bash
-# reelsynth root — example pattern (adjust to local bench script names)
-python scripts/bench_holdout_multiseed.py \
-  --eval-seeds 20260719,20260720,20260721,20260722,20260723,20260724,20260725,20260726,20260727,20260728 \
-  --methods hybrid_v10_favorite,n2n_corrupt2corrupt,dual_cosine,no_bake \
-  --out brand/artifacts/holdout_multiseed_v14_10seed/
-python scripts/aggregate_multiseed_summary.py --root brand/artifacts/holdout_multiseed_v14_10seed/
+cd denoiseopt-paper
+export REELSYNTH_ROOT=../reelsynth
+./scripts/run_e1.sh              # full
+./scripts/run_e1.sh --dry-run      # smoke
 ```
 
 **Paper repo follow-up:** rerun `scripts/stats_paired_holdout.py` against the new `multiseed_summary.json`.

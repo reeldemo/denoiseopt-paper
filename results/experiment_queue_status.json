@@ -1,0 +1,22 @@
+{
+  "queue_order": [
+    "E1",
+    "E5",
+    "E4",
+    "E2",
+    "E3"
+  ],
+  "current": null,
+  "experiments": {
+    "E5": {
+      "status": "dry_run_ok",
+      "error": "no history",
+      "updated_at": "2026-11-03T04:11:55Z",
+      "dry_run": true,
+      "started_at": "2026-11-03T04:11:55Z",
+      "result": "/agent/repos/denoiseopt-paper/results/e5_pareto_export.json"
+    }
+  },
+  "note": "Updated by scripts/queue_all.sh and scripts/engine/e*.py drivers.",
+  "updated_at": "2026-11-03T04:11:55Z"
+}
