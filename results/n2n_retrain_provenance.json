@@ -1,0 +1,17 @@
+{
+  "artifact": "brand/artifacts/n2n_seam_baselines/n2n_corrupt_corrupt.pt",
+  "sha256": "6cfe0c63c7a9fc3b5d605e005f8774243a4afc4522b89405c45e35ddd92862ff",
+  "size_bytes": 221745,
+  "runtime_s": 104,
+  "started": "2026-11-03T05:21:42+01:00",
+  "paper_commit": "388a525de503897bd59c92bac1cc8ceb5ab6bf66",
+  "reelsynth_commit": "0a8567b",
+  "script": "scripts/run_n2n_baseline_retrain.sh (modes=n2n_corrupt_corrupt, defaults)",
+  "hardware": "engine RTX 3060",
+  "backup": {
+    "tool": "restic",
+    "snapshot": "85635f98",
+    "tag": "n2n_retrain"
+  },
+  "note": "Retrained 2026-11-03; original artifact not recoverable. Replaces the baseline checkpoint."
+}
