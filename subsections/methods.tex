@@ -6,7 +6,7 @@
 
 Throughout, $x\in\mathbb{R}^{L}$ is the cracked single-period wavetable (engine input with open-wrap cliff).
 Let $\mathcal{H}$ be the space of repair-operator configurations (discrete operator graph plus continuous bake parameters).
-The repair operator (bake operator $\Theta$) is
+The \textbf{repair operator} $\Theta$ (legacy code: bake cell) is
 \begin{equation}
 \label{eq:Theta}
 \Theta:\mathbb{R}^{L}\times\mathcal{H}\to\mathbb{R}^{L},\qquad
@@ -16,7 +16,9 @@ When continuous parameters alone are emphasized we write $\theta$ for the contin
 $r^{\star}\in\mathbb{R}^{L}$ is the procedural ideal sibling defined below.
 Tiling length $N$ (typically $N{=}16$) forms $y_{\mathrm{tiled}}=\mathrm{Tile}(y,N)$ and $r^{\star}_{\mathrm{tiled}}=\mathrm{Tile}(r^{\star},N)$.
 Seam width $W$ (code: \texttt{SEAM\_W}, typically $8$) is the neighborhood edited by classical fade and polish ops.
-$R\in[0,1]$ is the prolonged residual score ($1$~=~best).
+$R(a,b;\mathcal{M})$ is the masked unit-clamp score in~\eqref{eq:R-component} ($1$~=~best).
+$R_{\mathrm{blend}}$ is the primary locked metric in~\eqref{eq:R-blend}.
+\textbf{Prolonged $R$} tiles the whole cycle once (debug / superseded search key only; not used for Table~\ref{tab:n2n-vs-ours} or matched bake-off reporting).
 These symbols follow a different convention from Noise2Noise clean/noisy pairs.
 
 \begin{table}[htbp]
@@ -38,7 +40,12 @@ These symbols follow a different convention from Noise2Noise clean/noisy pairs.
     $G$ & Procedural period generator (cliff on/off) \\
     $N$ & Prolong tiling count \\
     $W$ & Seam neighborhood width \\
-    $R$ & Prolonged residual score in $[0,1]$ (1~=~best) \\
+    $R(a,b;\mathcal{M})$ & Masked score; \emph{first} arg sets RMS denominator (Eq.~\eqref{eq:R-component}) \\
+    $R_{\mathrm{seam}}$ & $R(r^{\star},y;\mathcal{S})$ (ideal vs repair at wrap) \\
+    $R_{\mathrm{body}}$ & $R(x,y;\mathcal{B})$ (engine vs repair in mid-cycle) \\
+    $R_{\mathrm{blend}}$ & $\alpha R_{\mathrm{seam}}+(1-\alpha)R_{\mathrm{body}}$, $\alpha{=}0.7$ (primary tables) \\
+    Prolonged $R$ & Whole-cycle tiled debug score (superseded; ablation left column) \\
+    $J$ & $R_{\mathrm{blend}}-\lambda\cdot\mathrm{latency\_norm}$ (outer selection) \\
     \bottomrule
   \end{tabular}
 \end{adjustbox}

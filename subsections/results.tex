@@ -13,7 +13,7 @@ The evaluation protocol is stated in Section~\ref{sec:experiments}.
   \item \textbf{Holdout vs Noise2Noise and Dual Cosine} (Table~\ref{tab:n2n-vs-ours}):
     short-FitCell hybrid is close to, but below, Noise2Noise, and far above Dual Cosine.
   \item \textbf{Which outer loop to keep} (Table~\ref{tab:meta-approaches}):
-    hybrid wins a matched $5$k bake-off, so later compute goes to hybrid alone.
+    hybrid has the highest descriptive mean in a matched $5$k bake-off ($n{=}3$ search seeds; paired CIs in Appendix~\ref{app:supplement}), so later compute goes to hybrid alone---selection, not inferential outer-loop superiority.
   \item \textbf{Longer FitCell} (Table~\ref{tab:v14-hybrid-converge}):
     one search seed logs in-loop $R_{\mathrm{blend}}$ above the frozen holdout Noise2Noise gate (provisional; multi-seed pending).
   \item \textbf{Where classical fails} (Section~\ref{sec:cliff-strata}):
@@ -100,7 +100,8 @@ Search seeds, the N2N train seed \texttt{424242}, and holdout seeds remain disjo
 Holdout and multi-family rows in Table~\ref{tab:n2n-vs-ours} use five evaluation seeds.
 The matched $5$k outer-loop bake-off uses three search seeds
 (Table~\ref{tab:meta-approaches}: hybrid $0.9748{\pm}0.0018$, Aging $0.9635{\pm}0.0049$).
-Hybrid has the highest mean among six families; we do not infer formal outer-loop superiority from $n{=}3$ seed std alone.
+Hybrid has the highest mean among six families; paired sign-flip tests on three search seeds yield $p{\ge}0.25$ for hybrid vs the runner-up (Aging evolution) because $n{=}3$ is underpowered (Appendix~\ref{sec:meta-approaches-results}).
+We use the ranking only to allocate FitCell-to-plateau compute, not to claim ANOVA-level outer-loop superiority.
 
 \subsection{Hybrid-only FitCell-to-convergence}
 \label{sec:v14-converge}

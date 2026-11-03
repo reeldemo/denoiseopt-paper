@@ -212,6 +212,10 @@ The table reports a matched Deferred D1 re-search under locked $R_{\mathrm{blend
 Our hybrid GA+PPO has the highest mean $R_{\mathrm{blend}}$ ($0.9748{\pm}0.0018$; ${\approx}8.4$\,h mean wall).
 Aging evolution ranks second ($0.9635{\pm}0.0049$); Arch REINFORCE shows the highest variance ($0.9599{\pm}0.0116$).
 With only $n{=}3$ matched seeds we do \emph{not} claim formal superiority from non-overlapping uncertainty bands or ANOVA; we use the bake-off to \emph{select} which outer-loop family receives the FitCell-to-plateau budget.
+Paired per-search-seed champion deltas (hybrid minus each family) are in \texttt{figures/stats\_meta\_approach\_5k.json} from \texttt{scripts/stats\_meta\_approach\_5k.py}.
+Hybrid beats the runner-up (Aging evolution) on all three seeds (mean $\Delta R_{\mathrm{blend}}{=}{+}0.0114$; bootstrap 95\% CI $[0.0064,0.0144]$), but the exact sign-flip test gives $p{=}0.25$ at $n{=}3$ (minimum attainable when all deltas share sign).
+Hybrid vs Arch REINFORCE is $2/3$ seed wins ($p{=}0.5$).
+These tests support descriptive selection only.
 Only search seed \texttt{1902771841} of the hybrid short-FitCell run clears the frozen holdout Noise2Noise gate under D1 ($R_{\mathrm{blend}}{\approx}0.9766$ vs gate ${\approx}0.9750$).
 Mid-search graphs range from about $15$k to $370$k parameters, yet short-FitCell champions stay compact (${\approx}24$k$\pm$2k params across seeds).
 Because hybrid had the top mean among the six families, later compute focuses on hybrid-only FitCell-to-plateau (Section~\ref{sec:v14-converge}, Table~\ref{tab:v14-hybrid-converge}).
